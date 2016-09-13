@@ -1,0 +1,89 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/paper-styles/demo-pages.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html ">
+<dom-module id="media-text-view">
+    <template>
+        <style include="shared-styles">
+        .mediaimg {
+            margin-top: 20px;
+            max-width: 300px;
+            display: flex;
+            border-radius: 3px;
+            -moz-box-shadow: 6px 5px 2px #CECEB9;
+            -webkit-box-shadow: 6px 5px 2px #CECEB9;
+            -o-box-shadow: 6px 5px 2px #CECEB9;
+            box-shadow: 6px 5px 2px #CECEB9;
+            margin-bottom: 15px;
+        }
+        
+        .doneButton {
+            align-self: stretch;
+            margin: none;
+            margin-top: 30px;
+        }
+        
+        .divText {
+            justify-content: center;
+            font-weight: bold;
+            display:flex;
+        }
+        
+        .divmedia {
+            margin-bottom: 30px;
+            display: flex;
+            max-width: 300px;
+        }
+        
+        .papermedia {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            align-items: center;
+        }
+        </style>
+        <paper-header-panel class="flex">
+            <paper-toolbar class="divText">
+                <div> {{heading}} </div>
+            </paper-toolbar>
+        </paper-header-panel>
+        <div class="flex">
+            <paper-material class='papermedia' elevation="1">
+                <img class="mediaimg" src="/file/{{imageId}}">
+                <div>{{text}}</div>
+                <paper-button on-click="fireDone" class="doneButton" raised>Done</paper-button>
+            </paper-material>
+        </div>
+    </template>
+    <script>
+    Polymer({
+
+        is: 'media-text-view',
+        fireDone:function(){
+          this.fire('media-skipped',null)
+        },  
+        properties: {
+            text: {
+                type: String,
+                notify: true,
+            },
+            imageId: {
+                type: String,
+                notify: true
+            },
+            heading: {
+                type: String,
+                notify: true,
+            }
+        },
+
+    });
+    </script>
+</dom-module>

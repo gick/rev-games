@@ -1,0 +1,113 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./unitgameRepresentation.html">
+<link rel="import" href="../distance-element/distance-element.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/akc-meta/akc-meta.html">
+
+<dom-module id="activity-selection">
+    <!--
+Simple compass that rotate according to the angle parameter
+@group Gameplay Element
+@demo demo/index.html
+
+-->
+    <template>
+        <style>
+
+        </style>
+        <distance-element poi={{POI}} currentLat={{currentLat}} currentLng={{currentLng}} distance={{dist}} heading={{headingangle}} destination-lat={{destlat}} destination-lng={{destlng}} id="dist"></distance-element>
+        <paper-listbox>
+            <iron-ajax url="/listActivities" handle-as="json" last-response="{{activities}}" id="ajaxLoader"></iron-ajax>
+            <template is="dom-repeat" sort="gameSort" items="{{activities}}">
+                <unitgame-representation on-click="startActivity" data="{{item}}" name="{{item.activityName}}" distance={{computeDist(item.POI)}}> </unitgame-representation>
+            </template>
+        </paper-listbox>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+
+        Polymer({
+            is: 'activity-selection',
+            ready: function() {
+                this.$.dist.addEventListener('distance-ready', this.startSelection.bind(this))
+                this.$.dist.addEventListener('distance-changed', this.updateDistance.bind(this))
+                this.$.dist.addEventListener('heading-changed', this.updateHeading.bind(this))
+            },
+            gameSort: function(a, b) {
+                return this.computeDist(a.POI) > this.computeDist(b.POI) ? -1 : 1;
+            },
+            updateDistance: function(newval, oldval) {
+                console.log(newval);
+                console.log(oldval)
+                this.set("remainingdist", newval.detail.value);
+                this.set("userLat", this.get('currentLat'));
+                this.set("userLng", this.get('currentLng'));
+            },
+            updateHeading: function(newval, oldval) {
+                console.log(newval);
+                console.log(oldval)
+
+
+                this.set("angle", newval.detail.value);
+            },
+
+            startActivity: function(elem) {
+                this.set('selectedItem', elem.model.__data__.item);
+
+            },
+            startSelection: function(e) {
+                this.$.ajaxLoader.generateRequest();
+
+            },
+            updateCoord: function(elem) {
+
+            },
+            computeDist: function(elem) {
+                var x = this.$.dist.computeDistance(elem.latitude, elem.longitude);
+                return x;
+            },
+
+            properties: {
+                selectedItem: {
+                    type: Object,
+                    notify: true,
+                    reflectToAttribute: true
+                },
+                remainingdist: {
+                    type: Number,
+                    notify: true,
+                    reflectToAttribute: true
+                },
+                angle: {
+                    type: Number,
+                    notify: true,
+                    reflectToAttribute: true
+                },
+                userLat: {
+                    type: Number,
+                    notify: true,
+                    reflectToAttribute: true,
+                },
+                userLng: {
+                    type: Number,
+                    notify: true,
+                    reflectToAttribute: true,
+                }
+
+
+            }
+        });
+    })();
+    </script>
+</dom-module>
