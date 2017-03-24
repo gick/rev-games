@@ -1,0 +1,45 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+
+
+<link rel="import" href="../../../bower_components/paper-item/paper-item-shared-styles.html">
+<dom-module id="mlg-listitem">
+    <template>
+        <style include="shared-styles">
+
+        </style>
+        <paper-icon-item on-click="fireChosen">
+            <iron-icon icon="hardware:cast" item-icon>
+            </iron-icon>
+            <paper-item-body two-line>
+                <div>MLG name : <span>{{data.label}}</span></div>
+                <div secondary>Unit game number : <span>{{data.unitGames.length}}</span></div>
+            </paper-item-body>
+        </paper-icon-item>
+    </template>
+    <script>
+    Polymer({
+
+        is: 'mlg-listitem',
+        ready: function() {
+
+        },
+
+        fireChosen:function(){
+            //this.set('activity-choosen',this);
+        },
+        properties: {
+            data: {
+                type: Object,
+                notify: true,
+            },
+        },
+
+    });
+    </script>
+</dom-module>

@@ -7,21 +7,22 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="my-icons.html">
 <dom-module id="my-app">
     <template>
@@ -63,19 +64,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
+        <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
             <app-drawer>
                 <app-toolbar>Menu</app-toolbar>
-                <paper-button on-click="openDialog">Sign in</paper-button>
-                <paper-button on-click="checkUser">List user</paper-button>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="activity" href="/#activity">Activity</a>
-                    <a name="instructions" href="/#instructions">Instructions and Objectives</a>
+                    <a name="instructions" href="/#instructions">Activity start page</a>
+                    <a name="instructions2" href="/#instructions">MLG start page</a>
                     <a name="mapview" href="/#mapview">Map view</a>
                     <a name="questions" href="/#questions">Questions</a>
-                    <a name="users" href="/#users">Connected users</a>
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
@@ -87,8 +87,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-                    <my-activity name="activity"></my-activity>
-                    <my-instructions name="instructions"></my-instructions>
+                    <my-activity id="activityPicker" name="activity"></my-activity>
+                    <my-instructions mkdown="{{mkdown}}" id="mlgInstruction" name="instructions"></my-instructions>
+                    <my-instructions mkdown="{{}}" name="instructions2"></my-instructions>
                     <my-mapview id="map" name="mapview"></my-mapview>
                     <my-questions name="questions"></my-questions>
                     <my-users name="users"></my-users>
@@ -101,60 +102,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-app',
         ready: function() {
-
+            this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
+            this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
 
         },
-        statusChanged: function(old, newst) {
-            this.$.auth.auth.onAuthStateChanged(function(user) {
-                console.log(this)
-
-                if (user) {
-                    if (!user.displayName) {
-                        user.displayName = this.pseudo;
-                        var size = Object.keys(this.newuser).length;
-                        this.set('uid', 'uid' + size)
-                        this.userInfo = {
-                            username: this.pseudo,
-                            uid: user.uid
-                        }
-                        var myConnectionsRef = this.app.database().ref('users/' + this.uid + '/connections');
-                        // stores the timestamp of my last disconnect (the last time I was seen online)
-                        var lastOnlineRef = this.app.database().ref('users/' + this.uid + '/lastOnline');
-                        var connectedRef = this.app.database().ref('.info/connected');;
-                        connectedRef.on('value', function(snap) {
-
-                            if (snap.val() === true) {
-                                // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
-
-                                // add this device to my connections list
-                                // this value could contain info about the device or a timestamp tootho
-                                var con = myConnectionsRef.push(true);
-
-                                // when I disconnect, remove this device
-                                con.onDisconnect().remove();
-
-                                // when I disconnect, update the last time I was seen online
-
-                                //lastOnlineRef.onDisconnect().set(this.app.database().ServerValue.TIMESTAMP);
-                            }
-                        })
-                    }
-                }
-            }.bind(this))
+        setupStartPage: function(elem) {
+            if (elem && elem.detail && elem.detail[0]) {
+                this.mkdown = elem.detail[0].mkdown;
+            }
+        },
+        setupActivity: function(elem) {
+            this.currentMLG = elem.detail;
+            this.$.currentMLG.processMLG(this.currentMLG);
         },
         openDialog: function(elem) {
             this.$.dialog.open()
-        },
-        signInAnonymously: function() {
-            console.log(this)
-            this.$.auth.auth.signInAnonymously();
-            this.statusChanged()
-        },
-        checkUser: function() {
-            console.log(this.$.auth.user);
-
-
-            //this.set('example',{: {login:'truc',uid:this.auth.user.uid})
         },
 
         properties: {
@@ -182,6 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _pageChanged: function(page) {
             // load page import on demand.
+            console.log('my-' + page + '.html')
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);
         }

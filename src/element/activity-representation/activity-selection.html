@@ -9,11 +9,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="./unitgameRepresentation.html">
+<link rel="import" href="./mlgListItem.html">
 <link rel="import" href="../distance-element/distance-element.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/akc-meta/akc-meta.html">
-
 <dom-module id="activity-selection">
     <!--
 Simple compass that rotate according to the angle parameter
@@ -25,11 +24,10 @@ Simple compass that rotate according to the angle parameter
         <style>
 
         </style>
-        <distance-element poi={{POI}} currentLat={{currentLat}} currentLng={{currentLng}} distance={{dist}} heading={{headingangle}} destination-lat={{destlat}} destination-lng={{destlng}} id="dist"></distance-element>
         <paper-listbox>
             <iron-ajax url="/listActivities" handle-as="json" last-response="{{activities}}" id="ajaxLoader"></iron-ajax>
-            <template is="dom-repeat" sort="gameSort" items="{{activities}}">
-                <unitgame-representation on-click="startActivity" data="{{item}}" name="{{item.activityName}}" distance={{computeDist(item.POI)}}> </unitgame-representation>
+            <template is="dom-repeat" items="{{activities}}">
+                <mlg-listitem on-click="startActivity" data="{{item}}" name="{{item.activityName}}"> </mlg-listitem>
             </template>
         </paper-listbox>
     </template>
@@ -40,30 +38,11 @@ Simple compass that rotate according to the angle parameter
         Polymer({
             is: 'activity-selection',
             ready: function() {
-                this.$.dist.addEventListener('distance-ready', this.startSelection.bind(this))
-                this.$.dist.addEventListener('distance-changed', this.updateDistance.bind(this))
-                this.$.dist.addEventListener('heading-changed', this.updateHeading.bind(this))
-            },
-            gameSort: function(a, b) {
-                return this.computeDist(a.POI) > this.computeDist(b.POI) ? -1 : 1;
-            },
-            updateDistance: function(newval, oldval) {
-                console.log(newval);
-                console.log(oldval)
-                this.set("remainingdist", newval.detail.value);
-                this.set("userLat", this.get('currentLat'));
-                this.set("userLng", this.get('currentLng'));
-            },
-            updateHeading: function(newval, oldval) {
-                console.log(newval);
-                console.log(oldval)
+                this.$.ajaxLoader.generateRequest();
 
-
-                this.set("angle", newval.detail.value);
             },
-
             startActivity: function(elem) {
-                this.set('selectedItem', elem.model.__data__.item);
+                this.fire('activitySelected', elem.model.__data__.item);
 
             },
             startSelection: function(e) {
@@ -84,27 +63,6 @@ Simple compass that rotate according to the angle parameter
                     notify: true,
                     reflectToAttribute: true
                 },
-                remainingdist: {
-                    type: Number,
-                    notify: true,
-                    reflectToAttribute: true
-                },
-                angle: {
-                    type: Number,
-                    notify: true,
-                    reflectToAttribute: true
-                },
-                userLat: {
-                    type: Number,
-                    notify: true,
-                    reflectToAttribute: true,
-                },
-                userLng: {
-                    type: Number,
-                    notify: true,
-                    reflectToAttribute: true,
-                }
-
 
             }
         });
