@@ -20,8 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="my-icons.html">
@@ -66,15 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
-        <firebase-app name="rev" api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" app={{app}} database-url="https://rev-game.firebaseio.com" storage-bucket="rev-game.appspot.com"></firebase-app>
-        <firebase-auth id="auth" app-name="rev" user="{{user}}" on-error="handleError">
-        </firebase-auth>
-        <firebase-document id="doc" app-name='rev' path="/users" data="{{newuser}}">
-        </firebase-document>
-        <firebase-document id="userInfo" app-name='rev' path="/users/{{uid}}" data={{userInfo}}>
-        </firebase-document>
-        <firebase-document id="refConnected" app-name='rev' path="/.info/connected" data="{{connected}}">
-        </firebase-document>
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
             <app-drawer>
@@ -106,100 +95,97 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <paper-dialog id="dialog">
-            <h2>Choose pseudo</h2>
-            <paper-input value={{pseudo}} label='Pseudo'></paper-input>
-            <paper-button on-click="signInAnonymously" dialog-confirm autofocus role="button" tabindex="0" animated="" aria-disabled="false" elevation="0" class="x-scope paper-button-0">Accept</paper-button>
-        </paper-dialog>
     </template>
     <script>
     Polymer({
 
-                is: 'my-app',
-                ready: function() {
+        is: 'my-app',
+        ready: function() {
 
 
-                },
-                statusChanged: function(old, newst) {
-                        this.$.auth.auth.onAuthStateChanged(function(user) {
-                            console.log(this)
+        },
+        statusChanged: function(old, newst) {
+            this.$.auth.auth.onAuthStateChanged(function(user) {
+                console.log(this)
 
-                            if (user) {
-                                if (!user.displayName) {
-                                    user.displayName = this.pseudo;
-                                    var size = Object.keys(this.newuser).length;
-                                    this.set('uid', 'uid' + size)
-                                    this.userInfo = {
-                                        username: this.pseudo,
-                                        uid: user.uid
-                                    }
-                                    var myConnectionsRef = this.app.database().ref('users/' + this.uid + '/connections');
-                                    // stores the timestamp of my last disconnect (the last time I was seen online)
-                                    var lastOnlineRef = this.app.database().ref('users/' + this.uid + '/lastOnline');
-                                    var connectedRef = this.app.database().ref('.info/connected');;
-                                    connectedRef.on('value', function(snap) {
+                if (user) {
+                    if (!user.displayName) {
+                        user.displayName = this.pseudo;
+                        var size = Object.keys(this.newuser).length;
+                        this.set('uid', 'uid' + size)
+                        this.userInfo = {
+                            username: this.pseudo,
+                            uid: user.uid
+                        }
+                        var myConnectionsRef = this.app.database().ref('users/' + this.uid + '/connections');
+                        // stores the timestamp of my last disconnect (the last time I was seen online)
+                        var lastOnlineRef = this.app.database().ref('users/' + this.uid + '/lastOnline');
+                        var connectedRef = this.app.database().ref('.info/connected');;
+                        connectedRef.on('value', function(snap) {
 
-                                            if (snap.val() === true) {
-                                                // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
+                            if (snap.val() === true) {
+                                // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
 
-                                                // add this device to my connections list
-                                                // this value could contain info about the device or a timestamp tootho
-                                                var con = myConnectionsRef.push(true);
+                                // add this device to my connections list
+                                // this value could contain info about the device or a timestamp tootho
+                                var con = myConnectionsRef.push(true);
 
-                                                // when I disconnect, remove this device
-                                                con.onDisconnect().remove();
+                                // when I disconnect, remove this device
+                                con.onDisconnect().remove();
 
-                                                // when I disconnect, update the last time I was seen online
+                                // when I disconnect, update the last time I was seen online
 
-                                                //lastOnlineRef.onDisconnect().set(this.app.database().ServerValue.TIMESTAMP);
-                                            }
-                                        })
-                                    }}}.bind(this))
-                            },
-                            openDialog: function(elem) {
-                                    this.$.dialog.open()
-                                },
-                                signInAnonymously: function() {
-                                    console.log(this)
-                                    this.$.auth.auth.signInAnonymously();
-                                    this.statusChanged()
-                                },
-                                checkUser: function() {
-                                    console.log(this.$.auth.user);
+                                //lastOnlineRef.onDisconnect().set(this.app.database().ServerValue.TIMESTAMP);
+                            }
+                        })
+                    }
+                }
+            }.bind(this))
+        },
+        openDialog: function(elem) {
+            this.$.dialog.open()
+        },
+        signInAnonymously: function() {
+            console.log(this)
+            this.$.auth.auth.signInAnonymously();
+            this.statusChanged()
+        },
+        checkUser: function() {
+            console.log(this.$.auth.user);
 
 
-                                    //this.set('example',{: {login:'truc',uid:this.auth.user.uid})
-                                },
+            //this.set('example',{: {login:'truc',uid:this.auth.user.uid})
+        },
 
-                                properties: {
+        properties: {
 
-                                    page: {
-                                        type: String,
-                                        reflectToAttribute: true,
-                                        observer: '_pageChanged'
-                                    },
+            page: {
+                type: String,
+                reflectToAttribute: true,
+                observer: '_pageChanged'
+            },
 
-                                },
+        },
 
-                                observers: [
-                                    '_routePageChanged(route.page)'
-                                ],
+        observers: [
+            '_routePageChanged(route.page)'
+        ],
 
-                                _routePageChanged: function(page) {
-                                    this.page = this.route.path || 'activity';
-                                    if (this.page === "mapview") {
-                                        if (typeof this.$.map.setMarkers == 'function') {
-                                            this.$.map.setMarkers();
-                                        }
-                                    }
-                                },
+        _routePageChanged: function(page) {
+            this.page = this.route.path || 'activity';
+            if (this.page === "mapview") {
+                if (typeof this.$.map.setMarkers == 'function') {
+                    this.$.map.setMarkers();
+                }
+            }
+        },
 
-                                _pageChanged: function(page) {
-                                    // load page import on demand.
-                                    this.importHref(
-                                        this.resolveUrl('my-' + page + '.html'), null, null, true);
-                                }
+        _pageChanged: function(page) {
+            // load page import on demand.
+            this.importHref(
+                this.resolveUrl('my-' + page + '.html'), null, null, true);
+        }
 
-                        });
+    });
     </script>
 </dom-module>
