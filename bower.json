@@ -1,35 +1,13 @@
 {
-  "name": "reveries-game-player",
-  "authors": [
-    "gicquel"
-  ],
-  "dependencies": {
-    "core-a11y-keys": "Polymer/core-a11y-keys#^0.5",
-    "core-component-page": "Polymer/core-component-page#^0.5",
-    "core-icon": "Polymer/core-icon#^0.5",
-    "core-focusable": "Polymer/core-focusable#^0.5",
-    "core-input": "Polymer/core-input#^0.5",
-    "core-overlay": "Polymer/core-overlay#^0.5",
-    "core-style": "Polymer/core-style#^0.5",
-    "paper-shadow": "Polymer/paper-shadow#^0.5"
-  },
-  "devDependencies": {
-    "web-component-tester": "^4.0.0"
-  },
-  "resolutions": {
-    "webcomponentsjs": "0.7.24",
-    "polymer": "^1.3.1",
-    "paper-ripple": "^1.0.0",
-    "font-roboto": "^1.0.1",
-    "paper-button": "^1.0.13",
-    "paper-input": "^1.0.9",
-    "paper-dialog": "^1.0.0",
-    "marked-element": "^1.0.0"
-  },
+  "name": "rev-games",
   "homepage": "https://github.com/gick/rev-games",
+  "authors": [
+    "gick <gicquel.pierreyves@gmail.com>"
+  ],
   "description": "",
   "main": "",
   "license": "MIT",
+  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
@@ -37,5 +15,11 @@
     "test",
     "tests"
   ],
-  "private": true
+  "dependencies": {
+    "app-elements": "PolymerElements/app-elements#^0.10.1",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.10",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
+    "marked-element": "PolymerElements/marked-element#^1.3.1",
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0"
+  }
 }
