@@ -18,8 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         
         .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px 
-            rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             padding: 16px;
             margin: 24px;
             border-radius: 5px;
@@ -47,24 +46,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <div class="card">
             <div class="circle">3</div>
-            <akc-meta-query key="selectedItem" value={{item}}></akc-meta-query>
-            <akc-meta-query key="userLat" value={{lat}}></akc-meta-query>
-            <akc-meta-query key="userLng" value={{lng}}></akc-meta-query>
-            <map-display id="map" userLat={{lat}} userLng={{lng}} lat="{{item.POI.latitude}}" long="{{item.POI.longitude}}" poi={{item.POI}}></map-display>
+            <template is="dom-if" if="{{hasPosition(userLat)}}" restamp>
+                <map-display id="map" userLat={{lat}} userLng={{lng}} lat="{{item.POI.latitude}}" long="{{item.POI.longitude}}" poi={{item.POI}}></map-display>
+            </template>
         </div>
     </template>
     <script>
     Polymer({
         ready: function() {
-                    this.$.map.showPOI(this.item.POI)
+            // this.$.map.showPOI(this.item.POI)
 
         },
-        setMarkers:function(){
-          this.$.map.showPOI(this.item.POI)
+        hasPosition:function(){
+            if(this.userLat && this.userLng){
+                return true
+            }else{
+                return false
+            }
+        }
+        ,
+        setMarkers: function() {
+            this.$.map.showPOI(this.item.POI)
         },
         is: 'my-mapview',
-        property:{
-        
+        property: {
+            userLat: {
+                type: Number,
+                notify: true,
+            },
+            userLng: {
+                type: Number,
+                notify: true,
+
+            },
+
         }
     });
     </script>

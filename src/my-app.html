@@ -90,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
-                    <my-mapview id="map" name="mapview"></my-mapview>
+                    <my-mapview user-lat="{{lat}}" user-lng="{{long}}" id="map" name="mapview"></my-mapview>
                     <my-questions name="questions"></my-questions>
                     <my-users name="users"></my-users>
                 </iron-pages>
