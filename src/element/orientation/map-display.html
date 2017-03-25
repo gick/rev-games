@@ -10,7 +10,8 @@
         <style>
 
         </style>
-
+        <div>Latitude {{userLat}}</div>
+                <div>Longitude {{userLng}}</div>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block,height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{userLat}} longitude={{userLng}}>
             <template is="dom-repeat" items={{markers}} as="marker">

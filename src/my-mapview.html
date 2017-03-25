@@ -45,9 +45,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <div class="card">
-            <div class="circle">3</div>
+            <div class="circle"></div>
             <template is="dom-if" if="{{hasPosition(userLat)}}" restamp>
-                <map-display id="map" userLat={{lat}} userLng={{lng}} lat="{{item.POI.latitude}}" long="{{item.POI.longitude}}" poi={{item.POI}}></map-display>
+                <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{item.POI.latitude}}" long="{{item.POI.longitude}}" poi={{item.POI}}></map-display>
             </template>
         </div>
     </template>
