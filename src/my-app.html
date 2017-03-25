@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/geo-location/geo-location.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
@@ -64,6 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
+        <geo-location watch-pos latitude="{{lat}}" longitude="{{long}}"></geo-location>
         <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-drawer-layout fullbleed>
@@ -73,7 +75,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="activity" href="/#activity">Activity</a>
                     <a name="instructions" href="/#instructions">Activity start page</a>
-                    <a name="instructions2" href="/#instructions">MLG start page</a>
                     <a name="mapview" href="/#mapview">Map view</a>
                     <a name="questions" href="/#questions">Questions</a>
                 </iron-selector>
@@ -88,8 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-activity id="activityPicker" name="activity"></my-activity>
-                    <my-instructions mkdown="{{mkdown}}" id="mlgInstruction" name="instructions"></my-instructions>
-                    <my-instructions mkdown="{{}}" name="instructions2"></my-instructions>
+                    <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-mapview id="map" name="mapview"></my-mapview>
                     <my-questions name="questions"></my-questions>
                     <my-users name="users"></my-users>
@@ -107,8 +107,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
         setupStartPage: function(elem) {
-            if (elem && elem.detail && elem.detail[0]) {
-                this.mkdown = elem.detail[0].mkdown;
+            console.log(elem)
+            if (elem && elem.detail && elem.detail.mkdown) {
+                this.mkdown = elem.detail.mkdown;
+                console.log(this.mkdown)
             }
         },
         setupActivity: function(elem) {

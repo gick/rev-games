@@ -32,8 +32,10 @@ Simple compass that rotate according to the angle parameter
                 this.$.startPageLoader.addEventListener('response', this.startPageLoaded.bind(this));
 
             },
-            startPageLoaded: function() {
-                this.fire('startPageLoaded', this.mlgStartPage)
+            startPageLoaded: function(response) {
+                console.log(response)
+                console.log(this.mlgStartPage)
+                this.fire('startPageLoaded', this.mlgStartPage[0])
             },
             processMLG: function(mlgItem) {
                 this.mlgItem=mlgItem;
@@ -45,11 +47,6 @@ Simple compass that rotate according to the angle parameter
             },
 
             properties: {
-                mlgStartPage: {
-                    type: Object,
-                    notify: true,
-                    reflectToAttribute: true
-                },
 
             }
         });
