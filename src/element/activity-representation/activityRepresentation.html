@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./ugRepresentation.html">
 <dom-module id="activity-representation">
     <!--
 Simple compass that rotate according to the angle parameter
@@ -20,7 +21,10 @@ Simple compass that rotate according to the angle parameter
         <style>
 
         </style>
+        <ug-representation id="currentUg"></ug-representation>
         <iron-ajax url="/staticmedia/{{startPageId}}" handle-as="json" last-response="{{mlgStartPage}}" id="startPageLoader"></iron-ajax>
+        <iron-ajax url="/unitGame/{{ugId}}" handle-as="json" last-response="{{mlgCurrentUg}}" id="mlgCurrentUg"></iron-ajax>
+
     </template>
     <script>
     (function() {
@@ -30,20 +34,26 @@ Simple compass that rotate according to the angle parameter
             is: 'activity-representation',
             ready: function() {
                 this.$.startPageLoader.addEventListener('response', this.startPageLoaded.bind(this));
-
+                this.$.mlgCurrentUg.addEventListener('response', this.ugLoaded.bind(this));
+            },
+            ugLoaded:function(response){
+                this.$.currentUg.processUg(this.mlgCurrentUg[0])
             },
             startPageLoaded: function(response) {
-                console.log(response)
-                console.log(this.mlgStartPage)
                 this.fire('startPageLoaded', this.mlgStartPage[0])
             },
             processMLG: function(mlgItem) {
                 this.mlgItem=mlgItem;
-                console.log(this.mlgItem)
                 if (this.mlgItem && this.mlgItem.staticMedia) {
                     this.startPageId=this.mlgItem.staticMedia
                     this.$.startPageLoader.generateRequest()
                 }
+                if(this.mlgItem.unitGames && this.mlgItem.unitGames[0])
+                {
+                    this.ugId= this.mlgItem.unitGames[0];
+                    this.$.mlgCurrentUg.generateRequest();
+                }
+
             },
 
             properties: {

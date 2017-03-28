@@ -65,7 +65,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
-        <geo-location id="geoloc" high-accuracy watch-pos latitude="{{lat}}" longitude="{{long}}"></geo-location>
         <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-drawer-layout fullbleed>
@@ -91,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
-                    <my-mapview user-lat="{{lat}}" user-lng="{{long}}" id="map" name="mapview"></my-mapview>
+                    <my-mapview  poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-questions name="questions"></my-questions>
                     <my-users name="users"></my-users>
                     <my-coordinates name="coordinates" latitude="{{latitude}}" longitude="{{longitude}}"></my-coordinates>
@@ -106,19 +105,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ready: function() {
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
-            this.$.geoloc.addEventListener('geo-response',this.handleGeoResponse.bind(this))
+            this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
+
         },
-        handleGeoResponse:function(item){
-            console.log(item)
-            this.latitude=item.detail.latitude
-            this.longitude=item.detail.longitude
-        }
-        ,
+        setupPOI:function(item){
+            if(item && item.detail && item.detail.map){
+                this.poi=item.detail;
+            }
+        },
         setupStartPage: function(elem) {
-            console.log(elem)
             if (elem && elem.detail && elem.detail.mkdown) {
                 this.mkdown = elem.detail.mkdown;
-                console.log(this.mkdown)
             }
         },
         setupActivity: function(elem) {

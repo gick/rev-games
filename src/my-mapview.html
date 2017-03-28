@@ -8,6 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/geo-location/geo-location.html">
 <link rel="import" href="./element/orientation/map-display.html">
 <dom-module id="my-mapview">
     <template>
@@ -44,41 +45,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #212121;
         }
         </style>
+        <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
             <div class="circle"></div>
-            <template is="dom-if" if="{{hasPosition(userLat)}}" restamp>
-                <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{item.POI.latitude}}" long="{{item.POI.longitude}}" poi={{item.POI}}></map-display>
-            </template>
+            <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
         </div>
     </template>
     <script>
     Polymer({
         ready: function() {
-            // this.$.map.showPOI(this.item.POI)
+            this.$.loc.addEventListener('geo-response', this.updateCoord.bind(this));
 
         },
-        hasPosition:function(){
-            if(this.userLat && this.userLng){
-                return true
-            }else{
-                return false
-            }
-        }
-        ,
-        setMarkers: function() {
-            this.$.map.showPOI(this.item.POI)
+        updateCoord: function(e) {
+            console.log(e)
+            var coord={lat : e.detail.latitude,lng:e.detail.longitude}
+            this.$.map.updateUser(coord)
         },
         is: 'my-mapview',
         property: {
-            userLat: {
-                type: Number,
+            poi: {
+                type: Object,
                 notify: true,
-            },
-            userLng: {
-                type: Number,
-                notify: true,
-
-            },
+            }
 
         }
     });

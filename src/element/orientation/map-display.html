@@ -4,23 +4,17 @@
 <link rel="import" href="../../../bower_components/google-map/google-map-point.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-poly.html">
-
 <dom-module id="map-display">
     <template>
         <style>
 
         </style>
-        <div>Latitude {{userLat}}</div>
-                <div>Longitude {{userLng}}</div>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
-        <google-map style="position:absolute;display:block,height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{userLat}} longitude={{userLng}}>
+        <google-map style="position:absolute;display:block,height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker click-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
-            <template is="dom-if" if={{userCoord}}>
-                <google-map-marker latitude="{{userCoord.lat}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            </template>
-
+            <google-map-marker latitude="{{userCoord.lat}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
         </google-map>
     </template>
     <script>
@@ -33,13 +27,14 @@
                 this.markers = [];
                 this.circles = [];
 
-              //  this.$.gmap.addEventListener('google-map-ready', function(){this.fire('mapready')}.bind(this));
-               // this.userCoord=null;
+                this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
+                this.userCoord = null;
             },
-            mapready:function(){
-                this.showPOI(this.poi)
+            mapready: function() {
+                if (this.poi)
+                    this.showPOI(this.poi)
             },
-            CenterControl: function(controlDiv, map,self) {
+            CenterControl: function(controlDiv, map, self) {
 
                 // Set CSS for the control border.
                 var controlUI = document.createElement('div');
@@ -65,19 +60,20 @@
                 controlUI.appendChild(controlText);
 
                 // Setup the click event listeners: simply set the map to Chicago.
-                controlUI.addEventListener('click', function() {
-                })
+                controlUI.addEventListener('click', function() {})
             },
 
-            updateUser:function(coord){
-                this.set('userCoord',coord);
+            updateUser: function(coord) {
+                this.set('userCoord', coord);
+                this.set('hasCoord', true)
+                console.log(coord)
             },
             setControl: function() {
                 var map = this.get('mapsAPI');
                 this.showPOI(this.poi)
-                var self=this
+                var self = this
                 var centerControlDiv = document.createElement('div');
-                var centerControl = new this.CenterControl(centerControlDiv, map,self);
+                var centerControl = new this.CenterControl(centerControlDiv, map, self);
                 centerControlDiv.index = 1;
                 map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
@@ -95,9 +91,10 @@
                 this.removeMarker(item);
             },
             removeMarker: function(item) {
-                if(this.markers.length>0){
-                this.splice('markers', 0, 1);
-                this.removeArea(this.circles[0]);}
+                if (this.markers.length > 0) {
+                    this.splice('markers', 0, 1);
+                    this.removeArea(this.circles[0]);
+                }
             },
             findIndex: function(item) {
                 for (var i = 0; i < this.markers.length; i++) {
@@ -164,8 +161,17 @@
                     }
                 }
             },
-            
+
             properties: {
+                hasCoord: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                },
+                userCoord: {
+                    type: Object,
+                    notify: true,
+                },
                 lat: {
                     type: Number,
                     value: 0,
@@ -180,12 +186,14 @@
                     type: Object,
                     notify: true
                 },
-                userLat:{
-                    type:Number,
-                    notify:true,
+                userLat: {
+                    type: Number,
+                    notify: true,
                 },
-                userLng:{type:Number,
-                    notify:true}
+                userLng: {
+                    type: Number,
+                    notify: true
+                }
 
             }
         })
