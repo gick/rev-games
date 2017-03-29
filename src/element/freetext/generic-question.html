@@ -1,0 +1,60 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="./free-text-question.html">
+<link rel="import" href="./mcq-question.html">
+<dom-module id="generic-question">
+    <template>
+        <style>
+
+        </style>
+        <template is="dom-if" if="{{isMcq}}" restamp>
+            <mcq-question question={{question.question}} correct-answer={{question.response}} wrong-answer2={{question.distractor2}} wrong-answer1={{question.distractor1}} correct-answer-message={{question.correctMessage}} wrong-answer-message={{question.wrongMessage}} media-id={{question.mediaId}}></mcq-question>
+        </template>
+        <template is="dom-if" if="{{isfreeText}}" restamp>
+            <free-text-question image-style="height:300px;align-self:center;" question="{{item.activities.0.question}}" image-id={{item.activities.0.imageId}} wrong-answer="{{item.activities.0.wrongMessage}}" conception-mode item-id="{{item.activities.0._id}}" correct-answer="{{item.activities.0.correctMessage}}" response="{{item.activities.0.response}}" response-label="Entrez la réponse"></free-text-question>
+        </template>
+    </template>
+    <script>
+    Polymer({
+
+        is: 'generic-question',
+        _questionObserver: function(newVal) {
+            console.log(newVal)
+            if (newVal.distractor1) {
+                this.set('isMcq', true)
+                this.set('isfreeText', false)
+            } else {
+                this.set('isMcq', false)
+                this.set('isfreeText', true)
+
+            }
+        },
+        _isHidden: function(arg) {
+            if (!arg) {
+                this.isMcq=false
+                this.isfreeText=false
+            }
+        },
+        properties: {
+            hidden: {
+                type: Boolean,
+                notify: true,
+                observer: '_isHidden',
+            },
+            question: {
+                type: Object,
+                notify: true,
+                observer: '_questionObserver'
+            },
+        },
+
+    });
+    </script>
+</dom-module>

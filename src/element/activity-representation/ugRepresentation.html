@@ -21,8 +21,9 @@ Simple compass that rotate according to the angle parameter
 
         </style>
         <iron-ajax url="/poi/{{poiId}}" handle-as="json" last-response="{{poi}}" id="poiRep"></iron-ajax>
-        <iron-ajax url="/freetext/{{freetextId}}" handle-as="json" last-response="{{freetext}}" id="freetextRep"></iron-ajax>
-
+        <iron-ajax id="question1Loader" url="/question/{{question1Id}}" last-response="{{question1}}" handle-as="json"></iron-ajax>
+        <iron-ajax id="question2Loader" url="/question/{{question2Id}}" last-response="{{question2}}" handle-as="json"></iron-ajax>
+        <iron-ajax id="question3Loader" url="/question/{{question3Id}}" last-response="{{question3}}" handle-as="json"></iron-ajax>
     </template>
     <script>
     (function() {
@@ -32,22 +33,58 @@ Simple compass that rotate according to the angle parameter
             is: 'ug-representation',
             ready: function() {
                 this.$.poiRep.addEventListener('response', this.poiLoaded.bind(this));
+                this.$.question1Loader.addEventListener('response', this.question1Loaded.bind(this));
+                this.$.question2Loader.addEventListener('response', this.question2Loaded.bind(this));
+                this.$.question3Loader.addEventListener('response', this.question3Loaded.bind(this));
+
             },
             poiLoaded: function(response) {
                 this.fire('poiLoaded', this.poi[0])
+
             },
+            question1Loaded: function(response) {
+                this.fire('question1Loaded', this.question1[0])
+            },
+            question2Loaded: function(response) {
+                this.fire('question2Loaded', this.question2)
+            },
+            question3Loaded: function(response) {
+                this.fire('question3Loaded', this.question3)
+            },
+
             processUg: function(ugItem) {
-                console.log(ugItem)
-                this.ugItem=ugItem;
-                if (this.ugItem && this.ugItem.POIId) {
-                    this.poiId=this.ugItem.POIId
+                if (ugItem && ugItem.POIId) {
+                    this.poiId = ugItem.POIId
                     this.$.poiRep.generateRequest()
                 }
+
+                var questions = ugItem.activities
+
+                switch (questions.length) {
+                    case 0:
+                        break;
+                    case 1:
+                        this.question1Id = questions[0];
+                        this.$.question1Loader.generateRequest();
+                        break;
+                    case 2:
+                        this.question1Id = questions[0];
+                        this.$.question1Loader.generateRequest();
+                        this.question2Id = questions[1];
+                        this.$.question2Loader.generateRequest();
+                        break;
+                    case 3:
+                        this.question1Id = questions[0];
+                        this.$.question1Loader.generateRequest();
+                        this.question2Id = questions[1];
+                        this.$.question2Loader.generateRequest();
+                        this.question3Id = questions[2];
+                        this.$.question3Loader.generateRequest();
+                }
+
             },
 
-            properties: {
-
-            }
+            properties: {}
         });
     })();
     </script>

@@ -7,65 +7,94 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="./element/freetext/free-text-question.html">
-
+<link rel="import" href="./element/freetext/generic-question.html">
 <dom-module id="my-questions">
-
-  <template>
-
-    <style>
-      :host {
-        display: block;
-        padding: 10px;
-      }
-      .card {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        padding: 16px;
-        margin: 24px;
-        border-radius: 5px;
-        background-color: #fff;
-        color: #757575;
-      }
-      .circle {
-        display: inline-block;
-        height: 64px;
-        width: 64px;
-        border-radius: 50%;
-        background: #ddd;
-        line-height: 64px;
-        font-size: 30px;
-        color: #555;
-        text-align: center;
-      }
-      h1 {
-        font-size: 22px;
-        margin: 16px 0;
-        color: #212121;
-      }
-    </style>
-
-    <div class="card">
-      <div class="circle">4</div>
-      <h1>Questions</h1>
-      <akc-meta-query key="selectedItem" value={{item}}></akc-meta-query>
-      <free-text-question image-style="height:300px;align-self:center;"  question="{{item.activities.0.question}}" image-id={{item.activities.0.imageId}} wrong-answer="{{item.activities.0.wrongMessage}}" conception-mode item-id="{{item.activities.0._id}}" correct-answer="{{item.activities.0.correctMessage}}" response="{{item.activities.0.response}}" response-label="Entrez la réponse"></free-text-question>
-      <akc-meta key="userLat" value={{lat}}></akc-meta>
-      <akc-meta key="userLat" value={{lng}}></akc-meta>
-
-    </div>
-
-  </template>
-
-  <script>
-
+    <template>
+        <style>
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            margin: 24px;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #757575;
+        }
+        
+        .circle {
+            display: inline-block;
+            height: 64px;
+            width: 64px;
+            border-radius: 50%;
+            background: #ddd;
+            line-height: 64px;
+            font-size: 30px;
+            color: #555;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 22px;
+            margin: 16px 0;
+            color: #212121;
+        }
+        </style>
+        <div class="card">
+            <div class="circle">4</div>
+            <h1>Questions</h1>
+            <generic-question hidden={{isQuestion1}} id="question1" question="{{question1}}"></generic-question>
+            <generic-question hidden={{isQuestion2}} id="question2" question="{{question2}}"></generic-question>
+            <generic-question hidden={{isQuestion3}} id="question3" question="{{question3}}"></generic-question>
+        </div>
+    </template>
+    <script>
     Polymer({
 
-      is: 'my-questions',
+        is: 'my-questions',
+        ready: function() {
+            this.$.question1.addEventListener('nextQuestion', this.setQuestion2.bind(this))
+            this.$.question2.addEventListener('nextQuestion', this.setQuestion3.bind(this))
+            this.$.question3.addEventListener('nextQuestion', this.nextActivity.bind(this))
+
+        },
+        setQuestion2: function() {
+          console.log('next question called from question1')
+            if (true) {
+                this.isQuestion1 = false
+                this.isQuestion2 = true
+                this.isQuestion3 = false
+            } else {
+                this.nextActivity()
+            }
+        },
+        setQuestion3: function() {
+            if (this.question3) {
+                this.isQuestion1 = false
+                this.isQuestion2 = false
+                this.isQuestion3 = true
+            } else {
+                this.nextActivity()
+            }
+        },
+        nextActivity: function() {
+            this.fire('setFeedbackMedia')
+        },
+        _question1Observer: function(newVal) {
+            console.log(newVal)
+        },
+        properties: {
+            question1: {
+                type: Object,
+                notify: true,
+                observer: '_question1Observer'
+            },
+        },
 
     });
-
-  </script>
-
+    </script>
 </dom-module>

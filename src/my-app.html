@@ -65,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
-        <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
+        <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
@@ -91,8 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-mapview  poi="{{poi}}" id="map" name="mapview"></my-mapview>
-                    <my-questions name="questions"></my-questions>
-                    <my-users name="users"></my-users>
+                    <my-questions id="myQuestions" question1="{{question1}}" name="questions"></my-questions>
                     <my-coordinates name="coordinates" latitude="{{latitude}}" longitude="{{longitude}}"></my-coordinates>
                 </iron-pages>
             </app-header-layout>
@@ -106,13 +105,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
+            this.$.currentMLG.addEventListener('question1Loaded', this.setupQuestion1.bind(this))
+            this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
+            this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
+            this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
 
+        },
+        nextQuestion:function(){
+            console.log('next question called from my app')
         },
         setupPOI:function(item){
             if(item && item.detail && item.detail.map){
                 this.poi=item.detail;
             }
         },
+        setupQuestion1:function(item){
+            this.question1=item.detail
+        },
+        setupQuestion2:function(item){
+            console.log(this.questions)
+
+        },
+        setupQuestion3  :function(item){
+            console.log(this.questions)
+
+        },
+
         setupStartPage: function(elem) {
             if (elem && elem.detail && elem.detail.mkdown) {
                 this.mkdown = elem.detail.mkdown;
