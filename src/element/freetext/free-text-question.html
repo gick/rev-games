@@ -88,7 +88,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
         <iron-ajax id="ajaxLoader" url="/staticmedia/{{mediaId}}" handle-as="json" last-response="{{staticElement}}"></iron-ajax>
         <div style="display:inline-flex">
-            mkdown
             <form class="inner">
                 {{question}}
                 <paper-input name="response" class="element" value="{{userResponse}}" error-message="{{incorrectMessage}}" label="{{responseLabel}}" required></paper-input>

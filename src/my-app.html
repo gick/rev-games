@@ -75,8 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <a name="activity" href="/#activity">Activity</a>
                     <a name="instructions" href="/#instructions">Activity start page</a>
                     <a name="mapview" href="/#mapview">Map view</a>
+                    <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
                     <a name="questions" href="/#questions">Questions</a>
-                    <a name="coordinates" href="/#coordinates">My coordinates</a>
+                    <a name="feedback" href="/#instructions">My feedback</a>
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
@@ -91,8 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-mapview  poi="{{poi}}" id="map" name="mapview"></my-mapview>
+                    <my-qrcodescanner poi="{{poi}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question1="{{question1}}" name="questions"></my-questions>
-                    <my-coordinates name="coordinates" latitude="{{latitude}}" longitude="{{longitude}}"></my-coordinates>
+                    <my-instructions is-end mkdown="{{feedback}}" name="feedback"></my-instructions>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
