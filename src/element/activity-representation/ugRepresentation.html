@@ -21,6 +21,7 @@ Simple compass that rotate according to the angle parameter
 
         </style>
         <iron-ajax url="/poi/{{poiId}}" handle-as="json" last-response="{{poi}}" id="poiRep"></iron-ajax>
+        <iron-ajax url="/staticmedia/{{clueId}}" handle-as="json" last-response="{{clue}}" id="clueRep"></iron-ajax>
         <iron-ajax id="question1Loader" url="/question/{{question1Id}}" last-response="{{question1}}" handle-as="json"></iron-ajax>
         <iron-ajax id="question2Loader" url="/question/{{question2Id}}" last-response="{{question2}}" handle-as="json"></iron-ajax>
         <iron-ajax id="question3Loader" url="/question/{{question3Id}}" last-response="{{question3}}" handle-as="json"></iron-ajax>
@@ -32,15 +33,19 @@ Simple compass that rotate according to the angle parameter
         Polymer({
             is: 'ug-representation',
             ready: function() {
-                this.$.poiRep.addEventListener('response', this.poiLoaded.bind(this));
-                this.$.question1Loader.addEventListener('response', this.question1Loaded.bind(this));
-                this.$.question2Loader.addEventListener('response', this.question2Loaded.bind(this));
-                this.$.question3Loader.addEventListener('response', this.question3Loaded.bind(this));
+                this.$.poiRep.addEventListener('response', this.poiLoaded.bind(this))
+                this.$.clueRep.addEventListener('response', this.cluePOILoaded.bind(this))
+                this.$.question1Loader.addEventListener('response', this.question1Loaded.bind(this))
+                this.$.question2Loader.addEventListener('response', this.question2Loaded.bind(this))
+                this.$.question3Loader.addEventListener('response', this.question3Loaded.bind(this))
 
             },
             poiLoaded: function(response) {
                 this.fire('poiLoaded', this.poi[0])
-
+            },
+            cluePOILoaded: function(response) {
+                console.log('cluePOIId')
+                this.fire('cluePOILoaded', this.clue[0])
             },
             question1Loaded: function(response) {
                 this.fire('question1Loaded', this.question1[0])
@@ -53,9 +58,16 @@ Simple compass that rotate according to the angle parameter
             },
 
             processUg: function(ugItem) {
+                console.log(ugItem)
                 if (ugItem && ugItem.POIId) {
                     this.poiId = ugItem.POIId
                     this.$.poiRep.generateRequest()
+                }
+                if (ugItem.cluePOIId) {
+                    console.log('clue poi loading')
+                    this.clueId = ugItem.cluePOIId
+                    this.$.clueRep.generateRequest()
+
                 }
 
                 var questions = ugItem.activities

@@ -48,9 +48,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="card">
             <div class="circle">5</div>
             <h1>QR codes</h1>
-            <file-upload  raised name="qrscan" id="qrscan" method="POST"  accept="image/*;capture=camera" target="/qrscan">Upload qr code
-            </file-upload>
-            <div>qr-code value : {{qrValue}}</div>
+            <iron-collapse opened="{{!isDisabled}}">
+                <file-upload hide-fileList progress-hidden raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Upload qr code
+                </file-upload>
+            </iron-collapse>
+            <iron-collapse id="qrInvalid">
+                <div>{{poiincorrectMessage}}</div>
+                <paper-button on-click="retry">Retry</paper-button>
+            </iron-collapse>
+            <iron-collapse id="qrValid">
+                <div>{{poireachedMessage}}</div>
+                <paper-button on-click="next">Next</paper-button>
+            </iron-collapse>
         </div>
     </template>
     <script>
@@ -58,19 +67,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         is: 'my-qrcodescanner',
-        ready:function(){
-            this.$.qrscan.addEventListener('success',this.qrscanListener.bind(this))
+        ready: function() {
+            this.$.qrscan.addEventListener('success', this.qrscanListener.bind(this))
+            this.isDisabled = false
             console.log(this.poi)
         },
-        qrscanListener:function(item){
-          if(item){
-            this.set('qrValue',item.detail.xhr.response);
-          }
-        }
-        ,
+        qrscanListener: function(item) {
+            if (item && item.detail && item.detail.xhr && item.detail.xhr.response) {
+                var code = item.detail.xhr.response
+                var pass = code == '[' + this.poi._id + ']'
+                if (!pass) {
+                    this.$.qrInvalid.show()
+                    this.isDisabled = true
+                } else {
+                    this.$.qrValid.show()
+                    this.isDisabled = true
+                }
+            }
+        },
+        retry: function() {
+            this.$.qrInvalid.hide()
+            this.$.qrValid.hide()
+            this.isDisabled = false
+        },
+        _poiObserver: function(item) {
+            console.log(item)
+        },
         property: {
             poi: {
                 type: Object,
+                notify: true,
+                obersver: '_poiObserver',
+            },
+            poiincorrectMessage: {
+                type: String,
+                notify: true,
+            },
+            poireachedMessage: {
+                type: String,
                 notify: true,
             }
 

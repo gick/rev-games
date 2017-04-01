@@ -39,7 +39,7 @@ Simple compass that rotate according to the angle parameter
             ugLoaded:function(response){
 
                 this.$.currentUg.processUg(this.mlgCurrentUg[0])
-                this.fire('mlgLoaded',this.mlgCurrentUg[0])
+                this.fire('unitgameLoaded',this.mlgCurrentUg[0])
             },
             startPageLoaded: function(response) {
                 this.fire('startPageLoaded', this.mlgStartPage[0])

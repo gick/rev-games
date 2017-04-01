@@ -79,6 +79,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{poiMap}}">
                         <a name="mapview" href="/#mapview">Map view</a>
                     </template>
+                    <template is="dom-if" if="{{poiClue}}">
+                        <a name="cluepoiinstruction" href="/#cluepoiinstruction">Clue guidance</a>
+                    </template>
                     <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
                     <a name="questions" href="/#questions">Questions</a>
                     <a name="feedback" href="/#instructions">My feedback</a>
@@ -95,8 +98,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
+                    <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
-                    <my-qrcodescanner poi="{{poi}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                    <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
                     <my-instructions is-end mkdown="{{feedback}}" name="feedback"></my-instructions>
                 </iron-pages>
@@ -115,6 +119,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question1Loaded', this.setupQuestion1.bind(this))
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
+            this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
+
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
 
         },
@@ -133,14 +139,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.question2 = item.detail
 
         },
-        setupUnitgame:function(item){
-
+        setupUnitgame: function(item) {
+            var unitGame = item.detail
+            if(unitGame.poiIncorrectMessage){
+                console.log(unitGame.poiIncorrectMessage)
+                this.poiIncorrectMessage=unitGame.poiIncorrectMessage;
+            }
+            if(unitGame.poiReachedMessage){
+                console.log(unitGame.poiReachedMessage)
+                this.poireachedMessage=unitGame.poiReachedMessage
+            }
         },
         setupQuestion3: function(item) {
             this.question3 = item.detail
 
         },
-
+        setupCluePOI:function(item){
+            if (item && item.detail && item.detail.mkdown) {
+                this.poiClue=true
+               // this.startPage=true
+               // this.mkdown=item.detail.mkdown
+                console.log(item.detail.mkdown)
+                this.clueMkdown = item.detail.mkdown;
+            }
+        },
         setupStartPage: function(elem) {
             this.startPage = true;
             if (elem && elem.detail && elem.detail.mkdown) {
