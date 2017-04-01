@@ -82,9 +82,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{poiClue}}">
                         <a name="cluepoiinstruction" href="/#cluepoiinstruction">Clue guidance</a>
                     </template>
-                    <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
-                    <a name="questions" href="/#questions">Questions</a>
-                    <a name="feedback" href="/#instructions">My feedback</a>
+                    <template is="dom-if" if="{{poiQR}}">
+                        <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
+                    </template>
+                    <template is="dom-if" if="{{questions}}">
+                        <a name="questions" href="/#questions">Questions</a>
+                    </template>
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
@@ -102,7 +105,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
-                    <my-instructions is-end mkdown="{{feedback}}" name="feedback"></my-instructions>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -141,25 +143,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setupUnitgame: function(item) {
             var unitGame = item.detail
-            if(unitGame.poiIncorrectMessage){
-                console.log(unitGame.poiIncorrectMessage)
-                this.poiIncorrectMessage=unitGame.poiIncorrectMessage;
+            if(unitGame.poiGuidClue){
+                this.poiClue=true
+            } else{
+                this.poiClue=false
             }
-            if(unitGame.poiReachedMessage){
-                console.log(unitGame.poiReachedMessage)
-                this.poireachedMessage=unitGame.poiReachedMessage
+            if(unitGame.poiGuidMap){
+                this.poiMap=true
+            } else {
+                this.poiMap=false
+            }
+            if(unitGame.poiQRValidation){
+                this.poiQR=true
+            }else{
+                this.poiQR=false
+            }
+            if(unitGame.activities && unitGame.activities[0]){
+                this.questions=true
+            } else{
+                this.questions=false
+            }
+            if (unitGame.poiIncorrectMessage) {
+                this.poiIncorrectMessage = unitGame.poiIncorrectMessage;
+            }
+            if (unitGame.poiReachedMessage) {
+                this.poireachedMessage = unitGame.poiReachedMessage
             }
         },
         setupQuestion3: function(item) {
             this.question3 = item.detail
 
         },
-        setupCluePOI:function(item){
+        setupCluePOI: function(item) {
             if (item && item.detail && item.detail.mkdown) {
-                this.poiClue=true
-               // this.startPage=true
-               // this.mkdown=item.detail.mkdown
-                console.log(item.detail.mkdown)
                 this.clueMkdown = item.detail.mkdown;
             }
         },
