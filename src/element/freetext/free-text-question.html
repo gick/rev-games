@@ -112,6 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-collapse>
                 <div style="" class="insideflex">
                     <paper-button raised on-click="validate">Validate</paper-button>
+                    <paper-button raised on-click="nextQuestion">Next</paper-button>
                     <template is="dom-if" if="{{mediaId}}" restamp=true>
                         <paper-button raised on-click="showClue">Show clue</paper-button>
                     </template>
@@ -126,6 +127,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'free-text-question',
             ready: function() {
                 this.showMediaButton = false;
+            },
+            nextQuestion:function(){
+                this.fire('nextQuestion',null)
             },
 
             _mediaIdObserver: function(newval) {

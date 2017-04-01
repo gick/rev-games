@@ -73,8 +73,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="activity" href="/#activity">Activity</a>
-                    <a name="instructions" href="/#instructions">Activity start page</a>
-                    <a name="mapview" href="/#mapview">Map view</a>
+                    <template is="dom-if" if="{{startPage}}">
+                        <a name="instructions" href="/#instructions">Activity start page</a>
+                    </template>
+                    <template is="dom-if" if="{{poiMap}}">
+                        <a name="mapview" href="/#mapview">Map view</a>
+                    </template>
                     <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
                     <a name="questions" href="/#questions">Questions</a>
                     <a name="feedback" href="/#instructions">My feedback</a>
@@ -91,9 +95,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
-                    <my-mapview  poi="{{poi}}" id="map" name="mapview"></my-mapview>
+                    <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
-                    <my-questions id="myQuestions" question1="{{question1}}" name="questions"></my-questions>
+                    <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
                     <my-instructions is-end mkdown="{{feedback}}" name="feedback"></my-instructions>
                 </iron-pages>
             </app-header-layout>
@@ -107,33 +111,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
+            this.$.currentMLG.addEventListener('unitgameLoaded', this.setupUnitgame.bind(this))
             this.$.currentMLG.addEventListener('question1Loaded', this.setupQuestion1.bind(this))
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
 
         },
-        nextQuestion:function(){
+        nextQuestion: function() {
             console.log('next question called from my app')
         },
-        setupPOI:function(item){
-            if(item && item.detail && item.detail.map){
-                this.poi=item.detail;
+        setupPOI: function(item) {
+            if (item && item.detail && item.detail.map) {
+                this.poi = item.detail;
             }
         },
-        setupQuestion1:function(item){
-            this.question1=item.detail
+        setupQuestion1: function(item) {
+            this.question1 = item.detail
         },
-        setupQuestion2:function(item){
-            console.log(this.questions)
+        setupQuestion2: function(item) {
+            this.question2 = item.detail
 
         },
-        setupQuestion3  :function(item){
-            console.log(this.questions)
+        setupQuestion3: function(item) {
+            this.question3 = item.detail
 
         },
 
         setupStartPage: function(elem) {
+            this.startPage = true;
             if (elem && elem.detail && elem.detail.mkdown) {
                 this.mkdown = elem.detail.mkdown;
             }

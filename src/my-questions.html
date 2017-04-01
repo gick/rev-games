@@ -8,6 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="./element/freetext/generic-question.html">
 <dom-module id="my-questions">
     <template>
@@ -47,9 +48,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="card">
             <div class="circle">4</div>
             <h1>Questions</h1>
-            <generic-question hidden={{isQuestion1}} id="question1" question="{{question1}}"></generic-question>
-            <generic-question hidden={{isQuestion2}} id="question2" question="{{question2}}"></generic-question>
-            <generic-question hidden={{isQuestion3}} id="question3" question="{{question3}}"></generic-question>
+            <iron-collapse id="quest1" opened="{{open1}}">
+                <generic-question id="question1" question="{{question1}}"></generic-question>
+            </iron-collapse>
+            <iron-collapse id="quest2" opened="{{open2}}">
+                <generic-question id="question2" question="{{question2}}"></generic-question>
+            </iron-collapse>
+            <iron-collapse id="quest3" opened="{{open3}}">
+                <generic-question id="question3" question="{{question3}}"></generic-question>
+            </iron-collapse>
         </div>
     </template>
     <script>
@@ -60,14 +67,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.question1.addEventListener('nextQuestion', this.setQuestion2.bind(this))
             this.$.question2.addEventListener('nextQuestion', this.setQuestion3.bind(this))
             this.$.question3.addEventListener('nextQuestion', this.nextActivity.bind(this))
+            this.open1=true
 
         },
         setQuestion2: function() {
-          console.log('next question called from question1')
-            if (true) {
-                this.isQuestion1 = false
-                this.isQuestion2 = true
-                this.isQuestion3 = false
+            if (this.question2) {
+                this.$.quest1.toggle()
+                this.$.quest2.toggle() 
+                
             } else {
                 this.nextActivity()
             }
@@ -93,6 +100,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 notify: true,
                 observer: '_question1Observer'
             },
+            question2: {
+                type: Object,
+                notify: true,
+                observer: '_question1Observer'
+            },
+            question3: {
+                type: Object,
+                notify: true,
+                observer: '_question1Observer'
+            },
+
+
         },
 
     });
