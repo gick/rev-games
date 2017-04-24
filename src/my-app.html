@@ -99,6 +99,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+                    <my-login id="loginForm" name="login"></my-login>
+
                     <my-activity id="activityPicker" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
@@ -122,9 +124,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
-
+            this.$$('#loginForm').addEventListener('authChanged',this.authChanged.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
 
+        },
+        authChanged:function(status){
+            this.$$('#loginForm').setStatus(status)
         },
         nextQuestion: function() {
             console.log('next question called from my app')
@@ -208,7 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ],
 
         _routePageChanged: function(page) {
-            this.page = this.route.path || 'activity';
+            this.page = this.route.path || 'login';
             if (this.page === "mapview") {
                 if (typeof this.$.map.setMarkers == 'function') {
                     this.$.map.setMarkers();

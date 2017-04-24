@@ -12,9 +12,9 @@
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block,height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
-                <google-map-marker click-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
+                <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
-            <google-map-marker latitude="{{userCoord.lat}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
+            <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
         </google-map>
     </template>
     <script>
@@ -68,6 +68,16 @@
                 this.set('hasCoord', true)
                 console.log(coord)
             },
+            userAtPOI:function(){
+                if(this.circles){
+                    if(this.circles.length==1){
+                        var testCircle=this.circles[0]
+                        var userAtPOI=google.maps.geometry.poly.containsLocation(this.$.userMarker.position,testCircle);
+                        console.log(userAtPOI)
+                    }
+                }
+            }
+            ,
             setControl: function() {
                 var map = this.get('mapsAPI');
                 this.showPOI(this.poi)

@@ -1,0 +1,78 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="./badgeElement.html">
+<dom-module id="user-profile">
+    <template>
+        <style type="text/css">
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            margin: 24px;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #757575;
+        }
+        
+        .image {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+        }
+        </style>
+        <div class="card">
+            <h1 class="insidePaper">User profile</h1>
+            <div style="display:flex;flex-direction: row;">
+                <img class="image" alt="User avatar." src="../images/no_avatar.png">
+                <div role="listbox">
+                    <paper-icon-item>
+                        <iron-icon icon="social:person" item-icon></iron-icon>
+                        {{name}}
+                    </paper-icon-item>
+                    <paper-icon-item>
+                        <iron-icon icon="icons:mail" item-icon></iron-icon>
+                        {{email}}
+                    </paper-icon-item>
+                </div>
+            </div>
+            <template is="dom-repeat" items="{{badges}}" as item>
+                <user-badge></user-badge>
+            </template>
+            <paper-icon-item>
+                <paper-item>
+                    <paper-button on-click="logout" raised>Disconnect</paper-button>
+                </paper-item>
+            </paper-icon-item>
+        </div>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'user-profile',
+        ready: function() {},
+        properties: {
+            badges:{
+                type:Array,
+                value:[1,2,3]
+            },
+            avatar: {
+                type: String,
+                notify: true
+            },
+            name: {
+                type: String,
+                notify: true
+            },
+            email: {
+                type: String,
+                notify: true,
+            }
+        }
+    })
+})();
+</script>

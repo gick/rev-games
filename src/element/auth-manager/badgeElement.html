@@ -1,0 +1,43 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<dom-module id="user-badge">
+    <template>
+        <style type="text/css">
+        .image {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px; 
+        }
+        </style>
+        <iron-image id="badgeImage" preload placeholder="../src/element/images/no_badge.png" fade class="image" alt="{{badgeText}}">
+        </iron-image>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'user-badge',
+        _loadImage:function(imageId){
+            this.$.badgeImage.src=imageId
+        },
+        ready: function() {},
+        properties: {
+            badgeId: {
+                type: String,
+                notify: true,
+                observer:'_loadImage',
+            },
+            badgeText: {
+                type: String,
+                notify: true
+            },
+            badgeInfo: {
+                type: String,
+                notify: true,
+            }
+        }
+    })
+})();
+</script>
