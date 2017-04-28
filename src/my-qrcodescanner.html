@@ -10,6 +10,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/file-upload/file-upload.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable-runner-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-down-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-up-animation.html">
+<body>
 <dom-module id="my-qrcodescanner">
     <template>
         <style>
@@ -38,20 +48,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #555;
             text-align: center;
         }
+
+        paper-dialog.size { 
+            width: 300px;
+            height: 300px;
+        }
         
         h1 {
             font-size: 22px;
             margin: 16px 0;
             color: #212121;
         }
+
+        img.fitting {
+            height: 100%; 
+            width: 100%; 
+            margin-left: -24px;
+            margin-top: -44px;
+        }
+
         </style>
         <div class="card">
             <div class="circle">5</div>
             <h1>QR codes</h1>
             <iron-collapse opened="{{!isDisabled}}">
-                <file-upload hide-fileList  raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Upload qr code
+                <file-upload hide-fileList progress-Hidden raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Upload qr code
                 </file-upload>
             </iron-collapse>
+
+            <paper-dialog id="dialog" class="size">
+                <div id="scanBar" style="width:84%;height:20px;opacity:0.6;background-color:red"></div>
+                <img src="{{_computeImg(target)}}"  class="fitting">
+            </paper-dialog>
+
             <iron-collapse id="qrInvalid">
                 <div>{{poiincorrectMessage}}</div>
                 <paper-button on-click="retry">Retry</paper-button>
@@ -60,11 +89,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div>{{poireachedMessage}}</div>
                 <paper-button on-click="next">Next</paper-button>
             </iron-collapse>
+            <iron-collapse id="uploadFailed">
+                <div>Upload failed</div>
+                <paper-button on-click="retry">Retry</paper-button>
+            </iron-collapse>
         </div>
     </template>
     <script>
     Polymer({
-
 
         is: 'my-qrcodescanner',
         ready: function() {
@@ -73,6 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log(this.poi)
         },
         qrscanListener: function(item) {
+            this.$.dialog.open();
+            this.playAnimation('down','down');
             if (item && item.detail && item.detail.xhr && item.detail.xhr.response) {
                 var code = item.detail.xhr.response
                 var pass = code == '[' + this.poi._id + ']'
@@ -88,12 +122,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         retry: function() {
             this.$.qrInvalid.hide()
             this.$.qrValid.hide()
+            this.$.uploadFailed.hide()
             this.isDisabled = false
         },
         _poiObserver: function(item) {
             console.log(item)
         },
-        property: {
+
+        _computeImg: function(img) {
+            if (!img) {
+                this.target = "/qrscan"
+            } else {
+                this.uploadFailed.show();
+            }
+        },
+
+        behaviors: [
+            Polymer.NeonAnimationRunnerBehavior
+        ],
+
+        properties: {
             poi: {
                 type: Object,
                 notify: true,
@@ -106,9 +154,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             poireachedMessage: {
                 type: String,
                 notify: true,
-            }
+            },
 
-        }
+            animationConfig: {
+              value: function () {
+                return {                   
+                    'down' : {
+                        name: 'transform-animation',
+                        transformFrom: 'translateY(-125%)',
+                        transformTo: 'translateY(1280%)',
+                        node: this.$.scanBar,
+                        timing: {duration: 2000},
+                    },
+                    'up' : {
+                        name: 'transform-animation',
+                        transformFrom: 'translateY(1280%)',
+                        transformTo: 'translateY(-125%)',
+                        node: this.$.scanBar,
+                        timing: {duration: 2000},
+                    }
+                }
+              }
+            }
+        },
+
+        listeners: {
+            "neon-animation-finish": "animationComplete"
+        },
+
+
+        animationComplete: function(event, animHandler) {
+            switch (animHandler) {
+                case "down":
+                    this.playAnimation('up','up');
+                    break;
+                case "up":
+                    this.$.dialog.close();
+                    break;
+                default: null;
+            }
+        },
 
     });
     </script>

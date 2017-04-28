@@ -1,0 +1,111 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="./element/inventory-view/inventory-item.html">
+<dom-module id="my-inventory">
+    <template>
+        <style type="text/css">
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            margin: 24px;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #757575;
+        }
+        
+        .circle {
+            display: inline-block;
+            height: 64px;
+            width: 64px;
+            border-radius: 50%;
+            background: #ddd;
+            line-height: 64px;
+            font-size: 30px;
+            color: #555;
+            text-align: center;
+        }
+        </style>
+        <div class="card">
+            <div class="circle">4</div>
+            <paper-button on-click="addItemTest">Add item</paper-button>
+            <paper-button on-click="resetAll">Reset inventory</paper-button>
+    		<template is="dom-repeat" items="[[items]]">
+    		{{item.type}} {{item.id}}
+        <inventory-item itemId="{{item.pageId}}"></inventory-item>
+    		</template>
+    	</div>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'my-inventory',
+
+        addItemTest: function() {
+          var tryhard = {type:"test", id:"3", pageId:"media"}
+          this.addItem(tryhard)
+        },
+
+        addItem: function(item) {
+        	var init = this.get(['items', 0])
+        	if (init.type == "No item") {
+        		this.splice("items", 0, 1)
+        	}
+        	if (item.type) {
+        		this.push('items', item)
+            this.fire('notificationLoaded', 1)
+        		return true
+        	}
+        	return false
+
+          
+        	
+      	},
+
+      	checkItem: function(allItems) {
+      		var k = 0;
+      		for (var i=0; i<items.length; i++) {
+      			for (var j=0; j<allItems.length; j++) {
+      				if (items.name == allItems.name) {
+      					k++
+      				}
+      			}
+      		}
+      		if (k == allItems.length) {
+      			return true
+      		} else {
+      			return false
+      		}
+      	},
+
+        resetAll: function() {
+          var defaultSafety = {type:"No item", id: "0", pageId: "null"}
+          this.addItem(defaultSafety)
+        	this.splice("items", 0, this.items.length -1)
+        },
+
+        properties: {
+        	items: {
+        		type: Array,
+        		notify: true,
+        		value: function() {
+        			return [
+        				{type:"No item", id: "0", pageId: "null"}
+        			];
+        		}
+        	},
+
+          badgeNumber: {
+            type: String,
+            notify: true
+          }
+
+        }
+    })
+})();
+</script>

@@ -4,22 +4,34 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
 
 
 <link rel="import" href="../../../bower_components/paper-item/paper-item-shared-styles.html">
 <dom-module id="mlg-listitem">
     <template>
         <style include="shared-styles">
-
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+                margin-left: -60px;
+                margin-right: 10px;
+            }
         </style>
         <paper-icon-item on-click="fireChosen">
-            <iron-icon icon="hardware:cast" item-icon>
-            </iron-icon>
+            <iron-icon icon="{{_computeIcon(data.gameType)}}" item-icon></iron-icon>
             <paper-item-body two-line>
                 <div><span>{{data.label}}</span></div>
                 <div secondary>Unit game number : <span>{{data.unitGames.length}}</span></div>
+                <div secondary>Difficulty : <span>{{_computeDifficulty(data.gameDifficulty)}}</span></div>
+                <div secondary>Duration : {{data.gameDuration}} minutes</div>
+                <div secondary>Proximity : {{data.gameProximity}} km</div>
             </paper-item-body>
+            <a href="../view2" class="inherit" tabindex="-1">
+                  <paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button>
+            </a>
         </paper-icon-item>
     </template>
     <script>
@@ -30,14 +42,58 @@
 
         },
 
+        sendID: function(e) {
+            this.fire('activitySelected', elem.model.__data__.item);
+        },
+
         fireChosen:function(){
             //this.set('activity-choosen',this);
         },
+
+        _computeIcon: function(type) {
+            if (type == "tresor") {
+                return "vaadin:location-arrow-circle-o"
+            } else if (type == "quizz") {
+                return "icons:help"
+            } else {
+                return "vaadin:cross-cutlery"
+            }
+        },
+
+        _computeDifficulty: function(level) {
+            switch(level) {
+                case 1: return "★"
+                case 2: return "★★"
+                case 3: return "★★★"
+                case 4: return "★★★★"
+                case 5: return "★★★★★"
+                default: return "★"          
+            }
+      },
+
         properties: {
             data: {
                 type: Object,
                 notify: true,
             },
+
+            gameDuration: {
+                type: String,
+                value:'10',
+                notify: true
+            },
+
+            gameProximity: {
+                type: String,
+                value: "2",
+                notify: true
+            },
+
+            gameType: {
+                type: String,
+                value: "none",
+                notify: true
+            }
         },
 
     });
