@@ -1,0 +1,50 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/marked-element/marked-element.html">
+<dom-module id="inventory-item">
+    <template>
+        <style type="text/css">
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        </style>
+
+    <iron-ajax url="/staticmedia/{{itemId}}" handle-as="json" last-response="{{itemImage}}" id="itemImageLoader"></iron-ajax>    
+    <marked-element itemImage="{{itemImage}}">
+        <div class="markdown-html"></div>
+    </marked-element>
+
+    </template>
+
+<script>
+    Polymer({
+
+        is: 'inventory-item',
+
+        ready: function() {
+        	this.$.itemImageLoader.addEventListener('response', this.handleResponse.bind(this))
+        },
+
+        handleResponse: function(response) {
+        	if (response) {
+        		this.$.itemImageLoader.generateRequest();
+        		this.itemImage = response.detail;
+        	}
+        },
+
+        _imageLoaded: function(response) {
+        	     	
+        },
+        
+        properties: {
+            itemImage: {
+                type: String,
+                notify: true,
+                observer: "_imageLoaded",
+                value: '<img src="https://cdn4.iconfinder.com/data/icons/significon/512/Significon-News-512.png">'
+            },
+        },
+
+    });
+    </script>
+</dom-module>

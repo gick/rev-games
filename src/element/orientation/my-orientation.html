@@ -1,0 +1,35 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="my-orientation">  
+
+    <script>
+    	Polymer({
+        	is: 'my-orientation',
+
+        	attached: function() {
+        		if (window.DeviceOrientationEvent) {
+          			this._deviceorientationListener = this._handleOrientation.bind(this);
+          			window.addEventListener('deviceorientation', this._deviceorientationListener, true);
+        		} else {
+          			console.log('Your browser don´t support device orientation.');
+        		}
+      		},
+
+      		detached: function() {
+        		window.removeEventListener('deviceorientation', this._deviceorientationListener);
+      		},
+
+        	_handleOrientation: function(event) {
+        		this.angle = event.alpha;
+			},
+
+        	properties: { 
+        		angle: {
+        			type: Object,
+        			notify: true,
+        		}
+        	}
+    	});
+    </script>
+
+</dom-module>
