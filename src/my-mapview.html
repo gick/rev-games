@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             border-radius: 5px;
             background-color: #fff;
             color: #757575;
+            height: 50vh;
         }
         
         .circle {
@@ -47,8 +48,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
-            <div class="circle"></div>
+            <div class="circle">1</div>
+            <div>
             <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
+            </div>
         </div>
     </template>
     <script>

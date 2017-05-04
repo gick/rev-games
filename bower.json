@@ -24,7 +24,14 @@
     "google-map": "Polymer/google-map#^1.2.0",
     "geo-location": "^1.0.6",
     "device-orientation": "^1.2.0",
-    "device-motion": "device-orientation-component#*"
+    "device-motion": "device-orientation-component#*",
+    "vaadin-icons": "^3.0.0",
+    "app-layout": "^1.0.1",
+    "paper-dropdown-menu": "^1.5.0",
+    "paper-icon-button": "^1.1.5",
+    "iron-icons": "^1.2.1",
+    "iron-icon": "^1.0.13",
+    "paper-tabs": "^1.8.0"
   },
   "resolutions": {
     "polymer": "^v1.2.0"

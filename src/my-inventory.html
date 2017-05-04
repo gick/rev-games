@@ -87,6 +87,7 @@
           var defaultSafety = {type:"No item", id: "0", pageId: "null"}
           this.addItem(defaultSafety)
         	this.splice("items", 0, this.items.length -1)
+          this.domHost.updateNotification()
         },
 
         properties: {
