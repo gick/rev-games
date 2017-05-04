@@ -4,17 +4,21 @@
 <link rel="import" href="../../../bower_components/google-map/google-map-point.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-poly.html">
+<link rel="import" href="my-orientation.html">
+<link rel="import" href="my-compass.html">
 <dom-module id="map-display">
     <template>
         <style>
 
         </style>
+        <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
-        <google-map style="position:absolute;display:block,height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
+        <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
-            <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
+            <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
+            <my-compass style="position: relative" angle="{{angle}}" userlat="{{userCoord.lat}}" userlng="{{userCoord.lng}}" markerlat="{{marker.latitude}}" markerlng="{{marker.longitude}}" headingdistance="{{headingDistance}}"></my-compass>
         </google-map>
     </template>
     <script>
@@ -34,6 +38,7 @@
                 if (this.poi)
                     this.showPOI(this.poi)
             },
+
             CenterControl: function(controlDiv, map, self) {
 
                 // Set CSS for the control border.
@@ -65,9 +70,15 @@
 
             updateUser: function(coord) {
                 this.set('userCoord', coord);
-                this.set('hasCoord', true)
+                this.set('hasCoord', true);
                 console.log(coord)
+                var _userCoord = new google.maps.LatLng(this.userCoord.lat, this.userCoord.lng);
+                var _POICoord = new google.maps.LatLng(40.741895, -73.989308);
+                this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _POICoord)
+                console.log(this.headingDistance)
             },
+
+
             userAtPOI:function(){
                 if(this.circles){
                     if(this.circles.length==1){
@@ -196,15 +207,12 @@
                     type: Object,
                     notify: true
                 },
-                userLat: {
+                
+
+                headingDistance: {
                     type: Number,
                     notify: true,
                 },
-                userLng: {
-                    type: Number,
-                    notify: true
-                }
-
             }
         })
     })();
