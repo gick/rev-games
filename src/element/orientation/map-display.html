@@ -18,8 +18,9 @@
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
             <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            <my-compass style="position: relative" angle="{{angle}}" userlat="{{userCoord.lat}}" userlng="{{userCoord.lng}}" markerlat="{{marker.latitude}}" markerlng="{{marker.longitude}}" headingdistance="{{headingDistance}}"></my-compass>
+            <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}" headingdistance="{{headingDistance}}"></my-compass>
         </google-map>
+        <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
     </template>
     <script>
     (function() {
@@ -73,11 +74,12 @@
                 this.set('hasCoord', true);
                 console.log(coord)
                 var _userCoord = new google.maps.LatLng(this.userCoord.lat, this.userCoord.lng);
-                var _POICoord = new google.maps.LatLng(40.741895, -73.989308);
+                var _POICoord = new google.maps.LatLng(this.markers[0].latitude, this.markers[0].longitude);
                 this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _POICoord)
-                console.log(this.headingDistance)
+                this.headingDegree = google.maps.geometry.spherical.computeHeading(_userCoord, _POICoord)
+                console.log("heading degree : " + this.headingDegree)
+                console.log("distance remaining : " + this.headingDistance)
             },
-
 
             userAtPOI:function(){
                 if(this.circles){
@@ -87,8 +89,8 @@
                         console.log(userAtPOI)
                     }
                 }
-            }
-            ,
+            },
+            
             setControl: function() {
                 var map = this.get('mapsAPI');
                 this.showPOI(this.poi)
@@ -183,6 +185,14 @@
                 }
             },
 
+            showDistance: function() {
+                this.$.distToast.open()
+            },
+
+            _computeDistance: function(distance) {
+                return "Remaining distance : " + Math.round(distance) + " meters."
+            },
+
             properties: {
                 hasCoord: {
                     type: Boolean,
@@ -213,6 +223,11 @@
                     type: Number,
                     notify: true,
                 },
+
+                headingDegree: {
+                    type: Number,
+                    notify: true
+                }
             }
         })
     })();
