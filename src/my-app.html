@@ -208,9 +208,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poiReached:function(){
             //if there are questions, go to question
             if(this.question1){
-                this._pageChanged("questions")
+                this.page="questions"
             }else{
-               this._pageChanged("feedback") 
+               this.page="feedback"
             }
 
         }
