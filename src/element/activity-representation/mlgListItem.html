@@ -35,7 +35,7 @@
                 </template>
             </paper-item-body>
             
-                  <paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button>
+                 <div><paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button></div>
             
         </paper-icon-item>
     </template>
@@ -48,9 +48,8 @@
         },
 
         sendID: function(elem) {
-            this.scoretobeat = "50"
-            console.log(this.scoretobeat)
             this.fire('activitySelected', this.data);
+            this.fire('scoreToBeat', elem.model.scores.score)
             //this.scoretobeat = elem.model.scores.score;
         },
 
@@ -94,11 +93,6 @@
                 type: Object,
                 notify: true,
             },
-
-            scoretobeat: { 
-                type: String,
-                notify: true
-            }
         },
 
     });
