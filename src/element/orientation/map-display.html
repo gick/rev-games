@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/google-map/google-map-point.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-poly.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="my-orientation.html">
 <link rel="import" href="my-compass.html">
 <dom-module id="map-display">
@@ -11,6 +12,9 @@
         <style>
 
         </style>
+        <iron-collapse opened="{{open}}">
+            <paper-button raised on-click="nextActivity">Next</paper-button>
+        </iron-collapse>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
@@ -187,7 +191,13 @@
             userReachPOI: function(newDistance) {
                 if (newDistance <= this.circles[0].radius) {
                     this.$.userAtPOI.open()
+                    this.open = true
                 }
+            },
+
+            nextActivity: function() {
+                this.open = false
+                this.fire()
             },
 
             properties: {

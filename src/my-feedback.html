@@ -27,7 +27,6 @@
       <h1>Activity over !</h1>
       <div>Thank you for playing, don't hesitate to start another activity.</div>
       <paper-button>Activity selection</paper-button>
-      <iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validataScoreUser"></iron-ajax>
     </div>
 
   </template>
@@ -38,21 +37,6 @@
 
       is: 'my-feedback',
 
-      ready: function() {
-        this.$.userscore.generateRequest();
-      },
-
-      properties: {
-
-        ajaxBody: {
-          type: String,
-          computed: 'processBody(idMLG, userscore)'
-        }
-      },
-
-      processBody: function(idMLG, userscore) {
-        return JSON.stringify({id: idMLG, score: userscore});
-      }
     });
 
   </script>
