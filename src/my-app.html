@@ -203,6 +203,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
+            this.$$('#mapview').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
 
         },
         poiReached:function(){
