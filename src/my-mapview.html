@@ -19,13 +19,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         
         .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
             color: #757575;
-            height: 50vh;
+            height: 60vh;
         }
         
         .circle {
@@ -48,9 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
-            <div class="circle">1</div>
             <div>
-            <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
+                <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
             </div>
         </div>
     </template>
@@ -62,7 +56,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         updateCoord: function(e) {
             console.log(e)
-            var coord={lat : e.detail.latitude,lng:e.detail.longitude}
+            var coord = {
+                lat: e.detail.latitude,
+                lng: e.detail.longitude
+            }
             this.$.map.updateUser(coord)
         },
         is: 'my-mapview',
