@@ -21,6 +21,7 @@
             <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}" headingdistance="{{headingDistance}}"></my-compass>
         </google-map>
         <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
+        <paper-toast id="userAtPOI" text="POI reached !"></paper-toast>
     </template>
     <script>
     (function() {
@@ -79,16 +80,6 @@
                 this.headingDegree = google.maps.geometry.spherical.computeHeading(_userCoord, _POICoord)
                 console.log("heading degree : " + this.headingDegree)
                 console.log("distance remaining : " + this.headingDistance)
-            },
-
-            userAtPOI:function(){
-                if(this.circles){
-                    if(this.circles.length==1){
-                        var testCircle=this.circles[0]
-                        var userAtPOI=google.maps.geometry.poly.containsLocation(this.$.userMarker.position,testCircle);
-                        console.log(userAtPOI)
-                    }
-                }
             },
             
             setControl: function() {
@@ -193,6 +184,12 @@
                 return "Remaining distance : " + Math.round(distance) + " meters."
             },
 
+            userReachPOI: function(newDistance) {
+                if (newDistance <= this.circles[0].radius) {
+                    this.$.userAtPOI.open()
+                }
+            },
+
             properties: {
                 hasCoord: {
                     type: Boolean,
@@ -218,10 +215,10 @@
                     notify: true
                 },
                 
-
                 headingDistance: {
                     type: Number,
                     notify: true,
+                    observer: 'userReachPOI'
                 },
 
                 headingDegree: {
