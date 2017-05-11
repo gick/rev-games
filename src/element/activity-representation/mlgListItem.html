@@ -28,10 +28,15 @@
                 <div secondary>Difficulty : <span>{{_computeDifficulty(data.gameDifficulty)}}</span></div>
                 <div secondary>Duration : {{data.gameDuration}} minutes</div>
                 <div secondary>Proximity : {{data.gameProximity}} km</div>
+                <template is="dom-if" if="{{data.score}}">
+                    <template is="dom-repeat" items="{{userscore}}" as="scores" filter="{{_computeScore(data.unitGames)}}">
+                        <div secondary>Score : {{scores.score}}</div>
+                    </template>
+                </template>
             </paper-item-body>
-            <a href="../view2" class="inherit" tabindex="-1">
+            
                   <paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button>
-            </a>
+            
         </paper-icon-item>
     </template>
     <script>
@@ -42,8 +47,11 @@
 
         },
 
-        sendID: function(e) {
-            this.fire('activitySelected', elem.model.__data__.item);
+        sendID: function(elem) {
+            this.scoretobeat = "50"
+            console.log(this.scoretobeat)
+            this.fire('activitySelected', this.data);
+            //this.scoretobeat = elem.model.scores.score;
         },
 
         fireChosen:function(){
@@ -69,7 +77,17 @@
                 case 5: return "★★★★★"
                 default: return "★"          
             }
-      },
+        },
+
+        _computeScore: function(idGame) {
+            if (!idGame) {
+                return null;
+            } else {
+                return function(scores) {
+                    return (scores.id.indexOf(idGame) != -1);
+                };
+            }
+        },
 
         properties: {
             data: {
@@ -77,21 +95,8 @@
                 notify: true,
             },
 
-            gameDuration: {
+            scoretobeat: { 
                 type: String,
-                value:'10',
-                notify: true
-            },
-
-            gameProximity: {
-                type: String,
-                value: "2",
-                notify: true
-            },
-
-            gameType: {
-                type: String,
-                value: "none",
                 notify: true
             }
         },

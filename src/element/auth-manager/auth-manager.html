@@ -49,6 +49,7 @@
                 status.name = response.user.name;
                 status.isadmin = response.user.isadmin;
                 status.email = response.user.email;
+                status.scores = response.user.scores;
             }
             this.status = status
             this.fire('authChanged', status)
@@ -67,6 +68,7 @@
                 status.name = response.user.name;
                 status.isadmin = response.user.isadmin;
                 status.email = response.user.email;
+                status.scores = response.user.scores;
             }
             this.status = status
             this.fire('authChanged', status)

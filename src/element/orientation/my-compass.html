@@ -32,15 +32,10 @@
 
             computeCompass: function(angle) {
 
-                var _userCoordD = new google.maps.LatLng(this.userlat, this.userlng);
-                var _POICoordD = new google.maps.LatLng(this.markerlat, this.markerlng);
-                this.headingDegree = google.maps.geometry.spherical.computeHeading(_userCoordD, _POICoordD)
-                console.log(this.headingDegree)
-
-                if (this.headingDegree <= 0) {
-                    return 'transform: rotate('+ ((360 - this.headingDegree) - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
+                if (this.headingdegree <= 0) {
+                    return 'transform: rotate('+ ((360 - this.headingdegree) - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
                 } else {
-                    return 'transform: rotate('+ (this.headingDegree - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
+                    return 'transform: rotate('+ (this.headingdegree - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
                 }
 
             },
@@ -75,7 +70,7 @@
                     observer: '_headingDistanceChanged'
                 },
 
-                headingDegree: {
+                headingdegree: {
                     type: Number,
                     notify: true,
                 },

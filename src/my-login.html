@@ -84,6 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setStatus: function(status) {
             this.status = status.detail
+            this.fire('userScore', status.detail.scores)
             console.log(status.detail)
         },
         _signup: function() {
