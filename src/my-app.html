@@ -192,7 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.loginForm.addEventListener('userScore', this.setupUserScore.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
             this.showBadge = true
-            this.$$('#activityPicker').addEventListener('scoreToBeat', this.testScore.bind(this))
+            this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
         },
         setupScoreToBeat: function(score) {
             this.scoreToBeat = score.detail
