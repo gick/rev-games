@@ -47,7 +47,7 @@ Simple compass that rotate according to the angle parameter
         <paper-listbox>
             <iron-ajax url="/listActivities" handle-as="json" last-response="{{activities}}" id="ajaxLoader"></iron-ajax>
             <template is="dom-repeat" items="{{activities}}" filter="{{_computeFilter(searchString)}}" sort="{{_computeSort(selection)}}">
-                <mlg-listitem on-click="startActivity" userscore="{{userscore}}" data="{{item}}" name="{{item.activityName}}"> </mlg-listitem>
+                <mlg-listitem userscore="{{userscore}}" scoretobeat="{{scoretobeat}}" data="{{item}}" name="{{item.activityName}}"> </mlg-listitem>
             </template>
         </paper-listbox>
     </template>
@@ -59,10 +59,6 @@ Simple compass that rotate according to the angle parameter
             is: 'activity-selection',
             ready: function() {
                 this.$.ajaxLoader.generateRequest();
-
-            },
-            startActivity: function(elem) {
-                this.fire('activitySelected', elem.model.__data__.item);
 
             },
             startSelection: function(e) {

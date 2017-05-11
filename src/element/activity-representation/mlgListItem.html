@@ -34,9 +34,9 @@
                     </template>
                 </template>
             </paper-item-body>
-            <a href="../view2" class="inherit" tabindex="-1">
+            
                   <paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button>
-            </a>
+            
         </paper-icon-item>
     </template>
     <script>
@@ -47,8 +47,11 @@
 
         },
 
-        sendID: function(e) {
-            this.fire('activitySelected', elem.model.__data__.item);
+        sendID: function(elem) {
+            this.scoretobeat = "50"
+            console.log(this.scoretobeat)
+            this.fire('activitySelected', this.data);
+            //this.scoretobeat = elem.model.scores.score;
         },
 
         fireChosen:function(){
@@ -90,6 +93,11 @@
             data: {
                 type: Object,
                 notify: true,
+            },
+
+            scoretobeat: { 
+                type: String,
+                notify: true
             }
         },
 
