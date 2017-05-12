@@ -208,7 +208,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
-
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
         poiReached: function() {
