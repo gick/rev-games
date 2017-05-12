@@ -43,7 +43,7 @@
             </template>
             <paper-icon-item>
                 <paper-item>
-                    <paper-button on-click="logout" raised>Disconnect</paper-button>
+                    <paper-button on-click="logoff" raised>Disconnect</paper-button>
                 </paper-item>
             </paper-icon-item>
         </div>
@@ -54,6 +54,11 @@
     'use strict';
     Polymer({
         is: 'user-profile',
+
+        logoff: function() {
+            this.fire('logout', null)
+        },
+
         ready: function() {},
         properties: {
             badges:{

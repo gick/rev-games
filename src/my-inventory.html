@@ -44,7 +44,7 @@
         is: 'my-inventory',
 
         ready: function() {
-          this.$.inventoryView.addEventListener('addItem', this.addItem.bind(this))
+          this.$$('#inventoryView').addEventListener('addItem', this.addItem.bind(this))
         },
 
         addItem: function() {
