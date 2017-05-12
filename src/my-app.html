@@ -173,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-login id="loginForm" name="login"></my-login>
-                    <my-inventory id="inventory" name="inventory" badgeNumber="{{badgeNumber}}"></my-inventory>
+                    <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
@@ -207,15 +207,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
-<<<<<<< HEAD
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
 
-=======
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
->>>>>>> 2c3d196a8983d0e53c799667d0b96c284a1adf22
         },
         poiReached: function() {
             //if there are questions, go to question
+            this.inventoryItemId = this.poi.item
+            if(this.question1){
+                this.page="questions"
+            }else{
+               this.page="feedback"
             if (this.question1) {
                 this.page = "questions"
             } else {
@@ -223,7 +225,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
         },
-<<<<<<< HEAD
         nextUnit: function() {
             if (this.$.currentMLG.hasNextUnitGame()) {
                 this.resetActivity()
@@ -251,8 +252,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.feedback = false
 
         },
-=======
->>>>>>> 2c3d196a8983d0e53c799667d0b96c284a1adf22
         setupScoreToBeat: function(score) {
             this.scoreToBeat = score.detail
         },
@@ -310,6 +309,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (unitGame.poiReachedMessage) {
                 this.poireachedMessage = unitGame.poiReachedMessage
+            }
+            if (unitGame.poiReachedInventory) {
+                this.inventoryItemId = unitGame.poiReachedInventory
             }
             this.feedback = {}
         },

@@ -30,12 +30,9 @@
         }
         </style>
         <div class="card">
-            <div class="circle">4</div>
-            <paper-button on-click="addItemTest">Add item</paper-button>
-            <paper-button on-click="resetAll">Reset inventory</paper-button>
+            <div class="circle">4</div>         
     		<template is="dom-repeat" items="[[items]]">
-    		{{item.type}} {{item.id}}
-        <inventory-item itemId="{{item.pageId}}"></inventory-item>
+        <inventory-item id="inventoryView" itemid="{{itemid}}"></inventory-item>
     		</template>
     	</div>
     </template>
@@ -46,25 +43,22 @@
     Polymer({
         is: 'my-inventory',
 
-        addItemTest: function() {
-          var tryhard = {type:"test", id:"3", pageId:"media"}
-          this.addItem(tryhard)
+        ready: function() {
+          this.$.inventoryView.addEventListener('addItem', this.addItem.bind(this))
         },
 
-        addItem: function(item) {
+        addItem: function() {
         	var init = this.get(['items', 0])
         	if (init.type == "No item") {
         		this.splice("items", 0, 1)
         	}
         	if (item.type) {
+            var item = {type:"ajout"} 
         		this.push('items', item)
             this.fire('notificationLoaded', 1)
         		return true
         	}
-        	return false
-
-          
-        	
+        	return false    	
       	},
 
       	checkItem: function(allItems) {
@@ -84,7 +78,7 @@
       	},
 
         resetAll: function() {
-          var defaultSafety = {type:"No item", id: "0", pageId: "null"}
+          var defaultSafety = {type:"No item"}
           this.addItem(defaultSafety)
         	this.splice("items", 0, this.items.length -1)
           this.domHost.updateNotification()
@@ -96,7 +90,7 @@
         		notify: true,
         		value: function() {
         			return [
-        				{type:"No item", id: "0", pageId: "null"}
+        				{type:"No item"}
         			];
         		}
         	},
