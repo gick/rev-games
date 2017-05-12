@@ -66,13 +66,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="output"></div>
             </form>
         </div>
-        <template is="dom-if" if="{{status.logged}}">
-            <user-profile name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}"></user-profile>
-        </template>
+        <div hidden!="{{status.logged}}">
+                <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}"></user-profile>     
+        </div> 
+
     </template>
     <script>
     Polymer({
-        ready: function() {},
+        ready: function() {
+            this.$$('#userProfile').addEventListener('logout', this.logout.bind(this))
+        },
         logout: function() {
             this.$.manager.logout();
         },
@@ -84,6 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setStatus: function(status) {
             this.status = status.detail
+            this.fire('userName', status.detail.name)
             this.fire('userScore', status.detail.scores)
             console.log(status.detail)
         },

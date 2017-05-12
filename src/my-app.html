@@ -131,8 +131,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <app-toolbar>
                         <paper-icon-button icon="menu" drawer-toggle hidden="{{wideLayout}}"></paper-icon-button>
                         <div title>ReVeRIeS games</div>
-                        <a href="../view1" class="inherit" tabindex="-1">
-                            <paper-icon-button on-click="_homePage" icon="vaadin:home"></paper-icon-button>
+                        <a href="/#login" class="inherit" tabindex="-1">
+                            [[userName]]
                         </a>
                     </app-toolbar>
                     <app-toolbar hidden$="{{!wideLayout}}">
@@ -172,7 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-                    <my-login id="loginForm" name="login"></my-login>
+                    <my-login id="loginForm" status="{{status}}" name="login"></my-login>
                     <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
@@ -202,6 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
+            this.$.loginForm.addEventListener('userName', this.setupUserName.bind(this))
             this.$.loginForm.addEventListener('userScore', this.setupUserScore.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
             this.showBadge = true
@@ -212,15 +213,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         poiReached: function() {
             //if there are questions, go to question
-            this.inventoryItemId = this.currentItemId
+            this.inventoryItemId = this.currentItemId;
             if(this.question1){
                 this.page="questions"
-            }else{
+            } else{
                this.page="feedback"
-            if (this.question1) {
-                this.page = "questions"
-            } else {
-                this.page = "feedback"
+                if (this.question1) {
+                    this.page = "questions"
+                } else {
+                    this.page = "feedback"
+                }
             }
 
         },
@@ -333,6 +335,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.currentMLG = elem.detail;
             this.currentActivity = elem.detail._id
             this.$.currentMLG.processMLG(this.currentMLG);
+        },
+
+        setupUserName: function(elem) {
+            this.userName = elem.detail
         },
 
         setupUserScore: function(elem) {
