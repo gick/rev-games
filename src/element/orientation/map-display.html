@@ -108,7 +108,7 @@
             removePOI: function(item) {
                 this.removeMarker(item);
             },
-            removeMarker: function(item) {
+            removeMarker: function() {
                 if (this.markers.length > 0) {
                     this.splice('markers', 0, 1);
                     this.removeArea(this.circles[0]);

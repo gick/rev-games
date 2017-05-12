@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'generic-question',
         _questionObserver: function(newVal) {
             console.log(newVal)
-            if (newVal.distractor1) {
+            if (newVal && newVal.distractor1) {
                 this.set('isMcq', true)
                 this.set('isfreeText', false)
             } else {

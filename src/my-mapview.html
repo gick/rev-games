@@ -54,8 +54,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.loc.addEventListener('geo-response', this.updateCoord.bind(this));
 
         },
+        resetMap:function(){
+            if(this.$.map && this.$.map.removeMarker){
+                this.$.map.removeMarker()
+            }
+        },
         updateCoord: function(e) {
-            console.log(e)
             var coord = {
                 lat: e.detail.latitude,
                 lng: e.detail.longitude

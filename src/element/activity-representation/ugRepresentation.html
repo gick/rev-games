@@ -63,7 +63,7 @@ Simple compass that rotate according to the angle parameter
                     this.poiId = ugItem.POIId
                     this.$.poiRep.generateRequest()
                 }
-                if (ugItem.cluePOIId) {
+                if (ugItem && ugItem.cluePOIId) {
                     console.log('clue poi loading')
                     this.clueId = ugItem.cluePOIId
                     this.$.clueRep.generateRequest()
