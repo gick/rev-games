@@ -207,8 +207,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
+<<<<<<< HEAD
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
 
+=======
+            this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
+>>>>>>> 2c3d196a8983d0e53c799667d0b96c284a1adf22
         },
         poiReached: function() {
             //if there are questions, go to question
@@ -219,6 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
         },
+<<<<<<< HEAD
         nextUnit: function() {
             if (this.$.currentMLG.hasNextUnitGame()) {
                 this.resetActivity()
@@ -246,6 +251,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.feedback = false
 
         },
+=======
+>>>>>>> 2c3d196a8983d0e53c799667d0b96c284a1adf22
         setupScoreToBeat: function(score) {
             this.scoreToBeat = score.detail
         },
