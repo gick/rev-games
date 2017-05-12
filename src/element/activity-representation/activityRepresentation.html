@@ -24,7 +24,6 @@ Simple compass that rotate according to the angle parameter
         <ug-representation id="currentUg"></ug-representation>
         <iron-ajax url="/staticmedia/{{startPageId}}" handle-as="json" last-response="{{mlgStartPage}}" id="startPageLoader"></iron-ajax>
         <iron-ajax url="/unitGame/{{ugId}}" handle-as="json" last-response="{{mlgCurrentUg}}" id="mlgCurrentUg"></iron-ajax>
-
     </template>
     <script>
     (function() {
@@ -36,23 +35,43 @@ Simple compass that rotate according to the angle parameter
                 this.$.startPageLoader.addEventListener('response', this.startPageLoaded.bind(this));
                 this.$.mlgCurrentUg.addEventListener('response', this.ugLoaded.bind(this));
             },
-            ugLoaded:function(response){
+            ugLoaded: function(response) {
 
                 this.$.currentUg.processUg(this.mlgCurrentUg[0])
-                this.fire('unitgameLoaded',this.mlgCurrentUg[0])
+                this.fire('unitgameLoaded', this.mlgCurrentUg[0])
             },
             startPageLoaded: function(response) {
                 this.fire('startPageLoaded', this.mlgStartPage[0])
             },
+            hasNextUnitGame: function() {
+                if (this.mlgItem && this.mlgItem.unitGames) {
+                    var unitGameNumber = this.mlgItem.unitGames.length
+                    if (this.mlgItem.unitGames.indexOf(this.ugId) + 1 < unitGameNumber) {
+                        return true
+                    }
+                }
+                return false
+            },
+            setupNextUnitGame: function() {
+                if (this.mlgItem && this.mlgItem.unitGames) {
+                    var unitGameNumber = this.mlgItem.unitGames.length
+                    if (this.mlgItem.unitGames.indexOf(this.ugId) + 1 < unitGameNumber) {
+                        var newIndex = this.mlgItem.unitGames.indexOf(this.ugId) + 1
+                        this.ugId = this.mlgItem.unitGames[newIndex]
+                        this.$.mlgCurrentUg.generateRequest();
+
+                    }
+                }
+
+            },
             processMLG: function(mlgItem) {
-                this.mlgItem=mlgItem;
+                this.mlgItem = mlgItem;
                 if (this.mlgItem && this.mlgItem.staticMedia) {
-                    this.startPageId=this.mlgItem.staticMedia
+                    this.startPageId = this.mlgItem.staticMedia
                     this.$.startPageLoader.generateRequest()
                 }
-                if(this.mlgItem.unitGames && this.mlgItem.unitGames[0])
-                {
-                    this.ugId= this.mlgItem.unitGames[0];
+                if (this.mlgItem.unitGames && this.mlgItem.unitGames[0]) {
+                    this.ugId = this.mlgItem.unitGames[0];
                     this.$.mlgCurrentUg.generateRequest();
                 }
 
