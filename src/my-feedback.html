@@ -26,7 +26,7 @@
     <div class="card">
       <h1>Activity over !</h1>
       <div>Thank you for playing, don't hesitate to start another activity.</div>
-      <paper-button>Activity selection</paper-button>
+      <paper-button on-click="next">Next</paper-button>
     </div>
 
   </template>
@@ -34,7 +34,9 @@
   <script>
 
     Polymer({
-
+      next:function(){
+        this.fire('next-called-from-feedback',null)
+      },
       is: 'my-feedback',
 
     });

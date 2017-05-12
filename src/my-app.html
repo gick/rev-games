@@ -164,6 +164,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-tab name="questions" link>
                                     <a href="/#questions"></a>Questions</paper-tab>
                             </template>
+                            <template is="dom-if" if="{{feedback}}">
+                                <paper-tab name="feedback" link>
+                                    <a href="/#feedback"></a>Feedback</paper-tab>
+                            </template>
                         </paper-tabs>
                     </app-toolbar>
                 </app-header>
@@ -176,7 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
-                    <my-feedback name="feedback"></my-feedback>
+                    <my-feedback id="feedback" name="feedback"></my-feedback>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -203,16 +207,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
+            this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
+
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
-        poiReached:function(){
+        poiReached: function() {
             //if there are questions, go to question
             this.inventoryItemId = this.currentItemId
             if(this.question1){
                 this.page="questions"
             }else{
                this.page="feedback"
+            if (this.question1) {
+                this.page = "questions"
+            } else {
+                this.page = "feedback"
             }
+
+        },
+        nextUnit: function() {
+            if (this.$.currentMLG.hasNextUnitGame()) {
+                this.resetActivity()
+                this.$.currentMLG.setupNextUnitGame();
+            } else {
+                this.resetActivity()
+                this.page = "activity"
+            }
+        },
+        resetActivity: function() {
+            this.question1 = null
+            this.question2 = null
+            this.question3 = null
+            this.feedback = null
+            this.mkdown = null
+            this.clueMkdown = null
+            this.poiIncorrectMessage = null
+            this.poireachedMessage = null
+            this.currentActivity = null
+            this.inventory = false
+            this.poiClue = false
+            this.poiMap = false
+            this.poiQR = false
+            this.questions = false
+            this.feedback = false
 
         },
         setupScoreToBeat: function(score) {
@@ -226,7 +263,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
+
                 this.poi = item.detail;
+                if (this.$$('#map') && this.$$('#map').resetMap) {
+                    this.$$('#map').resetMap()
+                }
             }
         },
         setupQuestion1: function(item) {
@@ -272,6 +313,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (unitGame.poiReachedInventory) {
                 this.currentItemId = unitGame.poiReachedInventory
             }
+            this.feedback = {}
         },
         setupQuestion3: function(item) {
             this.question3 = item.detail
