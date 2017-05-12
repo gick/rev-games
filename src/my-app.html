@@ -169,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-login id="loginForm" name="login"></my-login>
-                    <my-inventory id="inventory" name="inventory" badgeNumber="{{badgeNumber}}"></my-inventory>
+                    <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
@@ -207,6 +207,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         poiReached:function(){
             //if there are questions, go to question
+            this.inventoryItemId = this.poi.item
             if(this.question1){
                 this.page="questions"
             }else{
@@ -267,6 +268,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (unitGame.poiReachedMessage) {
                 this.poireachedMessage = unitGame.poiReachedMessage
+            }
+            if (unitGame.poiReachedInventory) {
+                this.inventoryItemId = unitGame.poiReachedInventory
             }
         },
         setupQuestion3: function(item) {

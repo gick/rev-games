@@ -9,11 +9,12 @@
         }
         </style>
 
-    <iron-ajax url="/staticmedia/{{itemId}}" handle-as="json" last-response="{{itemImage}}" id="itemImageLoader"></iron-ajax>    
-    <marked-element itemImage="{{itemImage}}">
+    <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{item}}"></iron-ajax>
+    <div>[[label]]</div> 
+    <marked-element markdown="{{itemMkdown}}">
         <div class="markdown-html"></div>
     </marked-element>
-
+    <div>[[itemText]]</div>
     </template>
 
 <script>
@@ -22,27 +23,44 @@
         is: 'inventory-item',
 
         ready: function() {
-        	this.$.itemImageLoader.addEventListener('response', this.handleResponse.bind(this))
+        	this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+            if (!this.itemMediaId) {
+                this.itemMkdown = "<img src='../../src/element/images/empty.png'>"
+            }
         },
 
         handleResponse: function(response) {
-        	if (response) {
-        		this.$.itemImageLoader.generateRequest();
-        		this.itemImage = response.detail;
-        	}
+        	this.fire('addItem', null)
+            this.itemMkdown = response.detail.__data__.response.mkdown
+            this.label = response.detail.__data__.label.mkdown
+            this.itemText = response.detail.__data__.response.itemText
         },
 
-        _imageLoaded: function(response) {
-        	     	
+        _loadPage: function(itemMediaId) {
+            if (itemMediaId) {
+                this.url = '/staticmedia/' + itemMediaId
+                this.$.ajaxLoader.generateRequest()
+            }
         },
         
         properties: {
-            itemImage: {
+            inventoryMediaid: {
                 type: String,
                 notify: true,
-                observer: "_imageLoaded",
-                value: '<img src="https://cdn4.iconfinder.com/data/icons/significon/512/Significon-News-512.png">'
+                observer: '_loadPage',
             },
+            label: {
+                type: String,
+                notify: true,
+            },
+            itemText: {
+                type: String,
+                notify: true,
+            },
+            itemId: {
+                type: String,
+                notify: true,
+            }
         },
 
     });
