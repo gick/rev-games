@@ -148,6 +148,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-tab name="instructions" link>
                                     <a href="/#instructions"></a>Activity start page</paper-tab>
                             </template>
+                            <template is="dom-if" if="{{uginstructions}}">
+                                <paper-tab name="uginstructions" link>
+                                    <a href="/#uginstructions"></a>Unit game start page</paper-tab>
+                            </template>
                             <template is="dom-if" if="{{poiMap}}">
                                 <paper-tab name="mapview" link>
                                     <a href="/#mapview"></a>Map View</paper-tab>
@@ -176,6 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
+                    <my-uginstructions mkdown="{{ugMkdown}}" name="uginstructions"></my-uginstructions>
                     <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
@@ -200,6 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question1Loaded', this.setupQuestion1.bind(this))
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
+            this.$.currentMLG.addEventListener('ugStartPageLoaded', this.ugStartPageLoaded.bind(this))
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
             this.$.loginForm.addEventListener('userName', this.setupUserName.bind(this))
@@ -214,15 +220,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poiReached: function() {
             //if there are questions, go to question
             this.inventoryItemId = this.currentItemId;
-            if(this.question1){
-                this.page="questions"
-            } else{
-               this.page="feedback"
-                if (this.question1) {
-                    this.page = "questions"
-                } else {
-                    this.page = "feedback"
-                }
+            if (this.question1) {
+                this.page = "questions"
+            } else {
+                this.page = "feedback"
             }
 
         },
@@ -245,12 +246,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.poiIncorrectMessage = null
             this.poireachedMessage = null
             this.currentActivity = null
+            this.ugMkdown=null
             this.inventory = false
             this.poiClue = false
             this.poiMap = false
             this.poiQR = false
             this.questions = false
             this.feedback = false
+            this.uginstructions=false
+
 
         },
         setupScoreToBeat: function(score) {
@@ -295,6 +299,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.poiMap = false
             }
+            if(unitGame.startMediaId){
+                this.uginstructions=true
+            }else{
+                this.uginstructions=false
+            }
             if (unitGame.poiQRValidation) {
                 this.poiQR = true
             } else {
@@ -325,6 +334,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.clueMkdown = item.detail.mkdown;
             }
         },
+        ugStartPageLoaded: function(item) {
+
+            if (item && item.detail && item.detail.mkdown) {
+                this.ugMkdown = item.detail.mkdown;
+            }
+
+
+        },
+
         setupStartPage: function(elem) {
             this.startPage = true;
             if (elem && elem.detail && elem.detail.mkdown) {
