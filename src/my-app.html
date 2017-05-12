@@ -207,7 +207,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         poiReached:function(){
             //if there are questions, go to question
-            this.inventoryItemId = this.poi.item
+            this.inventoryItemId = this.currentItemId
             if(this.question1){
                 this.page="questions"
             }else{
@@ -270,7 +270,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.poireachedMessage = unitGame.poiReachedMessage
             }
             if (unitGame.poiReachedInventory) {
-                this.inventoryItemId = unitGame.poiReachedInventory
+                this.currentItemId = unitGame.poiReachedInventory
             }
         },
         setupQuestion3: function(item) {
@@ -362,6 +362,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 type: String,
                 computed: 'processBody()'
             },
+
+            currentItemId: {
+                type: String,
+                notify: true
+            }
         },
 
         observers: [
