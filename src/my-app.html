@@ -179,8 +179,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-login id="loginForm" status="{{status}}" name="login"></my-login>
                     <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
-                    <my-instructions mkdown="{{mkdown}}" name="instructions"></my-instructions>
-                    <my-uginstructions mkdown="{{ugMkdown}}" name="uginstructions"></my-uginstructions>
+                    <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
+                    <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                     <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
@@ -211,11 +211,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.loginForm.addEventListener('userName', this.setupUserName.bind(this))
             this.$.loginForm.addEventListener('userScore', this.setupUserScore.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
+            this.$$('#uginstructions').addEventListener('next-called-from-uginstructions', this.nextFromUgInstructions.bind(this))
+
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
+        },
+        nextFromUgInstructions:function(){
+            // From unit game instruction, next page is either poi related, question related or feedback
+            if(this.poiClue){
+                this.page="cluepoiinstruction"
+                return
+            }
+            if(this.poiMap){
+                this.page="mapview"
+                return
+            }
+            if(this.poiQR){
+                this.page="qrcodescanner"
+                return
+            }
+            if(this.questions){
+                this.page="questions"
+                return
+            }
+            this.page="feedback"
+
         },
         poiReached: function() {
             //if there are questions, go to question
