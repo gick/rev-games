@@ -16,8 +16,8 @@
         }
         
         .badge {
-            display: flex;
-            flex-direction: column;
+            display: inline-flex;
+            flex-direction: row;
             align-items: center;
         }
         </style>
@@ -44,11 +44,11 @@
             }
         },
         handleResponse: function(response) {
-            this.itemMkdown = response.detail.__data__.response.mkdown
+            this.itemMkdown = response.detail.__data__.response[0].mkdown
         },
         ready: function() {
             this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
-            if (!this.itemMediaId) {
+            if (!this.inventoryMediaid) {
                 this.itemMkdown = "<img src='../../src/element/image/carrot.png'>"
             }
 
