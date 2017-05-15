@@ -45,8 +45,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
         <div class="card">
-            <h1>Instructions {{mkdown}}</h1>
+            <h1>Activity Instructions</h1>
             <mlg-instruction mkdown="{{mkdown}}"></mlg-instruction>
+            <paper-button on-click="next">Next</paper-button>
+
         </div>
     </template>
     <script>
@@ -54,22 +56,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         is: 'my-instructions',
-        ready:function(){
+        ready: function() {
 
         },
-        _mkdownObserver:function(item){
-          if(item){
-            console.log(item)
-            this.set('mkdown',item)
-          }
-        }
-        ,
+        next: function() {
+            this.fire('next-called-from-activity-instructions', null)
+        },
+
+        _mkdownObserver: function(item) {
+            if (item) {
+                console.log(item)
+                this.set('mkdown', item)
+            }
+        },
         property: {
-          mkdown:{
-            type:String,
-            notify:true,
-            observer:'_mkdownObserver',
-          }
+            mkdown: {
+                type: String,
+                notify: true,
+                observer: '_mkdownObserver',
+            }
         }
 
     });

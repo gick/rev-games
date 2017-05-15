@@ -46,8 +46,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <div class="card">
             <div class="circle">2</div>
-            <h1>Instructions</h1>
+            <h1>Game Instructions</h1>
             <mlg-instruction mkdown="{{mkdown}}"></mlg-instruction>
+            <paper-button on-click="next">Next</paper-button>
+
         </div>
     </template>
     <script>
@@ -58,6 +60,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ready:function(){
 
         },
+        next: function() {
+            this.fire('next-called-from-uginstructions', null)
+        },
+
         _mkdownObserver:function(item){
           if(item){
             this.set('mkdown',item)
