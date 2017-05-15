@@ -182,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-app',
         ready: function() {
-            this.inventoryItems=[]
+            this.inventoryItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
@@ -280,15 +280,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.page = "feedback"
             }
-            if(this.inventoryItem){
+            if (this.inventoryItem) {
                 console.log(this.inventoryItem)
-                this.inventoryItems.push(this.inventoryItem[0])
+                this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
             }
 
         },
-        fireCustom:function(){
-                        this.fire('custom')
+        fireCustom: function() {
+            this.addNotification(1)
 
         },
         nextUnit: function() {
@@ -297,6 +297,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.currentMLG.setupNextUnitGame();
             } else {
                 this.resetActivity()
+                this.splice("inventoryItems", 0, this.inventoryItems.length)
+                this.toast.hide()
+                this.badgeNumber=0
                 this.page = "activity"
             }
         },
@@ -310,10 +313,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.poiIncorrectMessage = null
             this.poireachedMessage = null
             this.currentActivity = null
-            this.feedbackMkdown=null
+            this.feedbackMkdown = null
             this.ugMkdown = null
-            this.inventoryItemId=null
-            this.inventoryItem=null
+            this.inventoryItemId = null
+            this.inventoryItem = null
             this.inventory = false
             this.poiClue = false
             this.poiMap = false
@@ -473,12 +476,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         addNotification: function(value) {
-            this.badgeNumber += value.detail;
+            this.badgeNumber += value;
             if (this.badgeNumber > 0) {
                 this.showBadge = false
-                if (!this.wideLayout) {
-                    this.$.toast.open()
-                }
+                this.$.toast.open()
             }
         },
 
