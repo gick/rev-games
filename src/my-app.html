@@ -212,32 +212,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.loginForm.addEventListener('userScore', this.setupUserScore.bind(this))
             this.$$('#myQuestions').addEventListener('nextQuestion', this.nextQuestion.bind(this))
             this.$$('#uginstructions').addEventListener('next-called-from-uginstructions', this.nextFromUgInstructions.bind(this))
-
+            this.$$('#instructions').addEventListener('next-called-from-activity-instructions', this.nextFromInstructions.bind(this))
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
-        nextFromUgInstructions:function(){
+        nextFromInstructions: function() {
+            // From activity instruction, next page is either ug instruction, poi related, question related or feedback
+            if(this.uginstructions){
+                this.page="uginstructions"
+                return
+            }
+            if (this.poiClue) {
+                this.page = "cluepoiinstruction"
+                return
+            }
+            if (this.poiMap) {
+                this.page = "mapview"
+                return
+            }
+            if (this.poiQR) {
+                this.page = "qrcodescanner"
+                return
+            }
+            if (this.questions) {
+                this.page = "questions"
+                return
+            }
+            this.page = "feedback"
+
+
+        },
+        nextFromUgInstructions: function() {
             // From unit game instruction, next page is either poi related, question related or feedback
-            if(this.poiClue){
-                this.page="cluepoiinstruction"
+            if (this.poiClue) {
+                this.page = "cluepoiinstruction"
                 return
             }
-            if(this.poiMap){
-                this.page="mapview"
+            if (this.poiMap) {
+                this.page = "mapview"
                 return
             }
-            if(this.poiQR){
-                this.page="qrcodescanner"
+            if (this.poiQR) {
+                this.page = "qrcodescanner"
                 return
             }
-            if(this.questions){
-                this.page="questions"
+            if (this.questions) {
+                this.page = "questions"
                 return
             }
-            this.page="feedback"
+            this.page = "feedback"
 
         },
         poiReached: function() {
@@ -269,15 +295,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.poiIncorrectMessage = null
             this.poireachedMessage = null
             this.currentActivity = null
-            this.ugMkdown=null
+            this.ugMkdown = null
             this.inventory = false
             this.poiClue = false
             this.poiMap = false
             this.poiQR = false
             this.questions = false
-            this.startPage=false
+            this.startPage = false
             this.feedback = false
-            this.uginstructions=false
+            this.uginstructions = false
 
 
         },
@@ -323,10 +349,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.poiMap = false
             }
-            if(unitGame.startMediaId){
-                this.uginstructions=true
-            }else{
-                this.uginstructions=false
+            if (unitGame.startMediaId) {
+                this.uginstructions = true
+            } else {
+                this.uginstructions = false
             }
             if (unitGame.poiQRValidation) {
                 this.poiQR = true

@@ -30,9 +30,11 @@
         }
         </style>
         <div class="card">
-            <div class="circle">4</div>         
+            <div class="circle">4</div>
+        <iron-ajax id="ajaxLoader" url="/staticmedia/{{inventoryItemId}}" handle-as="json" last-response="{{item}}"></iron-ajax>
+
     		<template is="dom-repeat" items="[[items]]">
-        <inventory-item id="inventoryView" inventoryMediaid="{{itemid}}"></inventory-item>
+             <inventory-item inventory-mediaid="{{item.itemPageId}}" item-text="{{item.itemText}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
     		</template>
     	</div>
     </template>
@@ -44,23 +46,20 @@
         is: 'my-inventory',
 
         ready: function() {
-          this.$$('#inventoryView').addEventListener('addItem', this.addItem.bind(this))
+            this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
         },
 
-        addItem: function() {
-        	var init = this.get(['items', 0])
-        	if (init.type == "No item") {
-        		this.splice("items", 0, 1)
-        	}
-        	if (item.type) {
-            var item = {type:"ajout"} 
-        		this.push('items', item)
+        handleResponse: function() {
+        	if (this.item) {
+        		this.push('items', this.item)
             this.fire('notificationLoaded', 1)
-        		return true
         	}
-        	return false    	
       	},
-
+        addItem:function(itemId){
+          this.inventoryItemId=itemId
+          this.$.ajaxLoader.generateRequest()
+        }
+        ,
       	checkItem: function(allItems) {
       		var k = 0;
       		for (var i=0; i<items.length; i++) {
