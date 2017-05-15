@@ -30,12 +30,9 @@
         }
         </style>
         <div class="card">
-        {{items.length}}
-
     		<template is="dom-repeat" items="{{items}}">
-             <inventory-item inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
+             <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
     		</template>
-        <paper-button on-click="printItems">Add item</paper-button>
     	</div>
     </template>
 </dom-module>

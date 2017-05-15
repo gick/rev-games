@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <dom-module id="inventory-item">
     <template>
         <style type="text/css">
@@ -22,7 +23,13 @@
         }
         </style>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{item}}"></iron-ajax>
-        <div class="badge">
+        <iron-ajax id="docPageLoader" url="/staticmedia/{{docPageId}}" handle-as="json" last-response="{{docPageElement}}"></iron-ajax>
+        <paper-dialog id="docPage">
+            <marked-element markdown="{{docPageMkdown}}">
+                <div class="markdown-html"></div>
+            </marked-element>
+        </paper-dialog>
+        <div on-click="showDocPage" class="badge">
             <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
@@ -36,18 +43,33 @@
     Polymer({
         is: 'inventory-item',
 
-
+        showDocPage:function(){
+            this.$.docPage.open()
+        },
+        _loadDocPage:function(docpageid){
+            if(docpageid){
+                this.docPageId=docpageid
+                this.$.docPageLoader.generateRequest()
+            }
+        }
+        ,
         _loadPage: function(itemMediaId) {
             if (itemMediaId) {
                 this.url = '/staticmedia/' + itemMediaId
                 this.$.ajaxLoader.generateRequest()
             }
         },
+        handleDocPageResponse: function(response) {
+            this.docPageMkdown = response.detail.__data__.response[0].mkdown
+
+        },
         handleResponse: function(response) {
             this.itemMkdown = response.detail.__data__.response[0].mkdown
         },
         ready: function() {
             this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+            this.$.docPageLoader.addEventListener('iron-ajax-response', this.handleDocPageResponse.bind(this))
+
             if (!this.inventoryMediaid) {
                 this.itemMkdown = "<img src='../../src/element/image/carrot.png'>"
             }
@@ -58,6 +80,11 @@
                 type: String,
                 notify: true,
                 observer: '_loadPage',
+            },
+            inventoryDocpage:{
+                type:String,
+                notify:true,
+                observer:'_loadDocPage',
             },
             label: {
                 type: String,
