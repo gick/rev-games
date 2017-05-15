@@ -31,11 +31,9 @@
         }
         </style>
         <div class="card">
-
     		<template is="dom-repeat" items="{{items}}">
-             <inventory-item inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
+             <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
     		</template>
-        <paper-button on-click="testAddItem">Add item</paper-button>
     	</div>
     </template>
 </dom-module>
@@ -47,16 +45,6 @@
 
         ready: function() {
            // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
-        },
-        testAddItem:function(){
-          this.addItem("5915c3975c67e835fc17c925")
-        },
-        addItem:function(item){
-          if (this.item && this.item[0]) {
-            this.push('items', this.item[0])
-            this.fire('notificationLoaded', 1)
-          }
-          console.log(this.items)
         }
         ,
       	checkItem: function(allItems) {
@@ -74,14 +62,10 @@
       			return false
       		}
       	},
+        printItems:function(){
 
-        resetAll: function() {
-          var defaultSafety = {type:"No item"}
-          this.addItem(defaultSafety)
-        	this.splice("items", 0, this.items.length -1)
-          this.domHost.updateNotification()
+          console.log(this.items)
         },
-
         properties: {
         	items: {
         		type: Array,
