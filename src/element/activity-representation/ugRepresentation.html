@@ -22,6 +22,7 @@ Simple compass that rotate according to the angle parameter
         </style>
         <iron-ajax url="/poi/{{poiId}}" handle-as="json" last-response="{{poi}}" id="poiRep"></iron-ajax>
         <iron-ajax url="/staticmedia/{{ugStartPageId}}" handle-as="json" last-response="{{ugStartPage}}" id="startPageLoader"></iron-ajax>
+        <iron-ajax url="/staticmedia/{{feedbackMediaId}}" handle-as="json" last-response="{{feedbackMedia}}" id="feedbackPageLoader"></iron-ajax>
 
         <iron-ajax url="/staticmedia/{{clueId}}" handle-as="json" last-response="{{clue}}" id="clueRep"></iron-ajax>
         <iron-ajax id="question1Loader" url="/question/{{question1Id}}" last-response="{{question1}}" handle-as="json"></iron-ajax>
@@ -38,11 +39,15 @@ Simple compass that rotate according to the angle parameter
                 this.$.poiRep.addEventListener('response', this.poiLoaded.bind(this))
                 this.$.clueRep.addEventListener('response', this.cluePOILoaded.bind(this))
                 this.$.startPageLoader.addEventListener('response', this.startPageLoaded.bind(this))
+                this.$.feedbackPageLoader.addEventListener('response', this.feedbackPageLoaded.bind(this))
 
                 this.$.question1Loader.addEventListener('response', this.question1Loaded.bind(this))
                 this.$.question2Loader.addEventListener('response', this.question2Loaded.bind(this))
                 this.$.question3Loader.addEventListener('response', this.question3Loaded.bind(this))
 
+            },
+            feedbackPageLoaded:function(response){
+                this.fire('feedbackPageLoaded',this.feedbackMedia[0])
             },
             startPageLoaded:function(response){
                 this.fire('ugStartPageLoaded',this.ugStartPage[0])
@@ -80,6 +85,10 @@ Simple compass that rotate according to the angle parameter
                 if(ugItem && ugItem.startMediaId){
                     this.ugStartPageId=ugItem.startMediaId
                     this.$.startPageLoader.generateRequest()
+                }
+                if(ugItem && ugItem.feedbackMediaId){
+                    this.feedbackMediaId=ugItem.feedbackMediaId
+                    this.feedbackPageLoader.generateRequest()
                 }
 
                 var questions = ugItem.activities
