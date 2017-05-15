@@ -66,10 +66,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="output"></div>
             </form>
         </div>
-        <div hidden!="{{status.logged}}">
-                <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}"></user-profile>     
-        </div> 
-
+        <div hidden="{{!status.logged}}">
+            <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}"></user-profile>     
+        </div>
     </template>
     <script>
     Polymer({
