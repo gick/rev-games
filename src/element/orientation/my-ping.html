@@ -1,0 +1,64 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-ripple/paper-ripple.html">
+<dom-module id="my-ping">
+
+	<template>
+        <style>
+            .circle {
+            display: inline-block;
+            position: relative;
+            border-radius: 50%;
+            height:50%; 
+            width: 25%;
+            font-size: 30px;
+            color: #555;
+            text-align: center;
+            vertical-align:middle;
+            margin-left: 65%;
+        }
+        </style>
+       	<div class="circle">
+            <paper-ripple id="ripple" style="color: blue" center></paper-ripple>
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+
+        Polymer({
+            is: 'my-ping',
+
+            _headingDistanceChanged: function(newDistance) {
+                if (newDistance > 1000) {
+                    this.async(function() {
+                        this.$.ripple.style = "color: blue"
+                        this.$.ripple.simulatedRipple()
+                        console.log("Far")
+                    }, 3000);
+                } else if (newDistance > 500) {
+                    this.async(function() {
+                        this.$.ripple.style = "color: green"
+                        this.$.ripple.simulatedRipple()
+                        console.log("Still far but less")
+                    }, 1000);
+                } else {
+                    this.async(function() {
+                        this.$.ripple.style = "color: red"
+                        this.$.ripple.simulatedRipple()
+                        console.log("Near")
+                    }, 250);
+                }
+            },
+
+            properties: {
+
+                headingdistance: {
+                    type: Number,
+                    notify: true,
+                    observer: '_headingDistanceChanged'
+                },
+            }
+        })
+    })();
+    </script>
+</dom-module>
