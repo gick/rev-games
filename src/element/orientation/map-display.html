@@ -159,6 +159,17 @@
                     id: item._id,
                 });
                 this.push('circles', circle);
+
+                var imageBounds = {
+                    north: 48.08708131538444,
+                    south: 48.08489537469288,
+                    east: -0.7558304071426392,
+                    west: -0.7605510950088501
+                },
+
+                mapOverlay = new google.maps.GroundOverlay('http://mylastdestination.eu/wp-content/uploads/2014/11/liege-belgium-city-map.jpg', imageBounds);
+                var map = this.get('mapsAPI')
+                mapOverlay.setMap(map);
             },
             _getMarkeIndexById: function(id) {
 

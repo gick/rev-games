@@ -471,16 +471,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.badgeNumber += value.detail;
             if (this.badgeNumber > 0) {
                 this.showBadge = false
-                if (!this.wideLayout) {
-                    this.$.toast.open()
-                }
+                this.$.toast.open()
             }
         },
 
         updateNotification: function() {
             this.badgeNumber = 0
             this.showBadge = true
-            this.currentPage = "/#" + this.page
+                this.currentPage = "/#" + this.page
         },
 
         properties: {
