@@ -90,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         [hidden] {
             display: none !important;
         }
-
+        
         footer {
             opacity: 0.7;
             position: fixed;
@@ -100,19 +100,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             bottom: 0;
             height: 40px;
         }
-
+        
         .big {
             --iron-icon-height: 40px;
             --iron-icon-width: 40px;
             margin-right: 50px;
         }
-
         </style>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
-        <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{item}}"></iron-ajax>
-
+        <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{inventoryItem}}"></iron-ajax>
         <app-drawer-layout force-narrow>
             <!-- Drawer content -->
             <app-drawer hidden id="drawer">
@@ -148,11 +146,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-login id="loginForm" status="{{status}}" name="login"></my-login>
-                    <my-inventory id="inventory" name="inventory" itemid="{{inventoryItemId}}" badgeNumber="{{badgeNumber}}"></my-inventory>
+                    <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
-                    <my-cluepoiinstruction mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
+                    <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
@@ -183,6 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-app',
         ready: function() {
+            this.inventoryItems=[]
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
@@ -199,11 +198,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#myQuestions').addEventListener('next-called-from-questions', this.nextCalledFromQuestion.bind(this))
             this.$$('#uginstructions').addEventListener('next-called-from-uginstructions', this.nextFromUgInstructions.bind(this))
             this.$$('#instructions').addEventListener('next-called-from-activity-instructions', this.nextFromInstructions.bind(this))
+            this.$$('#cluepoiinstruction').addEventListener('next-called-from-cluepoiinstruction', this.nextFromCluePOIInstruction.bind(this))
+
             this.showBadge = true
             this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
+        },
+        nextFromCluePOIInstruction: function() {
+            if (this.poiMap) {
+                this.page = "mapview"
+                return
+            }
+            if (this.poiQR) {
+                this.page = "qrcodescanner"
+                return
+            }
+            if (this.questions) {
+                this.page = "questions"
+                return
+            }
+            this.page = "feedback"
+
+
         },
         nextFromInstructions: function() {
             // From activity instruction, next page is either ug instruction, poi related, question related or feedback
@@ -254,11 +272,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         poiReached: function() {
             //if there are questions, go to question
-            this.inventoryItemId = this.currentItemId;
             if (this.question1) {
                 this.page = "questions"
             } else {
                 this.page = "feedback"
+            }
+            if(this.inventoryItem){
+                console.log(this.inventoryItem)
+                this.inventoryItems.push(this.inventoryItem[0])
             }
 
         },
@@ -282,6 +303,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.poireachedMessage = null
             this.currentActivity = null
             this.ugMkdown = null
+            this.inventoryItemId=null
             this.inventory = false
             this.poiClue = false
             this.poiMap = false
@@ -357,14 +379,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.poireachedMessage = unitGame.poiReachedMessage
             }
             if (unitGame.poiReachedInventory) {
-                this.currentItemId = unitGame.poiReachedInventory
+                this.inventoryItemId = unitGame.poiReachedInventory
+                this.$.inventoryLoader.generateRequest()
             }
             this.feedback = {}
             this.goToStartPage()
         },
         goToStartPage: function() {
-            if(this.instructions){
-                this.page="instructions"
+            if (this.instructions) {
+                this.page = "instructions"
                 return
             }
             if (this.uginstructions) {
@@ -528,7 +551,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.homeHidden = false
             }
-            this.set('route.path',page)
+            this.set('route.path', page)
 
         },
 
