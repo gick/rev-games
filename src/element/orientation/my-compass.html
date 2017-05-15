@@ -20,7 +20,6 @@
        	<div class="circle">
             <img style="height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;" id="compass" src="../images/compassContourn.png">
             <img style="height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;" id="compass" style$="{{computeCompass(angle)}}" src="../images/compassInterior.png">
-            <paper-ripple id="ripple" style="color: blue" center></paper-ripple>
         </div>
     </template>
     <script>
@@ -40,35 +39,7 @@
 
             },
 
-            _headingDistanceChanged: function(newDistance) {
-                if (newDistance > 1000) {
-                    this.async(function() {
-                        this.$.ripple.style = "color: blue"
-                        this.$.ripple.simulatedRipple()
-                        console.log("Far")
-                    }, 3000);
-                } else if (newDistance > 500) {
-                    this.async(function() {
-                        this.$.ripple.style = "color: green"
-                        this.$.ripple.simulatedRipple()
-                        console.log("Still far but less")
-                    }, 1000);
-                } else {
-                    this.async(function() {
-                        this.$.ripple.style = "color: red"
-                        this.$.ripple.simulatedRipple()
-                        console.log("Near")
-                    }, 250);
-                }
-            },
-
             properties: {
-
-                headingdistance: {
-                    type: Number,
-                    notify: true,
-                    observer: '_headingDistanceChanged'
-                },
 
                 headingdegree: {
                     type: Number,
