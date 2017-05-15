@@ -45,21 +45,17 @@
         is: 'my-inventory',
 
         ready: function() {
-            this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+           // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
         },
         testAddItem:function(){
           this.addItem("5915c3975c67e835fc17c925")
         },
-        handleResponse: function() {
-        	if (this.item && this.item[0]) {
-        		this.push('items', this.item[0])
+        addItem:function(item){
+          if (this.item && this.item[0]) {
+            this.push('items', this.item[0])
             this.fire('notificationLoaded', 1)
-        	}
+          }
           console.log(this.items)
-      	},
-        addItem:function(itemId){
-          this.inventoryItemId=itemId
-          this.$.ajaxLoader.generateRequest()
         }
         ,
       	checkItem: function(allItems) {
@@ -89,11 +85,6 @@
         	items: {
         		type: Array,
         		notify: true,
-        		value: function() {
-        			return [
-        				{type:"No item"}
-        			];
-        		}
         	},
 
           badgeNumber: {
