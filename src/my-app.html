@@ -154,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
-                    <my-feedback id="feedback" name="feedback"></my-feedback>
+                    <my-feedback id="feedback" mkdown="{{feedbackMkdown}}" name="feedback"></my-feedback>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -191,6 +191,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('ugStartPageLoaded', this.ugStartPageLoaded.bind(this))
+            this.$.currentMLG.addEventListener('feedbackMediaLoaded', this.feedbackMediaLoaded.bind(this))
+
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
             this.$.loginForm.addEventListener('userName', this.setupUserName.bind(this))
@@ -280,6 +282,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(this.inventoryItem){
                 console.log(this.inventoryItem)
                 this.inventoryItems.push(this.inventoryItem[0])
+                this.addNotification(1)
             }
 
         },
@@ -302,8 +305,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.poiIncorrectMessage = null
             this.poireachedMessage = null
             this.currentActivity = null
+            this.feedbackMkdown=null
             this.ugMkdown = null
             this.inventoryItemId=null
+            this.inventoryItem=null
             this.inventory = false
             this.poiClue = false
             this.poiMap = false
@@ -427,6 +432,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             if (item && item.detail && item.detail.mkdown) {
                 this.ugMkdown = item.detail.mkdown;
+            }
+
+        },
+        feedbackMediaLoaded: function(item) {
+
+            if (item && item.detail && item.detail.mkdown) {
+                this.feedbackMkdown = item.detail.mkdown;
             }
 
         },

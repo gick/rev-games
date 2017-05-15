@@ -130,6 +130,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
             next: function() {
                 this.fire('poi-reached-from-qrcode', null)
+                this.$.qrValid.hide()
+                this.$.qrInvalid.hide()
+                this.$.qrscan.clear()
+                this.isDisabled=false
             },
             _poiObserver: function(item) {
                 console.log(item)
@@ -198,6 +202,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             fileChanged: function(newfile) {
                 console.log(newfile)
+            },
+            resetElement:function(){
+
             },
             animationComplete: function(event, animHandler) {
                 switch (animHandler) {
