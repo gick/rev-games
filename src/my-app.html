@@ -60,11 +60,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             --paper-tabs-selection-bar-color: #fff;
         }
         
-        paper-badge {
-            --paper-badge-margin-left: 400%;
-            --paper-badge-margin-bottom: 10px;
-        }
-        
         .drawer-list {
             margin: 0 20px;
         }
@@ -410,7 +405,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.ugMkdown = item.detail.mkdown;
             }
 
-
         },
 
         setupStartPage: function(elem) {
@@ -542,22 +536,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         },
 
-        onLayoutChange: function(wide) {
-            var drawer = this.$.drawer;
-            if (wide && drawer.opened) {
-                drawer.opened = false;
-            }
-        },
-
         processBody: function() {
             return JSON.stringify({
                 id: this.currentActivity,
                 score: this.currentScore
             });
-        },
-
-        _homePage: function() {
-
         }
 
     });
