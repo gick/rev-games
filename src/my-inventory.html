@@ -30,7 +30,6 @@
         }
         </style>
         <div class="card">
-        <iron-ajax id="ajaxLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{item}}"></iron-ajax>
 
     		<template is="dom-repeat" items="{{items}}">
              <inventory-item inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>

@@ -111,6 +111,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
+        <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{item}}"></iron-ajax>
+
         <app-drawer-layout force-narrow>
             <!-- Drawer content -->
             <app-drawer hidden id="drawer">
