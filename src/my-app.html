@@ -89,6 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .inherit {
             color: inherit;
             background-color: inherit;
+            text-decoration: none;
         }
         
         [hidden] {
@@ -96,14 +97,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         footer {
-            background: green;
             opacity: 0.7;
             position: fixed;
             text-align: center;
             left: 0;
             right: 0;
             bottom: 0;
-            height: 25px;
+            height: 40px;
+        }
+
+        .big {
+            --iron-icon-height: 40px;
+            --iron-icon-width: 40px;
+            margin-right: 50px;
         }
 
         </style>
@@ -161,14 +167,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>
         <footer>
             <a on-click="updateNotification" href="/#login" class="inherit" tabindex="-1">
-                <span id="userProfile">[[userName]]</span>
+                <iron-icon id="userProfile" src="element/images/no_avatar.png" class="big"></iron-icon>
                 <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
             </a>
             <a href="/#activity" class="inherit">
-                <iron-icon hidden="{{homeHidden}}" icon="vaadin:home"></iron-icon>
+                <iron-icon hidden="{{homeHidden}}" icon="vaadin:home" class="big"></iron-icon>
             </a>
             <a href="{{currentPage}}" class="inherit">
-                <iron-icon hidden="{{!homeHidden}}" icon="vaadin:close-circle-o"></iron-icon>
+                <iron-icon hidden="{{!homeHidden}}" icon="vaadin:close-circle-o" class="big"></iron-icon>
             </a>
             <a href="/#mapview" class="inherit">
                 <iron-icon icon="vaadin:map-marker"></iron-icon>
@@ -362,7 +368,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         goToStartPage: function() {
             // From activity instruction, next page is either ug instruction, poi related, question related or feedback
             if(this.instructions){
-                this.page=instructions
+                this.page="instructions" 
                 return
             }
             if (this.uginstructions) {
