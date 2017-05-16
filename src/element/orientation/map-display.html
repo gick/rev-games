@@ -13,9 +13,12 @@
         <style>
 
         </style>
-        <iron-collapse opened="{{open}}">
-            <paper-button raised on-click="nextActivity">Next</paper-button>
-        </iron-collapse>
+        <paper-dialog id="poiReached">
+            <h2>POI Reached</h2>
+            <div class="buttons">
+                <paper-button raised on-click="nextActivity">Next</paper-button>
+            </div>
+        </paper-dialog>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
@@ -23,7 +26,9 @@
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
             <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass>
+            <paper-icon-button style="position: relative;float:right;margin-right: 30px" icon="vaadin:question-circle" on-click="showDistance">
+            </paper-icon-button>
+            <!-- <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass> !-->
         </google-map>
         <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
         <paper-toast id="userAtPOI" text="POI reached !"></paper-toast>
@@ -86,7 +91,7 @@
                 console.log("heading degree : " + this.headingDegree)
                 console.log("distance remaining : " + this.headingDistance)
             },
-            
+
             setControl: function() {
                 var map = this.get('mapsAPI');
                 this.showPOI(this.poi)
@@ -161,13 +166,13 @@
                 this.push('circles', circle);
 
                 var imageBounds = {
-                    north: 48.08688243445837,
-                    south: 48.084934794118055,
-                    east: -0.7553060352802277,
-                    west: -0.7604934275150299
-                },
+                        north: 48.08688243445837,
+                        south: 48.084934794118055,
+                        east: -0.7553060352802277,
+                        west: -0.7604934275150299
+                    },
 
-                mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
+                    mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
                 var map = this.get('mapsAPI')
                 mapOverlay.setMap(map);
             },
@@ -203,7 +208,7 @@
             userReachPOI: function(newDistance) {
                 if (newDistance <= this.circles[0].radius) {
                     this.$.userAtPOI.open()
-                    this.open = true
+                    this.$.poiReached.open()
                 }
             },
 
@@ -236,7 +241,7 @@
                     type: Object,
                     notify: true
                 },
-                
+
                 headingDistance: {
                     type: Number,
                     notify: true,

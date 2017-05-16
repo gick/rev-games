@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/geo-location/geo-location.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
@@ -161,19 +162,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-toast id="toast" text="New item earned !"></paper-toast>
         <iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>
         <footer>
-            <a on-click="updateNotification" href="/#login" class="inherit" tabindex="-1">
-                <iron-icon id="userProfile" src="element/images/no_avatar.png" class="big"></iron-icon>
-                <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
-            </a>
-            <a href="/#activity" class="inherit">
-                <iron-icon hidden="{{homeHidden}}" icon="vaadin:home" class="big"></iron-icon>
-            </a>
-            <a href="{{currentPage}}" class="inherit">
-                <iron-icon hidden="{{!homeHidden}}" icon="vaadin:close-circle-o" class="big"></iron-icon>
-            </a>
-            <a href="/#mapview" class="inherit">
-                <iron-icon icon="vaadin:map-marker"></iron-icon>
-            </a>
+            <iron-collapse id="collapser" opened="true">
+                <paper-icon-button icon="vaadin:angle-up" on-click="_toggleCollapse"></paper-icon-button>
+            </iron-collapse>
+            <iron-collapse id="footer">
+                <a on-click="updateNotification" href="/#login" class="inherit" tabindex="-1">
+                    <iron-icon id="userProfile" src="element/images/no_avatar.png" class="big"></iron-icon>
+                    <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
+                </a>
+                <a href="/#activity" class="inherit">
+                    <iron-icon hidden="{{homeHidden}}" icon="vaadin:home" class="big"></iron-icon>
+                </a>
+                <a href="{{currentPage}}" class="inherit">
+                    <iron-icon hidden="{{!homeHidden}}" icon="vaadin:close-circle-o" class="big"></iron-icon>
+                </a>
+                <a href="/#mapview" class="inherit">
+                    <iron-icon icon="vaadin:map-marker"></iron-icon>
+                </a>
+                <a on-click="_toggleCollapse" style="float:right" class="inherit" tabindex="-1">
+                    <iron-icon  icon="vaadin:angle-down" class="big"></iron-icon>
+                </a>
+
+            </iron-collapse>
         </footer>
     </template>
     <script>
@@ -208,6 +218,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
+        _toggleCollapse: function() {
+            this.$.footer.toggle()
+            this.$.collapser.toggle()
+        },
+
+        _icon: function(itemOpen) {
+            console.log(itemOpen)
+            return itemOpen ? 'arrow-circle-up-o' : 'arrow-circle-down-o';
+        },
         nextFromCluePOIInstruction: function() {
             if (this.poiMap) {
                 this.page = "mapview"
@@ -221,6 +240,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "questions"
                 return
             }
+            if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
@@ -247,6 +267,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "questions"
                 return
             }
+
+            if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
@@ -269,6 +291,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "questions"
                 return
             }
+
+            if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
         },
@@ -324,6 +348,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.questions = false
             this.startPage = false
             this.feedback = false
+            this.instructions=false
             this.uginstructions = false
 
 
@@ -335,13 +360,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#loginForm').setStatus(status)
         },
         nextCalledFromQuestion: function() {
-            this.page = "feedback"
             if (this.inventoryItem && this.inventoryItem[0]) {
+                console.log(this.inventoryItem)
                 this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
                 this.inventoryItem = null
             }
-
+            if(!this.$.currentMLG.hasNextUnitGame())
+            this.page = "feedback"
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
@@ -429,6 +455,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "questions"
                 return
             }
+
+            if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
