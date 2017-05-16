@@ -335,13 +335,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#loginForm').setStatus(status)
         },
         nextCalledFromQuestion: function() {
-            this.page = "feedback"
             if (this.inventoryItem && this.inventoryItem[0]) {
+                console.log(this.inventoryItem)
                 this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
                 this.inventoryItem = null
             }
 
+            this.page = "feedback"
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
