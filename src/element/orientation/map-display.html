@@ -7,6 +7,7 @@
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="my-orientation.html">
 <link rel="import" href="my-compass.html">
+<link rel="import" href="my-ping.html">
 <dom-module id="map-display">
     <template>
         <style>
@@ -158,6 +159,17 @@
                     id: item._id,
                 });
                 this.push('circles', circle);
+
+                var imageBounds = {
+                    north: 48.08688243445837,
+                    south: 48.084934794118055,
+                    east: -0.7553060352802277,
+                    west: -0.7604934275150299
+                },
+
+                mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
+                var map = this.get('mapsAPI')
+                mapOverlay.setMap(map);
             },
             _getMarkeIndexById: function(id) {
 
