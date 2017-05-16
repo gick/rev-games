@@ -27,7 +27,7 @@ Simple compass that rotate according to the angle parameter
         <app-toolbar>
         <iron-icon icon="vaadin:gamepad" style="margin-right: 25px;"></iron-icon>
         <div main-title><h1>Activities</h1></div>
-        <paper-dropdown-menu label="Type">
+       <!-- <paper-dropdown-menu hidden label="Type">
           <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{searchString}}">
             <paper-item value="">Tous</paper-item>
             <paper-item value="culinaire">Culinaire</paper-item>
@@ -35,14 +35,14 @@ Simple compass that rotate according to the angle parameter
             <paper-item value="tresor">Trésor</paper-item>
           </paper-listbox>
         </paper-dropdown-menu>
-        <paper-dropdown-menu label="Order">
+        <paper-dropdown-menu hidden label="Order">
           <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
             <paper-item value="A-Z">A-Z</paper-item>
             <paper-item value="Note">Note</paper-item>
             <paper-item value="Proximité">Proximité</paper-item>
             <paper-item value="Durée">Durée</paper-item>
           </paper-listbox>
-        </paper-dropdown-menu>
+        </paper-dropdown-menu> !-->
       </app-toolbar>
         <paper-listbox>
             <iron-ajax url="/listActivities" handle-as="json" last-response="{{activities}}" id="ajaxLoader"></iron-ajax>
