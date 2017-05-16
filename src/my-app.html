@@ -452,9 +452,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         setupStartPage: function(elem) {
             this.startPage = true;
+            this.instructions=true
             if (elem && elem.detail && elem.detail.mkdown) {
                 this.mkdown = elem.detail.mkdown;
             }
+            console.log('start page loaded')
         },
         setupActivity: function(elem) {
             this.currentMLG = elem.detail;
