@@ -80,9 +80,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setQuestion3: function() {
             if (this.question3) {
-                this.isQuestion1 = false
-                this.isQuestion2 = false
-                this.isQuestion3 = true
+                this.$.quest2.toggle()
+                this.$.quest3.toggle()
             } else {
                 this.nextActivity()
             }
