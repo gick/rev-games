@@ -28,6 +28,15 @@
             <div style="display:flex;flex-direction: row;text-align: center;">
                 <img class="image" alt="User avatar." src="../images/no_avatar.png">
                 <div role="listbox">
+            <div style="display:flex;flex-direction: row;justify-content: space-between;">
+                <div style="display:flex;flex-direction: column;align-items: center;">
+                    <img class="image" alt="User avatar." src="../images/no_avatar.png"> {{name}}
+                </div>
+                <a href="/#inventory">
+                    <paper-icon-button class="image" src="../images/bag.png"></paper-icon-button>
+                </a>
+                <!--<div role="listbox">
+>>>>>>> Stashed changes
                     <paper-icon-item>
                         <iron-icon icon="social:person" item-icon></iron-icon>
                         {{name}}
@@ -36,14 +45,11 @@
                         <iron-icon icon="icons:mail" item-icon></iron-icon>
                         {{email}}
                     </paper-icon-item>
-                </div>
+                </div> -->
             </div>
             <template is="dom-repeat" items="{{badges}}" as item>
                 <user-badge></user-badge>
             </template>
-            <a href="/#inventory">
-            <paper-icon-button class="image" src="../images/bag.png"></paper-icon-button>
-            </a>
             <paper-icon-item>
                 <paper-item>
                     <paper-button on-click="logoff" raised>Disconnect</paper-button>
@@ -64,9 +70,9 @@
 
         ready: function() {},
         properties: {
-            badges:{
-                type:Array,
-                value:[]
+            badges: {
+                type: Array,
+                value: []
             },
             avatar: {
                 type: String,
