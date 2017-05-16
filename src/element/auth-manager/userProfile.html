@@ -25,17 +25,15 @@
         </style>
         <div class="card">
             <h1 class="insidePaper">User profile</h1>
-            <div style="display:flex;flex-direction: row;text-align: center;">
-                <img class="image" alt="User avatar." src="../images/no_avatar.png">
-                <div role="listbox">
-            <div style="display:flex;flex-direction: row;justify-content: space-between;">
-                <div style="display:flex;flex-direction: column;align-items: center;">
-                    <img class="image" alt="User avatar." src="../images/no_avatar.png"> {{name}}
-                </div>
+            <div style="display:inline-flex;flex-direction: column;align-items: center;">
+                <img class="image" alt="User avatar." src="../images/no_avatar.png"> {{name}}
+            </div>
+            <div style="display:inline-flex;flex-direction: column;align-items: center;">
                 <a href="/#inventory">
-                    <paper-icon-button class="image" src="../images/bag.png"></paper-icon-button>
-                </a>
-                <!--<div role="listbox">
+                    <img class="image" src="../images/bag.png"></a>
+                Inventory
+            </div>
+            <!--<div role="listbox">
 >>>>>>> Stashed changes
                     <paper-icon-item>
                         <iron-icon icon="social:person" item-icon></iron-icon>
@@ -46,15 +44,11 @@
                         {{email}}
                     </paper-icon-item>
                 </div> -->
-            </div>
-            <template is="dom-repeat" items="{{badges}}" as item>
-                <user-badge></user-badge>
-            </template>
-            <paper-icon-item>
-                <paper-item>
-                    <paper-button on-click="logoff" raised>Disconnect</paper-button>
-                </paper-item>
-            </paper-icon-item>
+        </div>
+        <template is="dom-repeat" items="{{badges}}" as item>
+            <user-badge></user-badge>
+        </template>
+                <paper-button style="width:100%;" on-click="logoff" raised>Disconnect</paper-button>
         </div>
     </template>
 </dom-module>
