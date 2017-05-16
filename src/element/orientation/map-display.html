@@ -13,9 +13,10 @@
         <style>
 
         </style>
-        <iron-collapse opened="{{open}}">
+        <paper-dialog id="poiReached">
+        POI Reached
             <paper-button raised on-click="nextActivity">Next</paper-button>
-        </iron-collapse>
+        </paper-dialog>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
@@ -23,7 +24,9 @@
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
             <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass>
+            <paper-icon-button style="position: relative" icon="vaadin:question-circle" on-click="showDistance">
+            </paper-icon-button>
+           <!-- <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass> !-->
         </google-map>
         <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
         <paper-toast id="userAtPOI" text="POI reached !"></paper-toast>
@@ -203,7 +206,7 @@
             userReachPOI: function(newDistance) {
                 if (newDistance <= this.circles[0].radius) {
                     this.$.userAtPOI.open()
-                    this.open = true
+                    this.poiReached.open()
                 }
             },
 
