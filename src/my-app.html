@@ -279,10 +279,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.page = "feedback"
             }
-            if (this.inventoryItem) {
+            if (this.inventoryItem && this.inventoryItem[0]) {
                 console.log(this.inventoryItem)
                 this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
+                this.inventoryItem = null
             }
 
         },
@@ -298,7 +299,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.resetActivity()
                 this.splice("inventoryItems", 0, this.inventoryItems.length)
                 this.$.toast.hide()
-                this.badgeNumber=0
+                this.badgeNumber = 0
                 this.page = "activity"
             }
         },
@@ -335,6 +336,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         nextCalledFromQuestion: function() {
             this.page = "feedback"
+            if (this.inventoryItem && this.inventoryItem[0]) {
+                this.push('inventoryItems', this.inventoryItem[0])
+                this.addNotification(1)
+                this.inventoryItem = null
+            }
+
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
@@ -452,7 +459,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         setupStartPage: function(elem) {
             this.startPage = true;
-            this.instructions=true
+            this.instructions = true
             if (elem && elem.detail && elem.detail.mkdown) {
                 this.mkdown = elem.detail.mkdown;
             }
@@ -487,7 +494,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         updateNotification: function() {
             this.badgeNumber = 0
             this.showBadge = true
-                this.currentPage = "/#" + this.page
+            this.currentPage = "/#" + this.page
         },
 
         properties: {
