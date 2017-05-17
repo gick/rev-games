@@ -118,6 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <!--<template is="dom-if" if="{{inventory}}">-->
+                    <a name="badge" href="/#badge">Badge</a>
                     <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span><paper-badge for="test" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge></a>
                     <!--</template>-->
                     <a name="activity" href="/#activity">Activity</a>
@@ -147,6 +148,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-login id="loginForm" status="{{status}}" name="login"></my-login>
+                    <my-badge id="badge" name="badge"></my-badge>
                     <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>

@@ -10,8 +10,11 @@
             height: 150px; 
         }
         </style>
-        <iron-image id="badgeImage" preload placeholder="../src/element/images/no_badge.png" fade class="image" alt="{{badgeText}}">
-        </iron-image>
+        <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
+        <marked-element markdown="{{itemMkdown}}">
+                <div class="markdown-html"></div>
+        </marked-element>
+        <div>{{badgeText}}</div>
     </template>
 </dom-module>
 <script>
@@ -19,21 +22,38 @@
     'use strict';
     Polymer({
         is: 'user-badge',
-        _loadImage:function(imageId){
-            this.$.badgeImage.src=imageId
+        _loadPage: function(itemMediaId) {
+            if (itemMediaId) {
+                this.url = '/staticmedia/' + itemMediaId
+                this.$.ajaxLoader.generateRequest()
+            }
         },
-        ready: function() {},
+        handleResponse: function(response) {
+            this.itemMkdown = response.detail.__data__.response[0].mkdown
+        },
+        ready: function() {
+            this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+
+            if (!this.badgeMediaid) {
+                this.itemMkdown = "<img src='../../src/element/images/no_badge.png'>"
+            }
+
+        },
         properties: {
-            badgeId: {
+            badgeMediaid: {
                 type: String,
                 notify: true,
-                observer:'_loadImage',
+                observer: '_loadPage',
+            },
+            label: {
+                type: String,
+                notify: true,
             },
             badgeText: {
                 type: String,
-                notify: true
+                notify: true,
             },
-            badgeInfo: {
+            badgeId: {
                 type: String,
                 notify: true,
             }
