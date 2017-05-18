@@ -11,6 +11,7 @@
         }
         </style>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
+        <div>{{label}}</div>
         <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
         </marked-element>
