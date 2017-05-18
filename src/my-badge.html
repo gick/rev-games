@@ -29,9 +29,17 @@
         }
         </style>
         <div class="card">
-    		<template is="dom-repeat" items="{{items}}">
-             <user-badge badge-mediaid="{{item.itemPageId}}" label="{{item.label}}" badge-text="{{item.badgeText}}" badge-id="{{item._id}}"></user-badge>
-    		</template>
+        <iron-ajax auto id="listBadgeId" url="/user/badges" handle-as="json" last-response="{{badgeId}}"></iron-ajax>
+          <template is="dom-repeat" items="{{badgeId}}" as="badgeId">
+            <iron-ajax auto id="badgeAcquisLoader" url="/badge/{{badgeId.id}}" handle-as="json" last-response="{{badgeAcquis}}"></iron-ajax>
+            <template is="dom-repeat" items="{{badgeAcquis}}" as="acquis">
+              <user-badge badge-mediaid="{{acquis.badgePageId}}" label="{{acquis.label}}" badge-text="{{acquis.badgeText}}" badge-id="{{acquis._id}}"></user-badge>
+            </template>
+          </template>
+        <template is="dom-repeat" items="{{items}}">
+          <user-badge badge-mediaid="{{item.badgePageId}}" label="{{item.label}}" badge-text="{{item.badgeText}}" badge-id="{{item._id}}"></user-badge>
+        </template>
+        </template>
     	</div>
     </template>
 </dom-module>
@@ -42,6 +50,8 @@
         is: 'my-badge',
 
         properties: {
+
+
 
         }
     })

@@ -5,16 +5,29 @@
     <template>
         <style type="text/css">
         .image {
-            border-radius: 50%;
             width: 150px;
             height: 150px; 
+        }
+
+        .markdown-html img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
+
+        .badge {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
         }
         </style>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
         <div>{{label}}</div>
+        <div class="badge">
         <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
         </marked-element>
+        </div>
         <div>{{badgeText}}</div>
     </template>
 </dom-module>
@@ -23,9 +36,9 @@
     'use strict';
     Polymer({
         is: 'user-badge',
-        _loadPage: function(itemMediaId) {
-            if (itemMediaId) {
-                this.url = '/staticmedia/' + itemMediaId
+        _loadPage: function(badgeMediaid) {
+            if (badgeMediaid) {
+                this.url = '/staticmedia/' + badgeMediaid
                 this.$.ajaxLoader.generateRequest()
             }
         },
