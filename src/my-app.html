@@ -112,12 +112,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{inventoryItem}}"></iron-ajax>
+        <iron-ajax id="badgeLoader" url="/badge/{{badgeId}}" handle-as="json" last-response="{{badgeItem}}"></iron-ajax>
         <app-drawer-layout force-narrow>
             <!-- Drawer content -->
             <app-drawer hidden id="drawer">
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <!--<template is="dom-if" if="{{inventory}}">-->
+                    <a name="badge" href="/#badge">Badge</a>
                     <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span><paper-badge for="test" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge></a>
                     <!--</template>-->
                     <a name="activity" href="/#activity">Activity</a>
@@ -147,6 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-login id="loginForm" status="{{status}}" name="login"></my-login>
+                    <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
                     <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
@@ -191,6 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'my-app',
         ready: function() {
             this.inventoryItems = []
+            this.badgeItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
@@ -324,6 +328,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.resetActivity()
                 this.$.currentMLG.setupNextUnitGame();
             } else {
+                console.log(this.badgeItem)
+                this.push('badgeItems', this.badgeItem[0])
+                this.badgeItem = null
                 this.resetActivity()
                 this.splice("inventoryItems", 0, this.inventoryItems.length)
                 this.$.toast.hide()
@@ -354,7 +361,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.feedback = false
             this.instructions = false
             this.uginstructions = false
-
+            this.badgeId = null
+            this.badgeItem = null
 
         },
         setupScoreToBeat: function(score) {
@@ -504,6 +512,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.currentMLG = elem.detail;
             this.currentActivity = elem.detail._id
             this.$.currentMLG.processMLG(this.currentMLG);
+            if (elem.detail.badgeId) {
+                this.badgeId = elem.detail.badgeId
+                this.$.badgeLoader.generateRequest()
+            }
+            
         },
 
         setupUserName: function(elem) {
