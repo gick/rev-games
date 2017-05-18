@@ -71,13 +71,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="card">
                 <h1>QR codes</h1>
                 <iron-collapse opened="{{!isDisabled}}">
-                    <file-upload hide-file-list progress-hidden  raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Scan qr code
+                    <file-upload raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Scan QR code
                     </file-upload>
                 </iron-collapse>
                 <paper-dialog id="dialog" class="size">
                     <div id="scanBar" style="width:84%;height:20px;opacity:0.6;background-color:red"></div>
                     <img src="./element/images/qrcode.png" class="fitting">
                 </paper-dialog>
+                <iron-collapse id="processing">
+                    <img src="./element/images/processing.gif" style="width:200px;">
+                </iron-collapse>
+
                 <iron-collapse id="qrInvalid">
                     <div>{{poiincorrectMessage}}</div>
                     <paper-button raised on-click="retry">Retry</paper-button>
@@ -98,11 +102,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'my-qrcodescanner',
             ready: function() {
                 this.$.qrscan.addEventListener('success', this.qrscanListener.bind(this))
+                this.$.qrscan.addEventListener('before-upload', this.showProcess.bind(this))
+                this.$.qrscan.addEventListener('error', this.showError.bind(this))
+
                 this.isDisabled = false
-                console.log(this.poi)
+            },
+            showError:function(){
+                this.$.processing.hide()
+                this.$.qrValid.hide()
+                this.$.qrInvalid.hide()
+                this.$.uploadFailed.show()
+            }
+
+            ,
+            showProcess:function(){
+                this.$.processing.show()
+
             },
             qrscanListener: function(item) {
                 this.$.dialog.open();
+                this.$.processing.hide()
+
                 this.playAnimation('down', 'down');
                 if (item && item.detail && item.detail.xhr && item.detail.xhr.response) {
                     var code = item.detail.xhr.response
@@ -122,6 +142,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
             retry: function() {
+                this.$.processing.hide()
+
                 this.$.qrInvalid.hide()
                 this.$.qrValid.hide()
                 this.$.uploadFailed.hide()
@@ -130,6 +152,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             next: function() {
                 this.fire('poi-reached-from-qrcode', null)
                 this.$.qrValid.hide()
+                this.$.processing.hide()
+
                 this.$.qrInvalid.hide()
                 this.$.qrscan.clear()
                 this.isDisabled=false

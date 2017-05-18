@@ -22,6 +22,9 @@
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
+            <iron-collapse opened="{{poiReadched}}">
+                <paper-button style="position: relative;float:right;margin-right: 30px" raised on-click="nextActivity">Next</paper-button>
+            </iron-collapse>
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
@@ -50,7 +53,7 @@
                 if (this.poi)
                     this.showPOI(this.poi)
             },
-
+            
             CenterControl: function(controlDiv, map, self) {
 
                 // Set CSS for the control border.
@@ -120,6 +123,14 @@
                     this.removeArea(this.circles[0]);
                 }
             },
+            removeAllMarkers: function() {
+                for (var i = 0; i < this.markers.length; i++) {
+                    this.splice('markers', 0, 1);
+                }
+                this.removeAllCircles();
+
+            },
+
             findIndex: function(item) {
                 for (var i = 0; i < this.markers.length; i++) {
                     if (this.markers[i].id === item._id) {
@@ -195,6 +206,13 @@
 
                     }
                 }
+            },
+            removeAllCircles: function(item) {
+                var circles = this.get('circles')
+                for (var i = 0; i < circles.length; i++) {
+                    circles[i].setMap(null);
+                }
+                this.splice('circles',0,circles.length)
             },
 
             showDistance: function() {

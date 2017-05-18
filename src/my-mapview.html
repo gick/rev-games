@@ -57,7 +57,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         resetMap:function(){
             if(this.$.map && this.$.map.removeMarker){
-                this.$.map.removeMarker()
+                this.$.map.removeAllMarkers()
+                this.poi=null
+            }
+        },
+        setPOI:function(){
+            //called if the map component has already been loaded
+            if(this.$.map && this.$.map.mapready){
+                this.$.map.mapready()
             }
         },
         updateCoord: function(e) {
