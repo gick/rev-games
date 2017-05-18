@@ -53,7 +53,7 @@
                 if (this.poi)
                     this.showPOI(this.poi)
             },
-
+            
             CenterControl: function(controlDiv, map, self) {
 
                 // Set CSS for the control border.
@@ -123,6 +123,14 @@
                     this.removeArea(this.circles[0]);
                 }
             },
+            removeAllMarkers: function() {
+                for (var i = 0; i < this.markers.length; i++) {
+                    this.splice('markers', 0, 1);
+                }
+                this.removeAllCircles();
+
+            },
+
             findIndex: function(item) {
                 for (var i = 0; i < this.markers.length; i++) {
                     if (this.markers[i].id === item._id) {
@@ -198,6 +206,13 @@
 
                     }
                 }
+            },
+            removeAllCircles: function(item) {
+                var circles = this.get('circles')
+                for (var i = 0; i < circles.length; i++) {
+                    circles[i].setMap(null);
+                }
+                this.splice('circles',0,circles.length)
             },
 
             showDistance: function() {

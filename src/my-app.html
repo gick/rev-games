@@ -180,9 +180,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-icon icon="vaadin:map-marker"></iron-icon>
                 </a>
                 <a on-click="_toggleCollapse" style="float:right" class="inherit" tabindex="-1">
-                    <iron-icon  icon="vaadin:angle-down" class="big"></iron-icon>
+                    <iron-icon icon="vaadin:angle-down" class="big"></iron-icon>
                 </a>
-
             </iron-collapse>
         </footer>
     </template>
@@ -218,6 +217,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
+        restartPOIMap: function() {
+            if (this.$$('#map') && this.$$('#map').resetMap) {
+                this.$$('#map').resetMap()
+            }
+        },
         _toggleCollapse: function() {
             this.$.footer.toggle()
             this.$.collapser.toggle()
@@ -240,7 +244,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "questions"
                 return
             }
-         //   if(!this.$.currentMLG.hasNextUnitGame())
+            //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
@@ -268,7 +272,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return
             }
 
-         //   if(!this.$.currentMLG.hasNextUnitGame())
+            //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
@@ -292,7 +296,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return
             }
 
-         //   if(!this.$.currentMLG.hasNextUnitGame())
+            //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
         },
@@ -348,7 +352,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.questions = false
             this.startPage = false
             this.feedback = false
-            this.instructions=false
+            this.instructions = false
             this.uginstructions = false
 
 
@@ -366,15 +370,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addNotification(1)
                 this.inventoryItem = null
             }
-         //   if(!this.$.currentMLG.hasNextUnitGame())
+            //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
-
-                this.poi = item.detail;
                 if (this.$$('#map') && this.$$('#map').resetMap) {
                     this.$$('#map').resetMap()
+                }
+
+                this.poi = item.detail;
+                if (this.$$('#map') && this.$$('#map').setPOI()) {
+                    this.$$('#map').setPOI()
                 }
             }
         },
@@ -456,7 +463,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return
             }
 
-         //   if(!this.$.currentMLG.hasNextUnitGame())
+            //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
 
 
