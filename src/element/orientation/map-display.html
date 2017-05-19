@@ -19,6 +19,14 @@
                 <paper-button raised on-click="nextActivity">Next</paper-button>
             </div>
         </paper-dialog>
+        <paper-dialog id="docPage">
+            <marked-element markdown="{{docMkdown}}">
+                <div class="markdown-html"></div>
+            </marked-element>
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>OK</paper-button>
+            </div>
+        </paper-dialog>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
@@ -29,8 +37,11 @@
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
             <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            <paper-icon-button style="position: relative;float:right;margin-right: 30px" icon="vaadin:question-circle" on-click="showDistance">
+            <paper-icon-button style="position: relative;float:right;margin-right: 30px" icon="vaadin:flag-checkered" on-click="showDistance"></paper-icon-button>
+            <div>
+            <paper-icon-button  style="position: relative;float:right;margin-right: 50px"  icon="vaadin:question-circle" on-click="showInstruction">
             </paper-icon-button>
+            </div>
             <!-- <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass> !-->
         </google-map>
         <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
@@ -45,15 +56,24 @@
             ready: function() {
                 this.markers = [];
                 this.circles = [];
-
                 this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
+            },
+            _hasInstruction:function(){
+                return false
+                if(!this.docMkdown){
+                    return true
+                }
+                return false
+            },
+            showInstruction:function(){
+                this.$.docPage.open()
             },
             mapready: function() {
                 if (this.poi)
                     this.showPOI(this.poi)
             },
-            
+
             CenterControl: function(controlDiv, map, self) {
 
                 // Set CSS for the control border.
@@ -212,7 +232,7 @@
                 for (var i = 0; i < circles.length; i++) {
                     circles[i].setMap(null);
                 }
-                this.splice('circles',0,circles.length)
+                this.splice('circles', 0, circles.length)
             },
 
             showDistance: function() {
@@ -265,7 +285,10 @@
                     notify: true,
                     observer: 'userReachPOI'
                 },
-
+                docMkdown:{
+                    type:String,
+                    notify:true,    
+                },
                 headingDegree: {
                     type: Number,
                     notify: true

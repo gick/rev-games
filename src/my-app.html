@@ -155,7 +155,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                     <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                    <my-mapview poi="{{poi}}" id="map" name="mapview"></my-mapview>
+                    <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
                     <my-feedback id="feedback" mkdown="{{feedbackMkdown}}" name="feedback"></my-feedback>
@@ -198,6 +198,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.badgeItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
+            this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
+
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
             this.$.inventory.addEventListener('notificationLoaded', this.addNotification.bind(this))
             this.$.currentMLG.addEventListener('unitgameLoaded', this.setupUnitgame.bind(this))
@@ -205,7 +207,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('ugStartPageLoaded', this.ugStartPageLoaded.bind(this))
-            this.$.currentMLG.addEventListener('feedbackMediaLoaded', this.feedbackMediaLoaded.bind(this))
 
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
@@ -222,6 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
         },
+
         restartPOIMap: function() {
             if (this.$$('#map') && this.$$('#map').resetMap) {
                 this.$$('#map').resetMap()
@@ -313,7 +315,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "feedback"
             }
             if (this.inventoryItem && this.inventoryItem[0]) {
-                console.log(this.inventoryItem)
                 this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
                 this.inventoryItem = null
@@ -388,7 +389,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
 
                 this.poi = item.detail;
-                if (this.$$('#map') && this.$$('#map').setPOI()) {
+                if (this.$$('#map') && this.$$('#map').setPOI) {
                     this.$$('#map').setPOI()
                 }
             }
@@ -492,7 +493,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
         },
-        feedbackMediaLoaded: function(item) {
+        setupFeedbackPage: function(item) {
 
             if (item && item.detail && item.detail.mkdown) {
                 this.feedbackMkdown = item.detail.mkdown;
@@ -509,6 +510,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('start page loaded')
         },
         setupActivity: function(elem) {
+            this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
+            
             this.currentMLG = elem.detail;
             this.currentActivity = elem.detail._id
             this.$.currentMLG.processMLG(this.currentMLG);
