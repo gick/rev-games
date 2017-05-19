@@ -43,12 +43,15 @@
                 status.logged = false;
                 status.name = '';
                 status.status = '';
+                status.badges = [];
+                status.scores = [];
 
             } else {
                 status.logged = true;
                 status.name = response.user.name;
                 status.isadmin = response.user.isadmin;
                 status.email = response.user.email;
+                status.badges = response.user.badges;
                 status.scores = response.user.scores;
             }
             this.status = status
@@ -62,12 +65,15 @@
                 status.logged = false;
                 status.name = '';
                 status.status = '';
+                status.badges = [];
+                status.scores = [];
                 this.$.loginFailed.open();
             } else {
                 status.logged = true;
                 status.name = response.user.name;
                 status.isadmin = response.user.isadmin;
                 status.email = response.user.email;
+                status.badges = response.user.badges;
                 status.scores = response.user.scores;
             }
             this.status = status
