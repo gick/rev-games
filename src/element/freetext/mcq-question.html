@@ -67,11 +67,10 @@
                     </iron-collapse>
                     <template is="dom-if" if="!{{preview}}">
                         <div style="margin-top:40px" class="card-actions">
-                            <paper-button raised on-click="validate">Validate</paper-button>
+                            <paper-button raised on-click="validateOrNext">{{buttonText}}</paper-button>
                             <template is="dom-if" if="{{mediaId}}" restamp=true>
                                 <paper-button raised on-click="showClue">Show clue</paper-button>
                             </template>
-                            <paper-button raised on-click="nextQuestion">Next</paper-button>
                         </div>
                     </template>
                 </div>
@@ -84,26 +83,33 @@
         Polymer({
             is: 'mcq-question',
             ready: function() {
-                // this.hasClue=false
+                this.buttonText = "Validate"
+                    // this.hasClue=false
             },
-            nextQuestion:function(){
-                this.fire('nextQuestion',null)
+            nextQuestion: function() {
+                this.fire('nextQuestion', null)
             },
-            setmkDown:function(){
-                this.clueMkdown=this.staticElement[0].mkdown
+            setmkDown: function() {
+                this.clueMkdown = this.staticElement[0].mkdown
             },
             getClue: function() {
                 this.set('needClue', !this.needClue);
             },
 
-            validate: function() {
-
-                if (this.$.mcq.selectedItem && this.$.mcq.selectedItem.innerText && this.$.mcq.selectedItem.innerText.trim() == this.correctAnswer.trim()) {
-                    this.$.correct.show();
-                    this.$.wrong.hide();
-                } else {
-                    this.$.wrong.show();
-                    this.$.correct.hide();
+            validateOrNext: function() {
+                if (this.buttonText == "Validate") {
+                    if (this.$.mcq.selectedItem && this.$.mcq.selectedItem.innerText && this.$.mcq.selectedItem.innerText.trim() == this.correctAnswer.trim()) {
+                        this.$.correct.show();
+                        this.$.wrong.hide();
+                    } else {
+                        this.$.wrong.show();
+                        this.$.correct.hide();
+                    }
+                    this.buttonText = "Next"
+                }
+                else{
+                    this.nextQuestion()
+                    this.buttonText="Validate"
                 }
             },
             _mediaIdObserver: function(newval) {

@@ -44,7 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
             <div>
-                <map-display id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
+                <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
             </div>
         </div>
     </template>
@@ -52,18 +52,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
         ready: function() {
             this.$.loc.addEventListener('geo-response', this.updateCoord.bind(this));
-            this.addEventListener('custom',function(){console.log('captured')})
-
+            console.log(this.docMkdown)
         },
-        resetMap:function(){
-            if(this.$.map && this.$.map.removeMarker){
+        resetMap: function() {
+            if (this.$.map && this.$.map.removeMarker) {
                 this.$.map.removeAllMarkers()
-                this.poi=null
+                this.poi = null
             }
         },
-        setPOI:function(){
+        setPOI: function() {
             //called if the map component has already been loaded
-            if(this.$.map && this.$.map.mapready){
+            if (this.$.map && this.$.map.mapready) {
                 this.$.map.mapready()
             }
         },
@@ -78,6 +77,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         property: {
             poi: {
                 type: Object,
+                notify: true,
+            },
+            docMkdown: {
+                type: String,
                 notify: true,
             }
 
