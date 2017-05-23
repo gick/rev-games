@@ -13,39 +13,14 @@
         <style>
 
         </style>
-        <paper-dialog id="poiReached">
-            <h2>POI Reached</h2>
-            <div class="buttons">
-                <paper-button raised on-click="nextActivity">Next</paper-button>
-            </div>
-        </paper-dialog>
-        <paper-dialog id="docPage">
-            <marked-element markdown="{{docMkdown}}">
-                <div class="markdown-html"></div>
-            </marked-element>
-            <div class="buttons">
-                <paper-button dialog-confirm autofocus>OK</paper-button>
-            </div>
-        </paper-dialog>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
-            <iron-collapse opened="{{poiReadched}}">
-                <paper-button style="position: relative;float:right;margin-right: 30px" raised on-click="nextActivity">Next</paper-button>
-            </iron-collapse>
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
             <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-            <paper-icon-button style="position: relative;float:right;margin-right: 30px" icon="vaadin:flag-checkered" on-click="showDistance"></paper-icon-button>
-            <div>
-            <paper-icon-button  style="position: relative;float:right;margin-right: 50px"  icon="vaadin:question-circle" on-click="showInstruction">
-            </paper-icon-button>
-            </div>
-            <!-- <my-compass style="position: relative"  on-click="showDistance" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass> !-->
-        </google-map>
-        <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
-        <paper-toast id="userAtPOI" text="POI reached !"></paper-toast>
+        </google-map>        
     </template>
     <script>
     (function() {
@@ -59,16 +34,7 @@
                 this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
             },
-            _hasInstruction:function(){
-                return false
-                if(!this.docMkdown){
-                    return true
-                }
-                return false
-            },
-            showInstruction:function(){
-                this.$.docPage.open()
-            },
+
             mapready: function() {
                 if (this.poi)
                     this.showPOI(this.poi)
@@ -107,12 +73,6 @@
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
                 console.log(coord)
-                var _userCoord = new google.maps.LatLng(this.userCoord.lat, this.userCoord.lng);
-                var _POICoord = new google.maps.LatLng(this.markers[0].latitude, this.markers[0].longitude);
-                this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _POICoord)
-                this.headingDegree = google.maps.geometry.spherical.computeHeading(_userCoord, _POICoord)
-                console.log("heading degree : " + this.headingDegree)
-                console.log("distance remaining : " + this.headingDistance)
             },
 
             setControl: function() {
@@ -235,26 +195,6 @@
                 this.splice('circles', 0, circles.length)
             },
 
-            showDistance: function() {
-                this.$.distToast.open()
-            },
-
-            _computeDistance: function(distance) {
-                return "Remaining distance : " + Math.round(distance) + " meters."
-            },
-
-            userReachPOI: function(newDistance) {
-                if (newDistance <= this.circles[0].radius) {
-                    this.$.userAtPOI.open()
-                    this.$.poiReached.open()
-                }
-            },
-
-            nextActivity: function() {
-                this.open = false;
-                this.fire('poi-reached-from-mapview', null);
-            },
-
             properties: {
                 hasCoord: {
                     type: Boolean,
@@ -277,20 +217,6 @@
                 },
                 poi: {
                     type: Object,
-                    notify: true
-                },
-
-                headingDistance: {
-                    type: Number,
-                    notify: true,
-                    observer: 'userReachPOI'
-                },
-                docMkdown:{
-                    type:String,
-                    notify:true,    
-                },
-                headingDegree: {
-                    type: Number,
                     notify: true
                 }
             }
