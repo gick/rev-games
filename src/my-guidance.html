@@ -40,6 +40,7 @@
             color: #212121;
         }
         </style>
+        <geo-location high-accuracy id="initialLoc"></geo-location>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
@@ -68,7 +69,7 @@
                     <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
                 </template>
                 <template is="dom-if" if="{{isPing}}" restamp>
-                    <my-ping style="position: relative" on-click="showDistance" headingdistance="{{headingDistance}}"></my-compass>
+                    <my-ping style="position: relative" on-click="showDistance" initalheadingdistance="{{initialHeadingDistance}}" headingdistance="{{headingDistance}}"></my-compass>
                 </template>
                 <template is="dom-if" if="{{isCompass}}" restamp>
                     <my-compass style="position: relative"  angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass>
@@ -83,7 +84,14 @@
 
         ready: function() {
             this.$.loc.addEventListener('geo-response', this.updateCoord.bind(this));
+            this.$.initialLoc.addEventListener('geo-response', this.updateInitCoord.bind(this));
             console.log(this.docMkdown)
+        },
+
+        updateInitCoord: function(e) {
+            var _userCoord = new google.maps.LatLng(e.detail.latitude, e.detail.longitude)
+            var _POICoord = new google.maps.LatLng(poi.latitude, poi.longitude)
+            this.initialHeadingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _POICoord)
         },
 
         resetMap: function() {
@@ -165,7 +173,12 @@
             headingDegree: {
                 type: Number,
                 notify: true
-            }
+            },
+
+            initialHeadingDistance: {
+                type: Number,
+                notify: true
+            },
 
         }
     });
