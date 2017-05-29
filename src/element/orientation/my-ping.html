@@ -8,17 +8,19 @@
             display: inline-block;
             position: relative;
             border-radius: 50%;
-            height:50%; 
-            width: 25%;
+            height:250px; 
+            width: 250px;
             font-size: 30px;
             color: #555;
             text-align: center;
             vertical-align:middle;
-            margin-left: 65%;
         }
         </style>
        	<div class="circle">
             <paper-ripple id="ripple" style="color: blue" center></paper-ripple>
+        </div>
+        <div style:"text-align: center">
+            <iron-icon style="height : 50px; width: 150px" src="{{iconSource}}"></iron-icon>
         </div>
     </template>
     <script>
@@ -29,22 +31,32 @@
             is: 'my-ping',
 
             _headingDistanceChanged: function(newDistance) {
-                if (newDistance > 1000) {
+                if (newDistance > (this.initalheadingdistance * 0.75)) {
                     this.async(function() {
                         this.$.ripple.style = "color: blue"
                         this.$.ripple.simulatedRipple()
+                        this.iconSource = "src/element/images/foot1.png"
                         console.log("Far")
                     }, 3000);
-                } else if (newDistance > 500) {
+                } else if (newDistance > (this.initalheadingdistance * 0.50)) {
                     this.async(function() {
                         this.$.ripple.style = "color: green"
                         this.$.ripple.simulatedRipple()
+                        this.iconSource = "src/element/images/foot2.png"
                         console.log("Still far but less")
+                    }, 2000);
+                } else if (newDistance > (this.initalheadingdistance * 0.25)) {
+                    this.async(function() {
+                        this.$.ripple.style = "color: yellow"
+                        this.$.ripple.simulatedRipple()
+                        this.iconSource = "src/element/images/foot3.png"
+                        console.log("Closer")
                     }, 1000);
                 } else {
                     this.async(function() {
                         this.$.ripple.style = "color: red"
                         this.$.ripple.simulatedRipple()
+                        this.iconSource = "src/element/images/foot4.png"
                         console.log("Near")
                     }, 250);
                 }
@@ -57,6 +69,11 @@
                     notify: true,
                     observer: '_headingDistanceChanged'
                 },
+
+                iconSource: {
+                    type: String,
+                    value: "src/element/images/foot1.png"
+                }
             }
         })
     })();

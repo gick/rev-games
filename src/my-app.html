@@ -129,6 +129,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{poiMap}}">
                         <a name="mapview" href="/#mapview">Map view</a>
                     </template>
+                    <template is="dom-if" if="{{poiMap}}">
+                        <a name="mapview" href="/#guidance">User Guidance</a>
+                    </template>
                     <template is="dom-if" if="{{poiClue}}">
                         <a name="cluepoiinstruction" href="/#cluepoiinstruction">Clue guidance</a>
                     </template>
@@ -155,6 +158,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                     <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
+                    <my-guidance poi="{{poi}}" id="map" name="guidance"></my-guidance>
                     <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
                     <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
