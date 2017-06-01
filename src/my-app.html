@@ -8,6 +8,9 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+
+
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -31,6 +34,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
+
+
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
@@ -115,8 +120,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         </style>
 
-        <firebase-app name="lobby" api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="rev-game.firebaseapp.com"></firebase-app>
-
+        <firebase-app  api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
+        </firebase-app>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -161,7 +166,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-                    <my-login id="loginForm" status="{{status}}" name="login"></my-login>
+                    <my-chatroom name="chatroom"></my-chatroom>
+
+                    <my-login id='loginForm' name='login'></my-login>
                     <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
                     <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
@@ -346,7 +353,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.currentMLG.setupNextUnitGame();
             } else {
                 console.log(this.badgeItem)
-                var body = {'id':this.badgeId}
+                var body = {
+                    'id': this.badgeId
+                }
                 this.$.userBadge.body = body;
                 this.$.userBadge.generateRequest()
                 this.resetActivity()
@@ -526,14 +535,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setupActivity: function(elem) {
             this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
-            
+
             this.currentMLG = elem.detail;
             this.currentActivity = elem.detail._id
             this.$.currentMLG.processMLG(this.currentMLG);
             if (elem.detail.badgeId) {
                 this.badgeId = elem.detail.badgeId
             }
-            
+
         },
 
         setupUserName: function(elem) {
@@ -566,7 +575,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log("response : " + e.detail.response.success)
             if (e.detail.response.success) {
                 this.push('badgeItems', this.badgeItem[0])
-                //this.badgeItem = null
+                    //this.badgeItem = null
                 this.badgeId = null
             } else {
                 console.log("Badge already acquired")

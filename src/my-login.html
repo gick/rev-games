@@ -8,6 +8,11 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-database-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app-script.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
@@ -19,13 +24,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../src/element/auth-manager/auth-manager.html">
 <link rel="import" href="../../src/element/auth-manager/userProfile.html">
-
 <dom-module id="my-login">
     <template>
         <style>
         :host {
             display: block;
             padding: 10px;
+        }
+        
+        .buttonClass {
+            width: 100%;
         }
         
         .card {
@@ -55,34 +63,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #212121;
         }
         </style>
-        <auth-manager status={{status}} id="manager"></auth-manager>
-        <div hidden="{{status.logged}}" class="card">
-            <form class="insidePaper" id="authform" is="iron-form" method="post" action="/login">
-                <h1>Log in</h1>
-                <paper-input on-keydown="checkEnter" name="name" value={{nameVal}} label="Name" required></paper-input>
-                <paper-input on-keydown="checkEnter" type="password" value="{{passVal}}" name="password" label="password" required></paper-input>
-                <paper-button raised on-click="_submit">Submit</paper-button>
-                <paper-button raised on-click="_reset">Reset</paper-button>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-document path="/user/connected/" data=''>
+        </firebase-document>
+        <div hidden="{{user}}">
+            <div class="card">
+                <h1>Register user</h1>
+                <paper-input on-keydown="checkEnter" name="email" value={{mailSignup}} label="email" required></paper-input>
+                <paper-input on-keydown="checkEnter" type="password" value="{{passSignup}}" name="password" label="password" required></paper-input>
+                <paper-input on-keydown="checkEnter" type="text" value="{{userName}}" name="userName" label="Profile name" required></paper-input>
+                <paper-input type="text" value="{{userName}}" name="userName" label="Name" required></paper-input>
+                <paper-button raised on-click="signup">Signup</paper-button>
                 <div class="output"></div>
-            </form>
+            </div>
+            <div class="card">
+                <h1>Login</h1>
+                <paper-input name="email" value={{mail}} label="Name" required></paper-input>
+                <paper-input type="password" value="{{pass}}" name="password" label="password" required></paper-input>
+                <paper-button raised on-click="login">Login</paper-button>
+                <div class="output"></div>
+            </div>
         </div>
         <div hidden="{{!status.logged}}">
-            <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}" badges="{{status.badges}}"></user-profile>     
+            <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}" badges="{{status.badges}}"></user-profile> 
+            <paper-button raised style="width:100%" on-click='logout'>Logout</paper-button>
         </div>
+        <paper-toast id="signupToast" text="Signup success with email " + [[mailSignup]]></paper-toast>
+        <paper-toast id="signinToast" text="Signup success with email " + [[mail]]></paper-toast>
     </template>
     <script>
     Polymer({
         ready: function() {
-            this.$$('#userProfile').addEventListener('logout', this.logout.bind(this))
+
         },
+
+
         logout: function() {
-            this.$.manager.logout();
+            firebase.database().ref('users/' + this.user.uid + '/').set({
+                username:this.user.email,
+                status: 'offline'
+            });
+
+            this.$.auth.signOut()
         },
-        handleAuth: function() {
-            console.log('resp')
-        },
-        _submit: function() {
-            this.$.manager.authenticate(this.nameVal, this.passVal);
+        signup: function() {
+            this.$.auth.createUserWithEmailAndPassword(this.mailSignup, this.passSignup).then((result) => {
+                this.$.signupToast.show()
+            })
+
         },
         setStatus: function(status) {
             this.status = status.detail
@@ -90,16 +119,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.fire('userScore', status.detail.scores)
             console.log(status.detail)
         },
-        _signup: function() {
-            this.$.signupForm.submit()
+        login: function() {
+            this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then((user) => {
+                this.$.signinToast.show()
+                var ref = firebase.database().ref("users/"+user.uid + '/');
+                ref.onDisconnect().set({
+                    username:user.email,
+                    status:'offline'});
+
+                firebase.database().ref('users/' + user.uid + '/').set({
+                    username: user.email,
+                    status: 'online'
+                });
+
+            })
         },
-        checkEnter: function(evt) {
-            if (evt.keyCode === 13) {
-                this._submit()
+        observers: ['_conStat(user, conStatData)'],
+        _conStat: function(user, status) {
+            if (status === true) {
+                firebase.app('player').database().ref('/presence/' + user.uid).onDisconnect().set('offline')
             }
         },
 
         is: 'my-login',
+
         property: {
             status: {}
 
