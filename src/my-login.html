@@ -85,8 +85,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="output"></div>
             </div>
         </div>
-        <div>
-            <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}"></user-profile>
+        <div hidden="{{!status.logged}}">
+            <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}" badges="{{status.badges}}"></user-profile> 
             <paper-button raised style="width:100%" on-click='logout'>Logout</paper-button>
         </div>
         <paper-toast id="signupToast" text="Signup success with email " + [[mailSignup]]></paper-toast>

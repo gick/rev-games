@@ -37,6 +37,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-database-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-messaging-script.html">
 <link rel="import" href="my-icons.html">
 <dom-module id="my-app">
     <template>
@@ -113,6 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             margin-right: 50px;
         }
         </style>
+
         <firebase-app  api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
         </firebase-app>
         <app-location use-hash-as-path route="{{route}}"></app-location>
@@ -130,6 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span><paper-badge for="test" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge></a>
                     <!--</template>-->
                     <a name="activity" href="/#activity">Activity</a>
+                    <a name="lobby" href="/#lobby">Lobby</a>
                     <template is="dom-if" if="{{startPage}}">
                         <a name="instructions" href="/#instructions">Activity start page</a>
                     </template>
@@ -164,6 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
                     <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                     <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                    <my-lobby id="lobby" name="lobby" data="{{data}}"></my-lobby>
                     <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                     <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                     <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
