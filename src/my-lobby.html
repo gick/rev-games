@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <firebase-document log path="/lobby" data="{{data}}"></firebase-document>
+    <firebase-document id="doc" log path="/lobby" data="{{data}}"></firebase-document>
 
     <div class="card">
 
@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-input id="input" label="Enter username here"></paper-input>
       <paper-button id="add" on-tap="addUser">Add user</paper-button>
+      <paper-button id="add" on-tap="deleteUser">Delete user</paper-button>
 
       <iron-ajax url="testLobby.json" handle-as="json" last-response="{{user}}" id="ajaxLoader"></iron-ajax>
 
@@ -59,7 +60,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-item-body>
                 <div><span>{{noUser}}</span></div>
             </paper-item-body>
+                <template is="dom-if" if="{{_isWaiting(noUser)}}" restamp>
                  <div><paper-spinner-lite active class="green"></paper-spinner-lite></div>
+                 </template>
+                 <template is="dom-if" if="{{!_isWaiting(noUser)}}" restamp>
+                 <div><iron-icon icon="vaadin:check"></iron-icon></div>
+                 </template>
         </paper-icon-item>
       </template>
 
@@ -76,9 +82,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-lobby',
 
       addUser: function() {
-        this.push('data', this.$.input.value);
+        this.$.doc.ref.push({userName : this.$.input.value});
         this.$.input.value = null
       },
+
+      /*deleteUser: function() {
+        //exemple fonctionnel de suppression on pourra utiliser le principe pour supprimer le pseudo du lobb si l'user quitte la page
+        this.$.doc.ref.child('user1').remove()
+        this.$.input.value = null
+      },*/
 
 
       unlockButton: function() {
@@ -98,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (var i = 0; i < 5; i++) {
           if (i < usersWaiting.length) {
             console.log
-            this.push('usersTab', usersWaiting[i])
+            this.push('usersTab', usersWaiting[i].userName)
             this.count += 1
           } else {
             this.push('usersTab', "Awaiting player")
@@ -106,6 +118,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           
         }
 
+      },
+
+      _isWaiting: function(userNick) {
+        console.log(userNick)
+        if (userNick == "Awaiting player") {
+          return true
+        } else {
+          return false
+        }
       },
 
       properties: {
