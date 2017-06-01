@@ -15,6 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 
 <dom-module id="my-lobby">
 
@@ -40,9 +42,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <firebase-auth user="{{user}}"></firebase-auth>
+
+    <firebase-query
+    id="query"
+    app-name="lobby"
+    path="/lobby/[[user.uid]]"
+    data="{{data}}">
+    </firebase-query>
+
     <div class="card">
 
       <h1>Activity name</h1>
+
+      <template is="dom-repeat" items="{{data}}" as="users">
+        <div>{{users}}</div>
+      </template>
+
+      <paper-input id="input" label="Enter username here"></paper-input>
+      <paper-button id="add" on-tap="addUser">Add user</paper-button>
 
       <iron-ajax url="testLobby.json" handle-as="json" last-response="{{user}}" id="ajaxLoader"></iron-ajax>
       <template is="dom-repeat" items="{{user}}">
@@ -87,6 +105,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      addUser: function() {
+        this.$.query.ref.push({
+          content: this.$.input.value
+        });
+        this.$.input.value = null
+      },
+
       _removeNoUser: function(userName) {
         this.splice('usersTab', 0, 1)
         this.count += 1
@@ -97,6 +122,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.count == 5/*this.data.numberPlayers*/) {
           this.$.playButton.disabled = false
         }
+      },
+
+      changeData: function(data) {
+        console.log(data)
       },
 
       properties: {
@@ -112,7 +141,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: 'unlockButton'
         },
 
-      }
+        data: {
+          type: Array,
+          observer: 'changeData'
+        },
+
+      },
 
     });
 
