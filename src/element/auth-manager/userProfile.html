@@ -17,26 +17,62 @@
             color: #757575;
         }
         
+        .userItem {
+            font-weight: bold;
+            font-size: larger;
+        }
+        
+        .itemOrder {}
+        
         .image {
             border-radius: 50%;
-            width: 200px;
-            height: 200px;
+            width: 75px;
+            height: 75px;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: stretch;
+            align-items: flex-start;
+        }
+        
+        .flex-item:nth-child(1) {
+            order: 0;
+            flex: 0 1 auto;
+            align-self: auto;
+        }
+        
+        .flex-item:nth-child(2) {
+            order: 0;
+            flex: 0 1 auto;
+            align-self: auto;
+        }
+        
+        .flex-item:nth-child(3) {
+            order: 0;
+            flex: 0 1 auto;
+            align-self: auto;
         }
         </style>
         <div class="card">
             <h1 class="insidePaper">User profile</h1>
-            <div style="display:inline-flex;flex-direction: column;align-items: center;">
-                <img class="image" alt="User avatar." src="../images/no_avatar.png"> {{name}}
-            </div>
-            <div style="display:inline-flex;flex-direction: column;align-items: center;">
-                <a href="/#badge">
-                    <img class="image" src="../images/no_badge.png"></a>
-                badge
-            </div>
-            <div style="display:inline-flex;flex-direction: column;align-items: center;">
-                <a href="/#inventory">
-                    <img class="image" src="../images/bag.png"></a>
-                Inventory
+            <div class="flex-container">
+                <div class="flex-item">
+                    <img class="image" alt="User avatar." src="../images/no_avatar.png"> {{name}}
+                </div>
+                <div class="flex-item">
+                    <a href="/#badge">
+                        <img class="image" src="../images/no_badge.png"></a>
+                    <div class="userItem"> Badges </div>
+                </div>
+                <div class="flex-item">
+                    <a href="/#inventory">
+                        <img class="image" src="../images/bag.png"></a>
+                    <div class="userItem"> Inventory </div>
+                </div>
             </div>
             <!--<div role="listbox">
 >>>>>>> Stashed changes
@@ -53,7 +89,6 @@
         <template is="dom-repeat" items="{{badges}}" as item>
             <user-badge></user-badge>
         </template>
-                <paper-button style="width:100%;background-color: white;" on-click="logoff" raised>Disconnect</paper-button>
         </div>
     </template>
 </dom-module>
@@ -63,9 +98,6 @@
     Polymer({
         is: 'user-profile',
 
-        logoff: function() {
-            this.fire('logout', null)
-        },
 
         ready: function() {},
         properties: {
