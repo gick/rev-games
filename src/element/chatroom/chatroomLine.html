@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="./imageResizer.html">
 <dom-module id="chatroom-line">
     <style include="shared-styles">
     .element {
@@ -50,8 +51,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <firebase-auth id="auth" user="{{user}}" provider="google">
             <div class="resourceElement">
                 <paper-input value='{{line}}' label="Newline"></paper-input>
-                <paper-button on-click="sendline" raised>
-                    <paper-button>
+                <paper-button on-click="sendline" raised>Send line
+                </paper-button>
+                <image-resizer id="photoScan" name='Take picture' url='/userFile'></image-resizer>
             </div>
     </template>
     <script>
@@ -60,6 +62,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer({
             is: 'chatroom-line',
             ready: function() {
+                this.$.photoScan.addEventListener('success', this.getPhotoResponse.bind(this))
+
+            },
+
+
+            getPhotoResponse: function(e) {
+                var fileId = JSON.parse(event.detail.xhr.response)._id
+                var ref = firebase.database().ref('messages/')
+                var newPostRef = ref.push();
+                newPostRef.set({
+                    image: fileId,
+                    author: this.user.email
+                });
 
             },
             sendline: function() {
@@ -67,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var newPostRef = ref.push();
                 newPostRef.set({
                     line: this.line,
-                    author : this.user.email
+                    author: this.user.email
                 });
 
             },

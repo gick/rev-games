@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="./element/chatroom/chatroomLine.html">
+<link rel="import" href="./element/chatroom/chatroomElement.html">
 <dom-module id="my-chatroom">
     <template>
         <style type="text/css">
@@ -30,8 +31,7 @@
         }
         </style>
         <div class="card">
-            <paper-input type='file' accept="image" id="imgInp"></paper-input>
-            <img id="blah" src="#" alt="your image" />
+            <chatroom-element></chatroom-element>
             <chatroom-line></chatroom-line>
         </div>
     </template>
@@ -41,7 +41,7 @@
     'use strict';
     Polymer({
         is: 'my-chatroom',
-        ready: function(),
+        ready: function(){},
 
         properties: {
 

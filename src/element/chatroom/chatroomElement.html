@@ -13,8 +13,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../../bower_components/iron-label/iron-label.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
-<dom-module id="chatroomElement">
+<link rel="import" href="../../../bower_components/file-upload/file-upload.html">
+
+<dom-module id="chatroom-element">
     <style include="shared-styles">
     .element {
         align-self: stretch;
@@ -39,6 +42,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         max-height: 500px;
     }
     
+    .author {
+        font-family: cursive;
+        font-style: normal;
+        font-variant: small-caps;
+        color: darkblue;
+    }
+    
     .inner {
         display: inline-flex;
         flex-flow: column;
@@ -49,6 +59,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
     <template>
+        <firebase-query id="query" path="/messages" data="{{data}}">
+        </firebase-query>
+        <template is="dom-repeat" items="{{data}}" as="note">
+            <div><span class='author'>{{note.author}} : </span> <span>{{note.line}}</span></div>
+            <template is="dom-if" if={{note.image}}>
+            <div><span class='author'>{{note.author}} : </span> <span><img src='/file/{{note.image}}'></span></div>
+
+            </template>
+        </template>
         <div class="resourceElement">
             <form class="inner">
                 <marked-element markdown="{{mkdown}}">
@@ -63,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer({
             is: 'chatroom-element',
             ready: function() {
-            
+
             },
 
             properties: {

@@ -19,6 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-runner-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-down-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-up-animation.html">
+<link rel="import" href="./element/chatroom/imageResizer.html">
 
 <body>
     <dom-module id="my-qrcodescanner">
@@ -71,8 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="card">
                 <h1>QR codes</h1>
                 <iron-collapse opened="{{!isDisabled}}">
-                    <file-upload raised name="qrscan" id="qrscan" method="POST" accept="image/*;capture=camera" target="/qrscan">Scan QR code
-                    </file-upload>
+                    <image-resizer  id="qrscan" name='Take picture' url='/qrscan'></image-resizer>
                 </iron-collapse>
                 <paper-dialog id="dialog" class="size">
                     <div id="scanBar" style="width:84%;height:20px;opacity:0.6;background-color:red"></div>
@@ -81,7 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-collapse id="processing">
                     <img src="./element/images/processing.gif" style="width:200px;">
                 </iron-collapse>
-
                 <iron-collapse id="qrInvalid">
                     <div>{{poiincorrectMessage}}</div>
                     <paper-button raised on-click="retry">Retry</paper-button>
@@ -107,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 this.isDisabled = false
             },
-            showError:function(){
+            showError: function() {
                 this.$.processing.hide()
                 this.$.qrValid.hide()
                 this.$.qrInvalid.hide()
@@ -115,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             ,
-            showProcess:function(){
+            showProcess: function() {
                 this.$.processing.show()
 
             },
@@ -135,8 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             this.$.qrValid.show()
                             this.isDisabled = true
                         }
-                    }
-                    else{
+                    } else {
                         this.$.qrInvalid.show()
                     }
                 }
@@ -156,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 this.$.qrInvalid.hide()
                 this.$.qrscan.clear()
-                this.isDisabled=false
+                this.isDisabled = false
             },
             _poiObserver: function(item) {
                 console.log(item)
@@ -226,7 +224,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fileChanged: function(newfile) {
                 console.log(newfile)
             },
-            resetElement:function(){
+            resetElement: function() {
 
             },
             animationComplete: function(event, animHandler) {
