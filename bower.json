@@ -32,5 +32,12 @@
     "iron-icons": "^1.2.1",
     "iron-icon": "^1.0.13",
     "paper-tabs": "^1.8.0",
-
+    "polymerfire": "firebase/polymerfire#^2.0.1"
+  },
+  "resolutions": {
+    "polymer": "^1.1.0",
+    "app-layout": "^1.0.1",
+    "app-storage": "1 - 2",
+    "webcomponentsjs": "^0.7.24"
+  }
 }
