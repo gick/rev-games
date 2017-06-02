@@ -9,8 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
-
-
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -34,8 +33,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
-
-
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
@@ -119,9 +116,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             margin-right: 50px;
         }
         </style>
-
-        <firebase-app  api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
+        <firebase-app api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
         </firebase-app>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+        </firebase-auth>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -167,7 +165,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <my-chatroom name="chatroom"></my-chatroom>
-
                     <my-login id='loginForm' name='login'></my-login>
                     <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
                     <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
@@ -197,10 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
                 </a>
                 <a href="/#activity" class="inherit">
-                    <iron-icon hidden="{{homeHidden}}" icon="vaadin:home" class="big"></iron-icon>
-                </a>
-                <a href="{{currentPage}}" class="inherit">
-                    <iron-icon hidden="{{!homeHidden}}" icon="vaadin:close-circle-o" class="big"></iron-icon>
+                    <iron-icon icon="vaadin:home" class="big"></iron-icon>
                 </a>
                 <a href="/#mapview" class="inherit">
                     <iron-icon icon="vaadin:map-marker"></iron-icon>
@@ -636,9 +630,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         observers: [
-            '_routePageChanged(route.page)'
+            '_routePageChanged(route.page)',
+            '_userOnline(user)'
         ],
+        _userOnline(user) {
+            if (user && user.uid) {
+                firebase.database().ref('users/' + user.uid + '/').set({
+                    username: user.email,
+                    status: 'online'
+                });
+                var ref = firebase.database().ref("users/" + user.uid + '/');
+                ref.onDisconnect().set({
+                    username: user.email,
+                    status: 'offline'
+                });
+                var refPage = firebase.database().ref("users/" + user.uid + '/page/');
+                ref.onDisconnect().set({
+                    page: ''
+                });
 
+
+            }
+        },
         _routePageChanged: function(page) {
             this.page = this.route.path || 'login';
             if (this.page === "mapview") {
@@ -649,6 +662,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _pageChanged: function(page) {
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page !='activity') {
+                firebase.database().ref('users/' + this.user.uid + '/page/').set({
+                    page: page,
+                });
+
+            }
+
             // load page import on demand.
             console.log('my-' + page + '.html')
             this.importHref(

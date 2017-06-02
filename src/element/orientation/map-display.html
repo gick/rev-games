@@ -13,14 +13,22 @@
         <style>
 
         </style>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-query id="query" path="/users" data="{{data}}">
+        </firebase-query>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map style="position:absolute;display:block;height:100%;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker drag-events title="{{marker.title}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
             </template>
-            <google-map-marker id="userMarker" latitude="{{userCoord.lat}}" class="userMarker" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" longitude="{{userCoord.lng}}"></google-map-marker>
-        </google-map>        
+            <template is="dom-repeat" items={{data}} as="user">
+                <template is="dom-if" if={{user.position}}>
+                    <google-map-marker drag-events title="TEST" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{user.position.latitude}}" longitude="{{user.position.longitude}}"></google-map-marker>
+                </template>
+            </template>
+        </google-map>
     </template>
     <script>
     (function() {
@@ -72,7 +80,11 @@
             updateUser: function(coord) {
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
-                console.log(coord)
+                var ref = firebase.database().ref('users/' + this.user.uid + '/position').set({
+                    latitude: coord.lat,
+                    longitude: coord.lng
+                })
+
             },
 
             setControl: function() {

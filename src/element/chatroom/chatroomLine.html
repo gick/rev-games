@@ -53,6 +53,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-input value='{{line}}' label="Newline"></paper-input>
                 <paper-button on-click="sendline" raised>Send line
                 </paper-button>
+                <paper-button on-click="clearChat" raised>Clear chat
+                </paper-button>
+
                 <image-resizer id="photoScan" name='Take picture' url='/userFile'></image-resizer>
             </div>
     </template>
@@ -65,7 +68,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.photoScan.addEventListener('success', this.getPhotoResponse.bind(this))
 
             },
-
+            clearChat:function(){
+                firebase.database().ref('messages/').set({})
+                
+            },
 
             getPhotoResponse: function(e) {
                 var fileId = JSON.parse(event.detail.xhr.response)._id

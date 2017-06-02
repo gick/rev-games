@@ -65,8 +65,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/user/connected/" data=''>
-        </firebase-document>
         <div hidden="{{user}}">
             <div class="card">
                 <h1>Register user</h1>
@@ -85,9 +83,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="output"></div>
             </div>
         </div>
-        <div hidden="{{!status.logged}}">
+        <div hidden="{{!user}}">
             <user-profile id="userProfile" name="{{status.name}}" email="{{status.email}}" avatar="{{status.avatar}}" badges="{{status.badges}}"></user-profile> 
-            <paper-button raised style="width:100%" on-click='logout'>Logout</paper-button>
+            <paper-button raised style="width:100%;background-color: white" on-click='logout'>Logout</paper-button>
         </div>
         <paper-toast id="signupToast" text="Signup success with email " + [[mailSignup]]></paper-toast>
         <paper-toast id="signinToast" text="Signup success with email " + [[mail]]></paper-toast>

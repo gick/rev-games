@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -39,6 +40,16 @@
             align-items: flex-start;
         }
         
+        .flex-play {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: stretch;
+            align-items: flex-start;
+        }
+        
         .flex-item:nth-child(1) {
             order: 0;
             flex: 0 1 auto;
@@ -58,6 +69,10 @@
         }
         </style>
         <div class="card">
+            <firebase-auth id="auth" user="{{user}}" provider="google">
+            </firebase-auth>
+            <firebase-document  path="/users/{{user.uid}}/page" data='{{page}}'>
+            </firebase-document>
             <h1 class="insidePaper">User profile</h1>
             <div class="flex-container">
                 <div class="flex-item">
@@ -71,8 +86,24 @@
                 <div class="flex-item">
                     <a href="/#inventory">
                         <img class="image" src="../images/bag.png"></a>
-                    <div class="userItem"> Inventory </div>
+                    <div class="userItem"> {{page.page}} </div>
                 </div>
+            </div>
+            <div class="flex-play">
+                <template is='dom-if' if='{{!currentPage}}'>
+                    <div class="flex-item">
+                        <a href="/#activity">
+                            <img class="image" src="../images/play.png"></a>
+                        <div class="userItem"> Start play </div>
+                    </div>
+                </template>
+                <template is='dom-if' if='{{currentPage}}'>
+                    <div class="flex-item">
+                        <a href="/#{{backPage}}">
+                            <img class="image" src="../images/play.png"></a>
+                        <div class="userItem"> Continue </div>
+                    </div>
+                </template>
             </div>
             <!--<div role="listbox">
 >>>>>>> Stashed changes
@@ -99,7 +130,28 @@
         is: 'user-profile',
 
 
-        ready: function() {},
+        ready: function() {
+
+
+        },
+        _pageChanged:function(newpage){
+            console.log(newpage)
+            if(!newpage || !newpage.value){
+                this.currentPage=false
+            }
+            else{
+                this.currentPage=true
+                this.backPage=newpage.value
+            }
+
+        },
+        _userChanged:function(user){
+            console.log(user)
+        },
+        
+        observers:[
+        '_pageChanged(page.*)',
+        ],
         properties: {
             badges: {
                 type: Array,

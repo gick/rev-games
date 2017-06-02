@@ -16,7 +16,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
 <link rel="import" href="../../../bower_components/file-upload/file-upload.html">
-
 <dom-module id="chatroom-element">
     <style include="shared-styles">
     .element {
@@ -30,7 +29,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     .header {
         width: 100%;
     }
-    
+    img{
+        max-width: 300px;
+        max-height:300px;
+    }
     .suppress-action {
         display: inline-flex;
         flex-direction: row-reverse;
@@ -64,17 +66,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <template is="dom-repeat" items="{{data}}" as="note">
             <div><span class='author'>{{note.author}} : </span> <span>{{note.line}}</span></div>
             <template is="dom-if" if={{note.image}}>
-            <div><span class='author'>{{note.author}} : </span> <span><img src='/file/{{note.image}}'></span></div>
-
+                <div><span class='author'>{{note.author}} : </span> <span><img src='/file/{{note.image}}'></span></div>
             </template>
         </template>
-        <div class="resourceElement">
-            <form class="inner">
-                <marked-element markdown="{{mkdown}}">
-                    <div class="markdown-html"></div>
-                </marked-element>
-            </form>
-        </div>
     </template>
     <script>
     (function() {
