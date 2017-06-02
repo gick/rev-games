@@ -1,5 +1,4 @@
 <!--
-@license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -104,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.auth.signOut()
         },
         signup: function() {
-            this.$.auth.createUserWithEmailAndPassword(this.mailSignup, this.passSignup).then((result) => {
+            this.$.auth.createUserWithEmailAndPassword(this.mailSignup, this.passSignup).then(function(result) {
                 this.$.signupToast.show()
             })
 
@@ -116,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log(status.detail)
         },
         login: function() {
-            this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then((user) => {
+            this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then(function(user) {
                 this.$.signinToast.show()
                 var ref = firebase.database().ref("users/"+user.uid + '/');
                 ref.onDisconnect().set({
