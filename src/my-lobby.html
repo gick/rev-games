@@ -53,8 +53,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-button id="add" on-tap="addUser">Add user</paper-button>
       <paper-button id="add" on-tap="deleteUser" raised>Quitter Lobby</paper-button>
 
-      <iron-ajax url="testLobby.json" handle-as="json" last-response="{{user}}" id="ajaxLoader"></iron-ajax>
-
       <template is="dom-repeat" items="{{usersTab}}" as="noUser">
         <paper-icon-item>
             <iron-icon src="element/images/no_avatar.png" item-icon></iron-icon>
