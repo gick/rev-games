@@ -136,7 +136,7 @@
         },
         _pageChanged:function(newpage){
             console.log(newpage)
-            if(!newpage || !newpage.value){
+            if(typeof newpage.value==='object'){
                 this.currentPage=false
             }
             else{
