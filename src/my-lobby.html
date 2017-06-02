@@ -125,7 +125,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return false
         }
       },
-
+      userChange:function(user){
+        console.log(user)
+      },
       properties: {
 
         usersTab: {
@@ -152,7 +154,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       observers: [
-        'updateUserTab(data.*)'
+        'updateUserTab(data.*)',
+        'userChange(user.*)'
+
       ]
 
     });
