@@ -17,6 +17,7 @@
         </style>
         <paper-icon-item on-click="fireChosen">
             <iron-icon icon="{{_computeIcon(data.gameType)}}" item-icon></iron-icon>
+            <iron-icon icon="{{_computePlayerIcon(data.multiplayer)}}" item-icon></iron-icon>
             <paper-item-body two-line>
                 <div><span>{{data.label}}</span></div>
                 <div secondary>Unit game number : <span>{{data.unitGames.length}}</span></div>
@@ -50,6 +51,14 @@
 
         fireChosen:function(){
             //this.set('activity-choosen',this);
+        },
+
+        _computePlayerIcon: function(multi) {
+            if (multi){
+                return "vaadin:users"
+            } else {
+                return "vaadin:user"
+            }
         },
 
         _computeIcon: function(type) {

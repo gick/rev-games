@@ -44,13 +44,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-document id="doc" log path="/lobby" data="{{data}}"></firebase-document>
 
+    <firebase-auth id="auth" user="{{user}}" provider="google"></firebase-auth>
+
     <div class="card">
 
       <h1>Activity name</h1>
 
-      <paper-input id="input" label="Enter username here"></paper-input>
       <paper-button id="add" on-tap="addUser">Add user</paper-button>
-      <paper-button id="add" on-tap="deleteUser">Delete user</paper-button>
+      <paper-button id="add" on-tap="deleteUser" raised>Quitter Lobby</paper-button>
 
       <iron-ajax url="testLobby.json" handle-as="json" last-response="{{user}}" id="ajaxLoader"></iron-ajax>
 
@@ -82,15 +83,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-lobby',
 
       addUser: function() {
-        this.$.doc.ref.push({userName : this.$.input.value});
-        this.$.input.value = null
+        this.$.doc.ref.push({userName : this.user.email});
       },
 
-      /*deleteUser: function() {
+      deleteUser: function() {
         //exemple fonctionnel de suppression on pourra utiliser le principe pour supprimer le pseudo du lobb si l'user quitte la page
-        this.$.doc.ref.child('user1').remove()
-        this.$.input.value = null
-      },*/
+        this.$.doc.ref.child(this.idForDeletion).remove()
+      },
 
 
       unlockButton: function() {
@@ -102,6 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       updateUserTab: function() {
+        console.log(this.data)
         var usersWaiting = Object.values(this.data)
         this.count = 0
         console.log(usersWaiting)
@@ -109,6 +109,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.splice('usersTab',0,5)
         for (var i = 0; i < 5; i++) {
           if (i < usersWaiting.length) {
+            if (usersWaiting[i].userName == this.user.email) {
+              var usersIds = Object.keys(this.data)
+              this.idForDeletion = usersIds[i]
+              console.log(this.idForDeletion)
+            }
             console.log
             this.push('usersTab', usersWaiting[i].userName)
             this.count += 1
@@ -117,7 +122,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           
         }
-
       },
 
       _isWaiting: function(userNick) {
@@ -147,6 +151,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           observer: 'updateUserTab'
         },
+
+        idForDeletion: {
+          type: String,
+          notify: true
+        }
 
       },
 
