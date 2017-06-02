@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <firebase-document id="doc" log path="/game1" data="{{data}}"></firebase-document>
+    <firebase-document id="doc" log path="/lobby/gameID" data="{{data}}"></firebase-document>
 
     <firebase-auth id="auth" user="{{user}}" provider="google"></firebase-auth>
 
@@ -50,25 +50,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h1>Activity name</h1>
 
 
-      <template is="dom-repeat" items="{{lobbyTab}}" as="lobbyName">
+      <template id="repeater" is="dom-repeat" items="{{lobbyTab}}" as="lobbyName">
         <paper-icon-item>
             <iron-icon icon="vaadin:group" item-icon></iron-icon>
             <paper-item-body>
                 <div><span>{{lobbyName}}</span></div>
             </paper-item-body>
-              <div><paper-icon-button on-click="enterLobby" icon="vaadin:play" item-icon></iron-icon></div>
+              <div><paper-icon-button on-click="joinRoom" icon="vaadin:play" item-icon></iron-icon></div>
         </paper-icon-item>
       </template>
 
       <div style="text-align: center"><paper-button id="playButton" on-tap="setRoom" raised> Créer une partie </paper-button></div>
 
       <paper-dialog id="setParam">
-        <paper-input id="roomName" label="Room name"></paper-input>
-        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-input id="input" label="Room name"></paper-input>
+        <paper-button on-tap="cancel">Cancel</paper-button>
         <paper-button on-tap="createRoom">Create room</paper-button>
       </paper-dialog>
       
     </div>
+
+    <paper-toast id="toast" text="Veuillez rentrer un nom de lobby !"></paper-toast>
 
   </template>
 
@@ -83,18 +85,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       createRoom: function() {
-        this.$.doc.ref.push({lobby : this.$.roomName.value});
+        if (this.$.input.value != null) {
+          var roomName = this.$.input.value
+          this.$.input.value = null
+          this.$.doc.path = ('/lobby/gameID/'+roomName)
+          this.$.doc.ref.push({userName : this.user.email});
+          this.$.doc.path = ('/lobby/gameID')
+          this.fire('roomChoosen', roomName)          
+        } else {
+          this.$.toast.open()
+        }
       },
 
-      joinRoom: function() {
+      cancel: function() {
+        this.$.input.value = null
+        this.$.setParam.close()
+      },
 
+      joinRoom: function(e) {
+        var roomName = e.model.lobbyName
+        this.$.doc.path = ('/lobby/gameID/'+roomName)
+        this.$.doc.ref.push({userName : this.user.email});
+        this.$.doc.path = ('/lobby/gameID')
+        this.fire('roomChoosen', roomName)
       },
 
       updateLobbyTab: function() {
-        var listLobby = Object.values(this.data)
+        var listLobby = Object.keys(this.data)
         this.splice('lobbyTab',0,this.lobbyTab.length)
         for (var i = 0; i < listLobby.length; i++) {
-          this.push('lobbyTab', listLobby[i].lobby)
+          this.push('lobbyTab', listLobby[i])
         } 
       },
 
@@ -103,6 +123,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         lobbyTab: {
           type: Array,
           value : []
+        },
+
+        data: {
+          type: Object,
+          notify: true,
         },
 
       },

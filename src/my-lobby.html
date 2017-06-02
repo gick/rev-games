@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <firebase-document id="doc" log path="/lobby" data="{{data}}"></firebase-document>
+    <firebase-document id="doc" log path="/lobby/gameID/{{roomname}}" data="{{data}}"></firebase-document>
 
     <firebase-auth id="auth" user="{{user}}" provider="google"></firebase-auth>
 
@@ -50,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <h1>Activity name</h1>
 
-      <paper-button id="add" on-tap="addUser">Add user</paper-button>
       <paper-button id="add" on-tap="deleteUser" raised>Quitter Lobby</paper-button>
 
       <template is="dom-repeat" items="{{usersTab}}" as="noUser">
@@ -80,10 +79,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       is: 'my-lobby',
 
-      addUser: function() {
-        this.$.doc.ref.push({userName : this.user.email});
-      },
-
       deleteUser: function() {
         //exemple fonctionnel de suppression on pourra utiliser le principe pour supprimer le pseudo du lobb si l'user quitte la page
         this.$.doc.ref.child(this.idForDeletion).remove()
@@ -99,7 +94,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       updateUserTab: function() {
-        console.log(this.data)
         var usersWaiting = Object.values(this.data)
         this.count = 0
         console.log(usersWaiting)
@@ -147,7 +141,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data: {
           type: Object,
           notify: true,
-          observer: 'updateUserTab'
         },
 
         idForDeletion: {
