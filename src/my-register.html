@@ -14,17 +14,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymerfire/firebase-app-script.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../../src/element/auth-manager/auth-manager.html">
-<link rel="import" href="../../src/element/auth-manager/userProfile.html">
-<dom-module id="my-login">
+<dom-module id="my-register">
     <template>
         <style>
         :host {
@@ -36,58 +27,76 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             display: block;
         }
         
+        .circle {
+            display: inline-block;
+            height: 64px;
+            width: 64px;
+            border-radius: 50%;
+            background: #ddd;
+            line-height: 64px;
+            font-size: 30px;
+            color: #555;
+            text-align: center;
+        }
+        
         h1 {
             font-size: 22px;
             margin: 16px 0;
             color: #212121;
         }
         </style>
-        <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known={{status}} user="{{user}}" provider="google">
         </firebase-auth>
-        <paper-card heading="Login" image="" elevation="2" animated-shadow="true">
+        <app-location use-hash-as-path route="{{route}}"></app-location>
+        <paper-card heading="Nouvel utilisateur" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
+                <paper-input name="pseudo" value={{pseudo}} label="Pseudo" required></paper-input>
                 <paper-input name="email" value={{mail}} label="Email" required></paper-input>
                 <paper-input type="password" value="{{pass}}" name="password" label="Mot de passe" required></paper-input>
             </div>
             <div class="card-actions">
-                <paper-button on-click='login'>Login</paper-button>
-                <paper-button>Mot de passe oublié</paper-button>
+                <paper-button on-click='signup'>Enregistrer</paper-button>
             </div>
         </paper-card>
-        <div>Souhaiter vous vous <a name="badge" on-click="showRegister" href="/#register">enregistrer</a></div>
+        <paper-toast id="signupToast" text="Signup success with email " + [[mailSignup]]></paper-toast>
+        <paper-toast id="signinToast" text="Signup success with email " + [[mail]]></paper-toast>
     </template>
     <script>
     Polymer({
         ready: function() {
 
         },
-        login: function() {
-            this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then(function(user) {
-                // this.$.signinToast.show()
+
+        signup: function() {
+            var pseudo = this.pseudo
+            this.$.auth.createUserWithEmailAndPassword(this.mail, this.pass).then(function(user) {
                 var ref = firebase.database().ref("users/" + user.uid + '/');
                 ref.onDisconnect().update({
                     status: 'offline'
                 });
 
-                firebase.database().ref('users/' + user.uid + '/').update({
+                firebase.database().ref('users/' + user.uid + '/').set({
+                    usermail: user.email,
+                    username: pseudo,
                     status: 'online'
                 });
+                this.route = 'profile'
 
             })
-        },
-        routeChanged(route) {
-            console.log(route)
-        },
-        userConnect(status) {
-            if (status && this.user)
-                this.set('route.path', 'profile');
 
 
         },
+        connected: function(status) {
+            if (status && !this.user) {
+                this.set('route.path', 'login')
+            } else {
+                this.set('route.path', 'profile')
+            }
 
-        is: 'my-login',
-        observers: ['userConnect(status)', 'routeChanged(route.*)'],
+        },
+        observers: ['connected(status)'],
+        is: 'my-register',
+
         property: {
 
         }

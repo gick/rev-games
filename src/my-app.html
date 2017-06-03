@@ -11,9 +11,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-right-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
@@ -40,19 +45,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymerfire/firebase-database-script.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-storage-script.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-messaging-script.html">
-<link rel="import" href="my-icons.html">
 <dom-module id="my-app">
     <template>
         <style>
         :host {
             display: block;
-            --app-primary-color: green;
-            --app-secondary-color: black;
+            --app-primary-color: #338a3e;
+            --app-secondary-color: #c8e6c9;
         }
         
         app-header {
-            background-color: green;
-            color: #fff;
+            background-color: var(--app-primary-color);
+            color: white;
         }
         
         app-header paper-icon-button {
@@ -125,6 +129,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{inventoryItem}}"></iron-ajax>
         <iron-ajax id="badgeLoader" url="/badge/{{badgeId}}" handle-as="json" last-response="{{badgeItem}}"></iron-ajax>
+        <app-header reveals>
+            <app-toolbar>
+                <div main-title>REVERIES</div>
+                <iron-icon icon="add-circle-outline" on-click="openAnimated"></iron-icon>
+            </app-toolbar>
+        </app-header>
+        <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+            <h2>Liens rapides</h2>
+            <a on-click="updateNotification" href="/#profile" class="inherit" tabindex="-1">
+                <iron-icon id="userProfile" src="element/images/no_avatar.png"></iron-icon>
+                <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
+            </a>
+            <a href="/#activity" class="inherit">
+                <iron-icon icon="vaadin:home" ></iron-icon>
+            </a>
+            <a href="/#mapview" class="inherit">
+                <iron-icon icon="vaadin:map-marker"></iron-icon>
+            </a>
+            <a href="/#chatroom" class="inherit">
+                <iron-icon icon="vaadin:chat"></iron-icon>
+            </a>
+        </paper-dialog>
+        <iron-collapse id="footer">
+        </iron-collapse>
         <app-drawer-layout force-narrow>
             <!-- Drawer content -->
             <app-drawer hidden id="drawer">
@@ -157,59 +185,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                 </iron-selector>
             </app-drawer>
-            <!-- Main content -->
-            <app-header-layout>
-                <app-header>
-                    <app-toolbar>
-                        <div title>ReVeRIeS games</div>
-                    </app-toolbar>
-                    <a href="#lobbyselection">lobby</a>
-                </app-header>
-                <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-                    <my-chatroom name="chatroom"></my-chatroom>
-                    <my-login id='loginForm' name='login'></my-login>
-                    <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
-                    <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
-                    <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
-                    <lobby-selection id="lobbyselection" name="lobbyselection"></lobby-selection>
-                    <my-lobby id="lobby" name="lobby" data="{{data}}" roomname="{{roomname}}"></my-lobby>
-                    <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
-                    <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
-                    <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                    <my-guidance poi="{{poi}}" id="map" name="guidance"></my-guidance>
-                    <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
-                    <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
-                    <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
-                    <my-feedback id="feedback" mkdown="{{feedbackMkdown}}" name="feedback"></my-feedback>
-                </iron-pages>
+            <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
+                <my-chatroom name="chatroom"></my-chatroom>
+                <my-register name="register"></my-register>
+                <my-profile name="profile"></my-profile>
+                <my-login id='loginForm' name='login'></my-login>
+                <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
+                <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
+                <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                <lobby-selection id="lobbyselection" name="lobbyselection"></lobby-selection>
+                <my-lobby id="lobby" name="lobby" data="{{data}}" roomname="{{roomname}}"></my-lobby>
+                <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
+                <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
+                <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
+                <my-guidance poi="{{poi}}" id="map" name="guidance"></my-guidance>
+                <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
+                <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                <my-questions id="myQuestions" question3="{{question3}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
+                <my-feedback id="feedback" mkdown="{{feedbackMkdown}}" name="feedback"></my-feedback>
+            </neon-animated-pages>
             </app-header-layout>
         </app-drawer-layout>
         <paper-toast id="toast" text="New item earned !"></paper-toast>
         <iron-ajax method="POST" id="userBadge" url="/user/badges" body={id:0} content-type="application/json" handleAs="json" on-response="validateBadgeUser"></iron-ajax>
         <!--<iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>-->
         <footer>
-            <iron-collapse id="collapser" opened="true">
-                <paper-icon-button icon="vaadin:angle-up" on-click="_toggleCollapse"></paper-icon-button>
-            </iron-collapse>
-            <iron-collapse id="footer">
-                <a on-click="updateNotification" href="/#login" class="inherit" tabindex="-1">
-                    <iron-icon id="userProfile" src="element/images/no_avatar.png" class="big"></iron-icon>
-                    <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
-                </a>
-                <a href="/#activity" class="inherit">
-                    <iron-icon icon="vaadin:home" class="big"></iron-icon>
-                </a>
-                <a href="/#mapview" class="inherit">
-                    <iron-icon icon="vaadin:map-marker"></iron-icon>
-                </a>
-                <a href="/#chatroom" class="inherit">
-                    <iron-icon icon="vaadin:chat" class="big"></iron-icon>
-                </a>
-
-                <a on-click="_toggleCollapse" style="float:right" class="inherit" tabindex="-1">
-                    <iron-icon icon="vaadin:angle-down" class="big"></iron-icon>
-                </a>
-            </iron-collapse>
         </footer>
     </template>
     <script>
@@ -248,7 +248,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             this.$.lobbyselection.addEventListener('roomChoosen', this.enterLobby.bind(this))
         },
-
+        openAnimated:function(){
+            this.$.animated.open()
+        },
         enterLobby: function(roomName) {
             this.roomname = roomName.detail
             console.log(this.roomname)
@@ -649,14 +651,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             '_userOnline(user)'
         ],
         _userOnline(user) {
-            if (user && user.uid) {
-                firebase.database().ref('users/' + user.uid + '/').set({
-                    username: user.email,
+          /*  if (user && user.uid) {
+                firebase.database().ref('users/' + user.uid + '/').update({
                     status: 'online'
                 });
                 var ref = firebase.database().ref("users/" + user.uid + '/');
-                ref.onDisconnect().set({
-                    username: user.email,
+                ref.onDisconnect().update({
                     status: 'offline'
                 });
                 var refPage = firebase.database().ref("users/" + user.uid + '/page/');
@@ -665,7 +665,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 });
 
 
-            }
+            }*/
         },
         _routePageChanged: function(page) {
             this.page = this.route.path || 'login';
@@ -677,7 +677,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _pageChanged: function(page) {
-            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page !='activity') {
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity') {
                 firebase.database().ref('users/' + this.user.uid + '/page/').set({
                     page: page,
                 });
