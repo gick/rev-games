@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./element/inventory-view/inventory-item.html">
 <dom-module id="my-inventory">
@@ -8,7 +9,9 @@
             display: block;
             padding: 10px;
         }
-        
+        paper-card{
+          display: block;
+        }
         .card {
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             padding: 16px;
@@ -30,11 +33,17 @@
             text-align: center;
         }
         </style>
-        <div class="card">
-    		<template is="dom-repeat" items="{{items}}">
-             <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
-    		</template>
-    	</div>
+        <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
+            <div class="card-content">
+             <template is="dom-if" if={{_void(items)}}>
+                      <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
+              </template>
+                <template is="dom-repeat" items="{{items}}">
+                    <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
+                   </template>
+                </template>
+            </div>
+        </paper-card>
     </template>
 </dom-module>
 <script>
@@ -44,38 +53,44 @@
         is: 'my-inventory',
 
         ready: function() {
-           // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+            // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+        },
+        _void:function(itens){
+          if(this.items && this.items.length>0){
+            return false
+          }
+          return true
         }
         ,
-      	checkItem: function(allItems) {
-      		var k = 0;
-      		for (var i=0; i<items.length; i++) {
-      			for (var j=0; j<allItems.length; j++) {
-      				if (items.name == allItems.name) {
-      					k++
-      				}
-      			}
-      		}
-      		if (k == allItems.length) {
-      			return true
-      		} else {
-      			return false
-      		}
-      	},
-        printItems:function(){
+        checkItem: function(allItems) {
+            var k = 0;
+            for (var i = 0; i < items.length; i++) {
+                for (var j = 0; j < allItems.length; j++) {
+                    if (items.name == allItems.name) {
+                        k++
+                    }
+                }
+            }
+            if (k == allItems.length) {
+                return true
+            } else {
+                return false
+            }
+        },
+        printItems: function() {
 
-          console.log(this.items)
+            console.log(this.items)
         },
         properties: {
-        	items: {
-        		type: Array,
-        		notify: true,
-        	},
+            items: {
+                type: Array,
+                notify: true,
+            },
 
-          badgeNumber: {
-            type: String,
-            notify: true
-          }
+            badgeNumber: {
+                type: String,
+                notify: true
+            }
 
         }
     })

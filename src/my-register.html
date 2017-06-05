@@ -69,6 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         signup: function() {
             var pseudo = this.pseudo
+            var that=this
             this.$.auth.createUserWithEmailAndPassword(this.mail, this.pass).then(function(user) {
                 var ref = firebase.database().ref("users/" + user.uid + '/');
                 ref.onDisconnect().update({
@@ -80,21 +81,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     username: pseudo,
                     status: 'online'
                 });
-                this.route = 'profile'
 
             })
 
 
         },
         connected: function(status) {
-            if (status && !this.user) {
-                this.set('route.path', 'login')
-            } else {
+            if (status && this.user) {
                 this.set('route.path', 'profile')
             }
 
         },
-        observers: ['connected(status)'],
+        observers: ['connected(user.*)'],
         is: 'my-register',
 
         property: {

@@ -193,8 +193,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
                 <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                 <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
-                <lobby-selection id="lobbyselection" name="lobbyselection"></lobby-selection>
-                <my-lobby id="lobby" name="lobby" data="{{data}}" roomname="{{roomname}}"></my-lobby>
+                <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
+                <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
                 <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                 <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                 <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
@@ -222,6 +222,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
+            this.$.currentMLG.addEventListener('setupLobby', this.setupLobby.bind(this))
 
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
             this.$.inventory.addEventListener('notificationLoaded', this.addNotification.bind(this))
@@ -251,9 +252,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         openAnimated:function(){
             this.$.animated.open()
         },
-        enterLobby: function(roomName) {
-            this.roomname = roomName.detail
-            console.log(this.roomname)
+        enterLobby: function(elem) {
+            this.roomName = elem.detail.roomName
+            this.roomId=elem.detail.roomId
             this.page = "lobby"
         },
 
@@ -429,6 +430,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
         },
+        setupLobby:function(lobbyParam){
+            this.mlgName=lobbyParam.detail.gameName
+            this.mlgId=lobbyParam.detail.gameId
+            this.mlgPlayer=lobbyParam.detail.player
+            this.lobby=true
+        }
+        ,
         setupQuestion1: function(item) {
             this.question1 = item.detail
         },
@@ -482,6 +490,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.goToStartPage()
         },
         goToStartPage: function() {
+            if (this.lobby) {
+                this.page = "lobbyselection"
+                return
+            }
+
             if (this.instructions) {
                 this.page = "instructions"
                 return

@@ -8,6 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="./element/instruction-view/mlg-instruction.html">
 <dom-module id="my-cluepoiinstruction">
     <template>
@@ -24,6 +25,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             border-radius: 5px;
             background-color: #fff;
             color: #757575;
+        }
+        
+        paper-card {
+            display: block;
         }
         
         .circle {
@@ -44,36 +49,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #212121;
         }
         </style>
-        <div class="card">
-            <h1>Guidance to objective</h1>
-            <mlg-instruction mkdown="{{mkdown}}"></mlg-instruction>
-            <paper-button on-click="next">Next</paper-button>
-        </div>
+        <paper-card heading="Pour atteindre l'objectif" image="" elevation="2" animated-shadow="false">
+            <div class="card-content">
+                <mlg-instruction mkdown="{{mkdown}}"></mlg-instruction>
+            </div>
+            <div class="card-actions">
+                <paper-button on-click="next">Compris</paper-button>
+            </div>
+        </paper-card>
     </template>
     <script>
     Polymer({
 
 
         is: 'my-cluepoiinstruction',
-        ready:function(){
+        ready: function() {
 
         },
         next: function() {
             this.fire('next-called-from-cluepoiinstruction', null)
         },
 
-        _mkdownObserver:function(item){
-          if(item){
-            this.set('mkdown',item)
-          }
-        }
-        ,
+        _mkdownObserver: function(item) {
+            if (item) {
+                this.set('mkdown', item)
+            }
+        },
         property: {
-          mkdown:{
-            type:String,
-            notify:true,
-            observer:'_mkdownObserver',
-          }
+            mkdown: {
+                type: String,
+                notify: true,
+                observer: '_mkdownObserver',
+            }
         }
 
     });

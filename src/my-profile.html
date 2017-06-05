@@ -12,23 +12,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-database-script.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app-script.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <dom-module id="my-profile">
     <template>
         <style>
         :host {
             display: block;
             padding: 10px;
+        }
+        
+        iron-icon {
+            width: 35px;
+            height: 35px;
         }
         
         img {
@@ -44,6 +49,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         
         paper-card {
             display: block;
+            --paper-card-header: {
+                border-bottom: 1px solid #e8e8e8;
+            }
         }
         
         h1 {
@@ -56,18 +64,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </firebase-auth>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
-        <paper-card heading="Joueur " image="" elevation="2" animated-shadow="true">
+        <app-localstorage-document key="profileData" data="{{userData}}">
+        </app-localstorage-document>
+        <paper-card heading="Profil" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
-                <div>
-                    <iron-icon icon="face"></iron-icon><span>: [[userData.username]]</span>
-                </div>
-                <div class='flexElement'>
-                    <img on-click='loadInventaire' src="/src/element/images/inventaire.png">
-                    <div>Inventaire</div>
-                </div>
-                <div style='float:right' class='flexElement'>
-                    <img on-click='loadBadge' src="/src/element/images/badges.png">
-                    <div>Badges</div>
+                <div role="listbox">
+                    <paper-icon-item>
+                        <iron-icon icon="account-circle" item-icon>
+                        </iron-icon>
+                        <paper-item-body two-line>
+                            <div>Pseudo : {{userData.username}}</div>
+                            <div secondary>Email : {{userData.usermail}}</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                    <paper-icon-item>
+                        <iron-icon src="/src/element/images/inventaire.png" item-icon></iron-icon>
+                        Inventaire
+                    </paper-icon-item>
+                    <paper-icon-item>
+                        <iron-icon src="/src/element/images/badges.png" item-icon></iron-icon>
+                        Badges
+                    </paper-icon-item>
                 </div>
                 <div style='display: flex;    justify-content: center;'>
                     <div style='' class='flexElement'>
@@ -93,14 +110,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         },
-        loadBadge:function(){
-            this.set('route.path','badge')
+        loadBadge: function() {
+            this.set('route.path', 'badge')
         },
-        loadInventaire:function(){
-            this.set('route.path','inventory')
+        loadInventaire: function() {
+            this.set('route.path', 'inventory')
         },
-        startGame:function(){
-            this.set('route.path','activity')
+        startGame: function() {
+            this.set('route.path', 'activity')
         },
 
         userObs: function(status) {
