@@ -1,7 +1,8 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./element/inventory-view/inventory-item.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <dom-module id="my-inventory">
     <template>
         <style type="text/css">
@@ -9,9 +10,11 @@
             display: block;
             padding: 10px;
         }
-        paper-card{
-          display: block;
+        
+        paper-card {
+            display: block;
         }
+        
         .card {
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             padding: 16px;
@@ -33,15 +36,22 @@
             text-align: center;
         }
         </style>
+        <app-location use-hash-as-path route="{{route}}"></app-location>
+        <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
+        <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
-             <template is="dom-if" if={{_void(items)}}>
-                      <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
-              </template>
+                <template is="dom-if" if={{_void(items)}}>
+                    <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
+                </template>
                 <template is="dom-repeat" items="{{items}}">
                     <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
-                   </template>
                 </template>
+            </div>
+            <div class="card-actions">
+                <paper-button on-click='back'>RETOUR</paper-button>
             </div>
         </paper-card>
     </template>
@@ -55,13 +65,20 @@
         ready: function() {
             // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
         },
-        _void:function(itens){
-          if(this.items && this.items.length>0){
-            return false
-          }
-          return true
-        }
-        ,
+        back: function() {
+            if (this.persistedData && this.persistedData.page && this.persistedData.page.page) {
+                this.set('route.path', this.persistedData.page.page)
+            } else {
+                this.set('route.path', 'profile')
+
+            }
+        },
+        _void: function(itens) {
+            if (this.items && this.items.length > 0) {
+                return false
+            }
+            return true
+        },
         checkItem: function(allItems) {
             var k = 0;
             for (var i = 0; i < items.length; i++) {
