@@ -1,9 +1,26 @@
 {
-  "entrypoint": "index.html",
-  "shell": "src/my-app.html",
-  "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html"
-  ]
+    "entrypoint": "index.html",
+    "shell": "src/my-app.html",
+    "fragments": [
+        "src/my-activity.html",
+        "src/my-chatroom.html",
+        "src/my-badge.html",
+        "src/my-cluepoiinstruction.html",
+        "src/my-coordinates.html",
+        "src/my-feedback.html",
+        "src/my-guidance.html",
+        "src/my-icons.html",
+        "src/my-instructions.html",
+        "src/my-inventory.html",
+        "src/my-lobby.html",
+        "src/my-lobbyselection.html",
+        "src/my-login.html",
+        "src/my-mapview.html",
+        "src/my-profile.html",
+        "src/my-qrcodescanner.html",
+        "src/my-questions.html",
+        "src/my-register.html",
+        "src/my-uginstructions.html"
+
+    ]
 }
