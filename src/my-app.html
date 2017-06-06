@@ -34,11 +34,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
+<link rel="import" href="./element/dialogs/quickLink.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
@@ -132,27 +132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header reveals>
             <app-toolbar>
                 <div main-title>REVERIES</div>
-                <iron-icon icon="add-circle-outline" on-click="openAnimated"></iron-icon>
+                <iron-icon icon="add-circle-outline" on-click="openLinks"></iron-icon>
             </app-toolbar>
         </app-header>
-        <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-            <h2>Liens rapides</h2>
-            <a on-click="updateNotification" href="/#profile" class="inherit" tabindex="-1">
-                <iron-icon id="userProfile" src="element/images/no_avatar.png"></iron-icon>
-                <paper-badge for="userProfile" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge>
-            </a>
-            <a href="/#activity" class="inherit">
-                <iron-icon icon="vaadin:home" ></iron-icon>
-            </a>
-            <a href="/#mapview" class="inherit">
-                <iron-icon icon="vaadin:map-marker"></iron-icon>
-            </a>
-            <a href="/#chatroom" class="inherit">
-                <iron-icon icon="vaadin:chat"></iron-icon>
-            </a>
-        </paper-dialog>
-        <iron-collapse id="footer">
-        </iron-collapse>
+        <quick-link id='quickLink'></quick-link>
         <app-drawer-layout force-narrow>
             <!-- Drawer content -->
             <app-drawer hidden id="drawer">
@@ -209,8 +192,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-toast id="toast" text="New item earned !"></paper-toast>
         <iron-ajax method="POST" id="userBadge" url="/user/badges" body={id:0} content-type="application/json" handleAs="json" on-response="validateBadgeUser"></iron-ajax>
         <!--<iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>-->
-        <footer>
-        </footer>
     </template>
     <script>
     Polymer({
@@ -223,7 +204,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
             this.$.currentMLG.addEventListener('setupLobby', this.setupLobby.bind(this))
-
+            this.$.currentMLG.addEventListener('setupCometition', this.setupCometition.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
             this.$.inventory.addEventListener('notificationLoaded', this.addNotification.bind(this))
             this.$.currentMLG.addEventListener('unitgameLoaded', this.setupUnitgame.bind(this))
@@ -249,12 +230,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             this.$.lobbyselection.addEventListener('roomChoosen', this.enterLobby.bind(this))
         },
-        openAnimated:function(){
-            this.$.animated.open()
+        openLinks: function() {
+            this.$.quickLink.show()
         },
         enterLobby: function(elem) {
             this.roomName = elem.detail.roomName
-            this.roomId=elem.detail.roomId
+            this.roomId = elem.detail.roomId
             this.page = "lobby"
         },
 
@@ -430,13 +411,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
         },
-        setupLobby:function(lobbyParam){
-            this.mlgName=lobbyParam.detail.gameName
-            this.mlgId=lobbyParam.detail.gameId
-            this.mlgPlayer=lobbyParam.detail.player
-            this.lobby=true
-        }
-        ,
+        setupLobby: function(lobbyParam) {
+            this.mlgName = lobbyParam.detail.gameName
+            this.mlgId = lobbyParam.detail.gameId
+            this.mlgPlayer = lobbyParam.detail.player
+            this.lobby = true
+        },
         setupQuestion1: function(item) {
             this.question1 = item.detail
         },
@@ -559,7 +539,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setupActivity: function(elem) {
             this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
-
+            firebase.database().ref('users/' + this.user.uid + '/').update({
+                currentMLG: elem.detail._id,
+            });
             this.currentMLG = elem.detail;
             this.currentActivity = elem.detail._id
             this.$.currentMLG.processMLG(this.currentMLG);
@@ -661,24 +643,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         observers: [
             '_routePageChanged(route.page)',
-            '_userOnline(user)'
+            '_userOnline(user.*)'
         ],
         _userOnline(user) {
-          /*  if (user && user.uid) {
-                firebase.database().ref('users/' + user.uid + '/').update({
-                    status: 'online'
-                });
-                var ref = firebase.database().ref("users/" + user.uid + '/');
-                ref.onDisconnect().update({
-                    status: 'offline'
-                });
-                var refPage = firebase.database().ref("users/" + user.uid + '/page/');
-                ref.onDisconnect().set({
-                    page: ''
-                });
+            console.log(user)
+            /*  if (user && user.uid) {
+                  firebase.database().ref('users/' + user.uid + '/').update({
+                      status: 'online'
+                  });
+                  var ref = firebase.database().ref("users/" + user.uid + '/');
+                  ref.onDisconnect().update({
+                      status: 'offline'
+                  });
+                  var refPage = firebase.database().ref("users/" + user.uid + '/page/');
+                  ref.onDisconnect().set({
+                      page: ''
+                  });
 
 
-            }*/
+              }*/
         },
         _routePageChanged: function(page) {
             this.page = this.route.path || 'login';

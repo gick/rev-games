@@ -78,7 +78,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         },
         logout: function() {
-            firebase.database().ref('lobby/' + this.gameId + '/' + roomId.key + '/player/' + this.user.uid).remove().then(
+            firebase.database().ref('lobby/' + this.gameId + '/' + this.roomId + '/player/' + this.user.uid).remove().then(
                 function() {
                     this.set('route.path', 'activity')
                 }.bind(this))
