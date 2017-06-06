@@ -18,17 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="theme-color" content="#fff">
     <script src="./bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="manifest" href="/manifest.json">
+    <link rel="import" href="/src/my-app.html">
+    <link rel="import" href="../bower_components/platinum-sw/platinum-sw-elements.html">
+    <link rel="import" href="../bower_components/platinum-sw/platinum-sw-register.html">
     <script>
-    window.Polymer = {
-        lazyRegister: true,
-        dom: 'shadow'
-    };
-
     // load webcomponents polyfills
 
     // load pre-caching service worker
     </script>
-    <link rel="import" href="/src/my-app.html">
     <style>
     body {
         margin: 0;
@@ -41,7 +38,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body>
-    <my-app></my-app>
+    <template is="dom-bind">
+        <platinum-sw-register skip-waiting clients-claim auto-register reload-on-install>
+            </platinum-sw-fetch>
+            <platinum-sw-cache default-cache-strategy="fastest"></platinum-sw-cache>
+        </platinum-sw-register>
+        <my-app></my-app>
+    </template>
 </body>
 
 </html>
