@@ -39,6 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="./element/dialogs/quickLink.html">
+<link rel="import" href="./element/dialogs/setupCompetition.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
@@ -120,6 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             margin-right: 50px;
         }
         </style>
+        <setup-competition id='setupCompetition'></setup-competition>
         <firebase-app api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
         </firebase-app>
         <firebase-auth id="auth" user="{{user}}" provider="google">
@@ -204,7 +206,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
             this.$.currentMLG.addEventListener('setupLobby', this.setupLobby.bind(this))
-            this.$.currentMLG.addEventListener('setupCometition', this.setupCometition.bind(this))
+            this.$.currentMLG.addEventListener('setupCometition', this.setupCompetition.bind(this))
             this.$.currentMLG.addEventListener('poiLoaded', this.setupPOI.bind(this))
             this.$.inventory.addEventListener('notificationLoaded', this.addNotification.bind(this))
             this.$.currentMLG.addEventListener('unitgameLoaded', this.setupUnitgame.bind(this))
@@ -244,6 +246,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$$('#map').resetMap()
             }
         },
+        setupCompetition:function(){
+            this.$.setupCompetition.show()
+        }
+        ,
         _toggleCollapse: function() {
             this.$.footer.toggle()
             this.$.collapser.toggle()
