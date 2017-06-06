@@ -64,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </firebase-auth>
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
-        <app-localstorage-document key="profileData" data="{{userData}}">
+        <app-localstorage-document key="profileData" data="[[userData]]">
         </app-localstorage-document>
         <paper-card heading="Profil" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
