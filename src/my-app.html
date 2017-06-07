@@ -129,7 +129,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{inventoryItem}}"></iron-ajax>
-        <iron-ajax id="badgeLoader" url="/badge/{{badgeId}}" handle-as="json" last-response="{{badgeItem}}"></iron-ajax>
         <app-header reveals>
             <app-toolbar>
                 <div main-title>REVERIES</div>
@@ -175,7 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-register name="register"></my-register>
                 <my-profile name="profile"></my-profile>
                 <my-login id='loginForm' name='login'></my-login>
-                <my-badge id="badge" name="badge" items="{{badgeItems}}"></my-badge>
+                <my-badge id="badge" name="badge"></my-badge>
                 <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                 <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                 <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
@@ -201,7 +200,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'my-app',
         ready: function() {
             this.inventoryItems = []
-            this.badgeItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
@@ -350,12 +348,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.resetActivity()
                 this.$.currentMLG.setupNextUnitGame();
             } else {
-                console.log(this.badgeItem)
-                var body = {
-                    'id': this.badgeId
+                if (this.badgeId) { 
+                    firebase.database().ref('users/' + this.user.uid + '/badges/' + this.badgeId + '/').set({
+                        status: 'acquired'
+                    })
                 }
-                this.$.userBadge.body = body;
-                this.$.userBadge.generateRequest()
                 this.resetActivity()
                 this.splice("inventoryItems", 0, this.inventoryItems.length)
                 this.$.toast.hide()
@@ -596,18 +593,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.badgeNumber = 0
             this.showBadge = true
             this.currentPage = "/#" + this.page
-        },
-
-        validateBadgeUser: function(e) {
-            console.log("response : " + e.detail.response.success)
-            if (e.detail.response.success) {
-                this.push('badgeItems', this.badgeItem[0])
-                    //this.badgeItem = null
-                this.badgeId = null
-            } else {
-                console.log("Badge already acquired")
-                this.badgeId = null
-            }
         },
 
         properties: {
