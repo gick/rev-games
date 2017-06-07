@@ -1,4 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <dom-module id="my-badge">
     <template>
         <style type="text/css">
@@ -29,15 +32,14 @@
         }
         </style>
         <div class="card">
-        <iron-ajax auto id="listBadgeId" url="/user/badges" handle-as="json" last-response="{{badgeAcquisId}}"></iron-ajax>
-        <template is="dom-repeat" items="{{badgeAcquisId}}">
-          <iron-ajax auto id="badgeAcquisLoader" url="/badge/{{item.id}}" handle-as="json" last-response="{{item._badgeAcquis}}"></iron-ajax>
-          <template is="dom-repeat" items="{{item._badgeAcquis}}" as="badge">
+        <firebase-auth id="auth" user="{{user}}" provider="google"></firebase-auth>
+        <firebase-query path="/users/{{user.uid}}/badges" data="{{userBadges}}"></firebase-query>
+        <template is="dom-repeat" items="{{badgeIdTab}}">
+          <iron-ajax auto id="badgeLoader" url="/badge/{{item}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
+          <template is="dom-repeat" items="{{badge}}" as="badge">
+            [[badge.label]]
             <user-badge badge-mediaid="{{badge.badgePageId}}" label="{{badge.label}}" badge-text="{{badge.badgeText}}"></user-badge>
           </template>
-        </template>
-        <template is="dom-repeat" items="{{items}}">
-          <user-badge badge-mediaid="{{item.badgePageId}}" label="{{item.label}}" badge-text="{{item.badgeText}}"></user-badge>
         </template>
     	</div>
     </template>
@@ -48,14 +50,28 @@
     Polymer({
         is: 'my-badge',
 
+        getBadges: function() {
+            if (this.badgeIdTab) {
+                this.splice('badgeIdTab', 0, this.badgeIdTab.length)
+            }
+            for (var i = 0; i < this.userBadges.length; i++) {
+                this.push('badgeIdTab', this.userBadges[i].$key)
+            }1
+            console.log(this.badgeIdTab)
+        },
+
         properties: {
 
-          items: {
+          badgeIdTab: {
             type: Array,
-            notify: true,
+            value: []
           },
 
-        }
+        },
+
+        observers: [
+            'getBadges(userBadges.*)'
+        ]
     })
 })();
 </script>
