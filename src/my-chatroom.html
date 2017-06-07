@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="./element/chatroom/chatroomLine.html">
 <link rel="import" href="./element/chatroom/chatroomElement.html">
 <dom-module id="my-chatroom">
@@ -9,30 +10,18 @@
             padding: 10px;
         }
         
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
-        }
-        
-        .circle {
-            display: inline-block;
-            height: 64px;
-            width: 64px;
-            border-radius: 50%;
-            background: #ddd;
-            line-height: 64px;
-            font-size: 30px;
-            color: #555;
-            text-align: center;
+        paper-card {
+            display: block;
         }
         </style>
-        <div class="card">
-            <chatroom-element></chatroom-element>
-            <chatroom-line></chatroom-line>
+        <paper-card heading="Chat" image="" elevation="" animated-shadow="false">
+            <div class="card-content">
+                <chatroom-element></chatroom-element>
+            </div>
+            <div class="card-actions">
+                <chatroom-line></chatroom-line>
+            </div>
+        </paper-card>
         </div>
     </template>
 </dom-module>
@@ -41,7 +30,7 @@
     'use strict';
     Polymer({
         is: 'my-chatroom',
-        ready: function(){},
+        ready: function() {},
 
         properties: {
 

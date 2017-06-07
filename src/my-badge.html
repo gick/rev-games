@@ -1,4 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./element/inventory-view/inventory-item.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <dom-module id="my-badge">
     <template>
         <style type="text/css">
@@ -7,39 +12,29 @@
             padding: 10px;
         }
         
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
+        paper-card {
+            display:block;
         }
         
-        .circle {
-            display: inline-block;
-            height: 64px;
-            width: 64px;
-            border-radius: 50%;
-            background: #ddd;
-            line-height: 64px;
-            font-size: 30px;
-            color: #555;
-            text-align: center;
-        }
         </style>
-        <div class="card">
-        <iron-ajax auto id="listBadgeId" url="/user/badges" handle-as="json" last-response="{{badgeAcquisId}}"></iron-ajax>
-        <template is="dom-repeat" items="{{badgeAcquisId}}">
-          <iron-ajax auto id="badgeAcquisLoader" url="/badge/{{item.id}}" handle-as="json" last-response="{{item._badgeAcquis}}"></iron-ajax>
-          <template is="dom-repeat" items="{{item._badgeAcquis}}" as="badge">
-            <user-badge badge-mediaid="{{badge.badgePageId}}" label="{{badge.label}}" badge-text="{{badge.badgeText}}"></user-badge>
-          </template>
-        </template>
-        <template is="dom-repeat" items="{{items}}">
-          <user-badge badge-mediaid="{{item.badgePageId}}" label="{{item.label}}" badge-text="{{item.badgeText}}"></user-badge>
-        </template>
-    	</div>
+        <app-location use-hash-as-path route="{{route}}"></app-location>
+        <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
+        <app-indexeddb-mirror key="profileData" data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+        <paper-card heading="Badges" image="" elevation="1" animated-shadow="false">
+            <div class="card-content">
+                <template is="dom-if" if={{_void(items)}}>
+                    <div>Vous n'avez aucun badges pour le moment essayez d'en gagner en jouant!</div>
+                </template>
+                <template is="dom-repeat" items="{{items}}">
+                    <user-badge badge-mediaid="{{item.badgePageId}}" label="{{item.label}}" badge-text="{{item.badgeText}}"></user-badge>
+                </template>
+            </div>
+            <div class="card-actions">
+                <paper-button on-click='back'>RETOUR</paper-button>
+            </div>
+        </paper-card>
     </template>
 </dom-module>
 <script>
@@ -47,13 +42,21 @@
     'use strict';
     Polymer({
         is: 'my-badge',
+        back: function() {
+            if (this.persistedData && this.persistedData.page && this.persistedData.page.page) {
+                this.set('route.path', this.persistedData.page.page)
+            } else {
+                this.set('route.path', 'profile')
+
+            }
+        },
 
         properties: {
 
-          items: {
-            type: Array,
-            notify: true,
-          },
+            items: {
+                type: Array,
+                notify: true,
+            },
 
         }
     })

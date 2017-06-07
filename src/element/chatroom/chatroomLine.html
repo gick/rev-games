@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="./imageResizer.html">
 <dom-module id="chatroom-line">
@@ -48,16 +49,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
     <template>
+        <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" user="{{user}}" provider="google">
-            <div class="resourceElement">
-                <paper-input value='{{line}}' label="Newline"></paper-input>
-                <paper-button on-click="sendline" raised>Send line
-                </paper-button>
-                <paper-button on-click="clearChat" raised>Clear chat
-                </paper-button>
-
-                <image-resizer id="photoScan" name='Take picture' url='/userFile'></image-resizer>
-            </div>
+        </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
+        </firebase-document>
+        <paper-input value='{{line}}' label="Envoyer un message" on-keydown="checkForEnter"></paper-input>
+        <paper-icon-button on-click='sendline' icon="icons:send" item-icon></paper-icon-button>
+        <image-resizer id="photoScan" name='Photo' url='/userFile'></image-resizer>
+        <paper-button style='float:right' on-click='back'>RETOUR</paper-button>
     </template>
     <script>
     (function() {
@@ -68,32 +68,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.photoScan.addEventListener('success', this.getPhotoResponse.bind(this))
 
             },
-            clearChat:function(){
-                firebase.database().ref('messages/').set({})
-                
+            checkForEnter: function(e) {
+                // check if 'enter' was pressed
+                if (e.keyCode === 13) {
+                    this.sendline()
+                }
+            }
+
+            ,
+            back: function() {
+                if (this.userData && this.userData.page && this.userData.page.page) {
+                    this.set('route.path', this.userData.page.page)
+                } else {
+                    this.set('route.path', 'profile')
+
+                }
             },
 
+
+            clearChat: function() {
+                firebase.database().ref('messages/' + this.userData.hasChatSession).set({})
+
+            },
+            newData: function(data) {
+                console.log(data)
+            },
             getPhotoResponse: function(e) {
                 var fileId = JSON.parse(event.detail.xhr.response)._id
-                var ref = firebase.database().ref('messages/')
+                var ref = firebase.database().ref('messages/' + this.userData.hasChatSession)
                 var newPostRef = ref.push();
                 newPostRef.set({
                     image: fileId,
-                    author: this.user.email
+                    author: this.userData.username
                 });
 
             },
             sendline: function() {
-                var ref = firebase.database().ref('messages/')
+                var ref = firebase.database().ref('messages/' + this.userData.hasChatSession)
                 var newPostRef = ref.push();
                 newPostRef.set({
                     line: this.line,
-                    author: this.user.email
+                    author: this.userData.username
                 });
-                this.line=''
+                this.line = ''
 
             },
-            properties: {}
+            properties: {},
+            observers: ['newData(userData.*)']
         });
     })();
     </script>
