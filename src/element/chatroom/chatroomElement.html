@@ -29,10 +29,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     .header {
         width: 100%;
     }
-    img{
+    
+    img {
         max-width: 300px;
-        max-height:300px;
+        max-height: 300px;
     }
+    
     .suppress-action {
         display: inline-flex;
         flex-direction: row-reverse;
@@ -61,14 +63,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
     <template>
-        <firebase-query id="query" path="/messages" data="{{data}}">
-        </firebase-query>
-        <template is="dom-repeat" items="{{data}}" as="note">
-            <div><span class='author'>{{note.author}} : </span> <span>{{note.line}}</span></div>
-            <template is="dom-if" if={{note.image}}>
-                <div><span class='author'>{{note.author}} : </span> <span><img src='/file/{{note.image}}'></span></div>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+            <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
+            </firebase-document>
+            <firebase-query id="query" path="/messages/{{userData.hasChatSession}}" data="{{data}}">
+            </firebase-query>
+            <template is="dom-repeat" items="{{data}}" as="note">
+                <div><span class='author'>{{note.author}} : </span> <span>{{note.line}}</span></div>
+                <template is="dom-if" if={{note.image}}>
+                    <div><span class='author'>{{note.author}} : </span> <span><img src='/file/{{note.image}}'></span></div>
+                </template>
             </template>
-        </template>
     </template>
     <script>
     (function() {
@@ -84,7 +89,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     type: String,
                     notify: true,
                 },
-            }
+            },
+            observers: ['newData(userData.*,user.*)']
+
         });
     })();
     </script>

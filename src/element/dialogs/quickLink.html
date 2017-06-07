@@ -53,8 +53,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Inventaire</span>
                 </div>
                 <div class='subcontainer'>
-                    <paper-icon-button dialog-confirm on-click='goBadge' icon="/src/element/images/badges.png" item-icon></paper-icon-button>
+                    <paper-icon-button dialog-confirm on-click='goBadge' src="/src/element/images/badges.png" item-icon></paper-icon-button>
                     <span>Badges</span>
+                </div>
+                <div class='subcontainer'>
+                    <paper-icon-button dialog-confirm on-click='goHome' icon="icons:home" item-icon></paper-icon-button>
+                    <span>Quitter le jeu</span>
                 </div>
                 <template is='dom-if' if='{{userData.hasChatSession}}'>
                     <div>
@@ -84,22 +88,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             newData: function(e) {
                 console.log(e)
             },
-            goInventory:function(){
+            goInventory: function() {
+
                 this.set('route.path', 'inventory')
+                this.$.quickLink.close()
+
             },
-            goActivity: function() {
+
+            goHome: function() {
                 this.set('route.path', 'activity')
+                this.$.quickLink.close()
 
             },
             goBadge: function() {
                 this.set('route.path', 'badge')
+                this.$.quickLink.close()
+
             },
             goChat: function() {
                 this.set('route.path', 'chatroom')
+                this.$.quickLink.close()
+
 
             },
             goMap: function() {
                 this.set('route.path', 'mapview')
+                this.$.quickLink.close()
+
             },
             properties: {
 

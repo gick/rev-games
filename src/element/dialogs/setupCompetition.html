@@ -8,6 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-auth.html">
+
 <link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
@@ -48,13 +50,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-dialog id='quickLink' entry-animation="scale-up-animation" exit-animation="fade-out-animation">
             <h2>Jeu solo ou multi?</h2>
             <div class='content'>
-            Dans le mode de jeu multi, vous pourrez voir les autres joueurs sur la carte, échanger avec eux sur le chat et essayer d'être le mieux positionné dans le tableau des scores!
-
-            Le mode solo est le même jeu sans ces interactions sociales.
+                Dans le mode de jeu multi, vous pourrez voir les autres joueurs sur la carte, échanger avec eux sur le chat et essayer d'être le mieux positionné dans le tableau des scores! Le mode solo est le même jeu sans ces interactions sociales.
             </div>
             <div class="buttons">
                 <paper-button on-click='setupMulti' dialog-confirm autofocus>Multi</paper-button>
-
                 <paper-button on-click='setupSolo' dialog-confirm autofocus>Solo</paper-button>
             </div>
         </paper-dialog>
@@ -68,17 +67,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             show: function() {
                 this.$.quickLink.open()
             },
-            setupSolo:function(){
+            newData:function(data){
+                console.log(data)
+            },
+            setupSolo: function() {
 
             },
+            setupMulti: function() {
+                this.set('userData.hasChatSession',this.gameId)
+
+                this.set('userData.hasMapSession',this.gameId)
+            },
+
             properties: {
-                ganeId:{
-                    type:String,
-                    notify:true
+                gameId: {
+                    type: String,
+                    notify: true
                 }
 
             },
-            observers: ['newData(userData.*)']
+            observers: ['newData(userData.*,user.*)']
         });
     })();
     </script>
