@@ -46,16 +46,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
         </firebase-document>
         <paper-dialog id='quickLink' entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-            <h2>Jouer en mode solo ou à plusieurs</h2>
+            <h2>Jeu solo ou multi?</h2>
             <div class='content'>
-            Ce jeu peut être joué en solo ou à plusieurs. Dans le mode de jeu à plusieurs, vous pourrez voir les autres joueurs sur la carte, échanger avec eux sur le chat et essayer d'être le mieux positionné dans le tableau des scores!
+            Dans le mode de jeu multi, vous pourrez voir les autres joueurs sur la carte, échanger avec eux sur le chat et essayer d'être le mieux positionné dans le tableau des scores!
 
             Le mode solo est le même jeu sans ces interactions sociales.
             </div>
             <div class="buttons">
-                <paper-button dialog-confirm autofocus>Multi</paper-button>
+                <paper-button on-click='setupMulti' dialog-confirm autofocus>Multi</paper-button>
 
-                <paper-button dialog-confirm autofocus>Solo</paper-button>
+                <paper-button on-click='setupSolo' dialog-confirm autofocus>Solo</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -68,27 +68,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             show: function() {
                 this.$.quickLink.open()
             },
-            newData: function(e) {
-                console.log(e)
-            },
-            goInventory:function(){
-                this.set('route.path', 'inventory')
-            },
-            goActivity: function() {
-                this.set('route.path', 'activity')
+            setupSolo:function(){
 
-            },
-            goBadge: function() {
-                this.set('route.path', 'badge')
-            },
-            goChat: function() {
-                this.set('route.path', 'chatroom')
-
-            },
-            goMap: function() {
-                this.set('route.path', 'mapview')
             },
             properties: {
+                ganeId:{
+                    type:String,
+                    notify:true
+                }
 
             },
             observers: ['newData(userData.*)']
