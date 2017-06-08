@@ -128,7 +128,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
-        <iron-ajax id="inventoryLoader" url="/inventory/{{inventoryItemId}}" handle-as="json" last-response="{{inventoryItem}}"></iron-ajax>
         <app-header reveals>
             <app-toolbar>
                 <div main-title>REVERIES</div>
@@ -175,7 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-profile name="profile"></my-profile>
                 <my-login id='loginForm' name='login'></my-login>
                 <my-badge id="badge" name="badge"></my-badge>
-                <my-inventory id="inventory" name="inventory" items="{{inventoryItems}}" badgeNumber="{{badgeNumber}}"></my-inventory>
+                <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                 <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                 <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
                 <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
@@ -191,7 +190,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-header-layout>
         </app-drawer-layout>
         <paper-toast id="toast" text="New item earned !"></paper-toast>
-        <iron-ajax method="POST" id="userBadge" url="/user/badges" body={id:0} content-type="application/json" handleAs="json" on-response="validateBadgeUser"></iron-ajax>
         <!--<iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>-->
     </template>
     <script>
@@ -333,6 +331,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.page = "feedback"
             }
             if (this.inventoryItem && this.inventoryItem[0]) {
+
                 this.push('inventoryItems', this.inventoryItem[0])
                 this.addNotification(1)
                 this.inventoryItem = null
@@ -354,11 +353,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     })
                 }
 
-                    firebase.database().ref('users/' + this.user.uid + '/scores/' + this.mlgId + '/').set({
-                        score: this.score
-                    })
+                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
-                this.splice("inventoryItems", 0, this.inventoryItems.length)
                 this.$.toast.hide()
                 this.badgeNumber = 0
                 this.page = "activity"
@@ -397,11 +393,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#loginForm').setStatus(status)
         },
         nextCalledFromQuestion: function() {
-            if (this.inventoryItem && this.inventoryItem[0]) {
+            if (this.inventoryItemId) {
                 console.log(this.inventoryItem)
-                this.push('inventoryItems', this.inventoryItem[0])
-                this.addNotification(1)
-                this.inventoryItem = null
+                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
+                    status: 'acquired'
+                })
+                //this.addNotification(1)
             }
             //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
@@ -480,7 +477,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (unitGame.poiReachedInventory) {
                 this.inventoryItemId = unitGame.poiReachedInventory
-                this.$.inventoryLoader.generateRequest()
             }
             this.feedback = {}
             this.goToStartPage()
@@ -561,6 +557,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.currentMLG = elem.detail;
             this.mlgId = elem.detail._id
             this.currentActivity = elem.detail._id
+            if (elem.detail.multiplayer == null) {
+                this.roomId = firebase.database().ref('lobby/' + this.mlgId + '/').push({
+                    roomName: 'soloGame',
+                });
+                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/player/' + this.user.uid).set({
+                    status: 'online'
+                })
+            }
             this.$.currentMLG.processMLG(this.currentMLG);
             if (elem.detail.badgeId) {
                 this.badgeId = elem.detail.badgeId
@@ -648,7 +652,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             score: {
                 type: Number,
                 value: 0
-            },
+            }
         },
 
         observers: [

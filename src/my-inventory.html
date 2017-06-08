@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./element/inventory-view/inventory-item.html">
@@ -39,15 +41,16 @@
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
+        <firebase-query path="/lobby/{{mlgid}}/{{roomkey}}/items" data="{{userItems}}"></firebase-query>
         <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+        <button on-click="testconsole">show info</button>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
                 <template is="dom-if" if={{_void(items)}}>
                     <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
                 </template>
-                <template is="dom-repeat" items="{{items}}">
-                    <inventory-item inventory-docpage="{{item.itemDocPageId}}" inventory-mediaid="{{item.itemPageId}}" item-text="{{item.text}}" resource-readonly="{{item.readonly}}" item-id="{{item._id}}"></inventory-item>
+                <template is="dom-repeat" items="{{itemIdTab}}">
+                    <inventory-item item-id="{{item}}"></inventory-item>
                 </template>
             </div>
             <div class="card-actions">
@@ -62,8 +65,11 @@
     Polymer({
         is: 'my-inventory',
 
-        ready: function() {
-            // this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
+        testconsole: function() {
+            console.log(this.roomkey)
+            console.log(this.mlgid)
+            console.log(this.userItems)
+            console.log(this.itemIdTab)
         },
         back: function() {
             if (this.persistedData && this.persistedData.page && this.persistedData.page.page) {
@@ -94,22 +100,29 @@
                 return false
             }
         },
-        printItems: function() {
 
-            console.log(this.items)
+        getItems: function(){
+            if (this.itemIdTab) {
+                this.splice('itemIdTab', 0, this.itemIdTab.length)
+            }
+            for (var i = 0; i < this.userItems.length; i++) {
+                this.push('itemIdTab', this.userItems[i].$key)
+            }
+            console.log(this.itemIdTab)
         },
-        properties: {
-            items: {
-                type: Array,
-                notify: true,
-            },
 
-            badgeNumber: {
-                type: String,
-                notify: true
+        properties: {
+
+            itemIdTab: {
+                type: Array,
+                value: []
             }
 
-        }
+        },
+
+        observers: [
+            'getItems(userItems.*)'
+        ]
     })
 })();
 </script>
