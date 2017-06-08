@@ -22,6 +22,7 @@
             align-items: center;
         }
         </style>
+        <iron-ajax auto id="itemLoader" url="/inventory/{{itemId}}" handle-as="json" on-response='setupItem'></iron-ajax>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{item}}"></iron-ajax>
         <iron-ajax id="docPageLoader" url="/staticmedia/{{docPageId}}" handle-as="json" last-response="{{docPageElement}}"></iron-ajax>
         <paper-dialog id="docPage">
@@ -42,6 +43,13 @@
     'use strict';
     Polymer({
         is: 'inventory-item',
+
+        setupItem: function(e) {
+            var item = e.detail.__data__.response[0]
+            this._loadPage(item.itemPageId)
+            this._loadDocPage(item.itemDocPageId)
+            this.set('itemText', item.itemText)
+        },
 
         showDocPage:function(){
             this.$.docPage.open()
