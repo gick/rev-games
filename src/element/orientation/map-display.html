@@ -15,18 +15,18 @@
         </style>
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-query id="query" path="/users" data="{{data}}">
+        <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
+        </firebase-document>
+        <firebase-query id="query" path="/mapSession/{{userData.hasMapSession}}" data="{{data}}">
         </firebase-query>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map disable-street-view-control style="display:block;height:500px;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
-                <google-map-marker drag-events title="POI" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}"></google-map-marker>
+                <google-map-marker drag-events title="POI" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.latitude]]" longitude="[[  marker.longitude]]"></google-map-marker>
             </template>
-            <template is="dom-repeat" items={{data}} as="user">
-                <template is="dom-if" if={{user.position}}>
-                    <google-map-marker drag-events title="{{user.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{user.position.latitude}}" longitude="{{user.position.longitude}}"></google-map-marker>
-                </template>
+            <template is="dom-repeat" items={{data}}>
+                <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
             </template>
         </google-map>
     </template>
@@ -42,7 +42,10 @@
                 this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
             },
-
+            poiObserver(poi){
+                if(this.markers.length==0)
+                    this.showPOI(this.poi)
+            },
             mapready: function() {
                 if (this.poi)
                     this.showPOI(this.poi)
@@ -80,9 +83,10 @@
             updateUser: function(coord) {
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
-                var ref = firebase.database().ref('users/' + this.user.uid + '/position').set({
+                var ref = firebase.database().ref('mapSession/' + this.userData.hasMapSession + '/' + this.user.uid + '/').set({
                     latitude: coord.lat,
-                    longitude: coord.lng
+                    longitude: coord.lng,
+                    name: this.userData.username,
                 })
 
             },
@@ -206,6 +210,7 @@
                 }
                 this.splice('circles', 0, circles.length)
             },
+            observers: ['newData(userData.*,user.*,data.*)','poiObserver(poi.*)'],
 
             properties: {
                 hasCoord: {

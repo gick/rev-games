@@ -403,14 +403,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         setupPOI: function(item) {
             if (item && item.detail && item.detail.map) {
-                if (this.$$('#map') && this.$$('#map').resetMap) {
-                    this.$$('#map').resetMap()
-                }
 
                 this.poi = item.detail;
-                if (this.$$('#map') && this.$$('#map').setPOI) {
-                    this.$$('#map').setPOI()
-                }
             }
         },
         setupLobby: function(lobbyParam) {
