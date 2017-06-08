@@ -353,6 +353,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         status: 'acquired'
                     })
                 }
+
+                    firebase.database().ref('users/' + this.user.uid + '/scores/' + this.mlgId + '/').set({
+                        score: this.score
+                    })
                 this.resetActivity()
                 this.splice("inventoryItems", 0, this.inventoryItems.length)
                 this.$.toast.hide()
@@ -383,6 +387,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.feedback = false
             this.instructions = false
             this.uginstructions = false
+            this.score = 0
 
         },
         setupScoreToBeat: function(score) {
@@ -644,6 +649,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 type: Boolean,
                 notify: true,
                 value: false,
+            },
+
+            score: {
+                type: Number,
+                value: 0
             },
         },
 
