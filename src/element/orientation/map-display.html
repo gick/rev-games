@@ -43,7 +43,7 @@
                 this.userCoord = null;
             },
             poiObserver(poi){
-                if(this.markers.length==0)
+                if(this.markers && this.markers.length==0)
                     this.showPOI(this.poi)
             },
             mapready: function() {

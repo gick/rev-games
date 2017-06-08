@@ -23,7 +23,6 @@ Simple compass that rotate according to the angle parameter
         <iron-ajax url="/poi/{{poiId}}" handle-as="json" last-response="{{poi}}" id="poiRep"></iron-ajax>
         <iron-ajax url="/staticmedia/{{ugStartPageId}}" handle-as="json" last-response="{{ugStartPage}}" id="startPageLoader"></iron-ajax>
         <iron-ajax url="/staticmedia/{{feedbackMediaId}}" handle-as="json" last-response="{{feedbackMedia}}" id="feedbackPageLoader"></iron-ajax>
-
         <iron-ajax url="/staticmedia/{{clueId}}" handle-as="json" last-response="{{clue}}" id="clueRep"></iron-ajax>
         <iron-ajax id="question1Loader" url="/question/{{question1Id}}" last-response="{{question1}}" handle-as="json"></iron-ajax>
         <iron-ajax id="question2Loader" url="/question/{{question2Id}}" last-response="{{question2}}" handle-as="json"></iron-ajax>
@@ -46,11 +45,11 @@ Simple compass that rotate according to the angle parameter
                 this.$.question3Loader.addEventListener('response', this.question3Loaded.bind(this))
 
             },
-            feedbackPageLoaded:function(response){
-                this.fire('feedbackPageLoaded',this.feedbackMedia[0])
+            feedbackPageLoaded: function(response) {
+                this.fire('feedbackPageLoaded', this.feedbackMedia[0])
             },
-            startPageLoaded:function(response){
-                this.fire('ugStartPageLoaded',this.ugStartPage[0])
+            startPageLoaded: function(response) {
+                this.fire('ugStartPageLoaded', this.ugStartPage[0])
             },
             poiLoaded: function(response) {
                 this.fire('poiLoaded', this.poi[0])
@@ -68,9 +67,32 @@ Simple compass that rotate according to the angle parameter
             question3Loaded: function(response) {
                 this.fire('question3Loaded', this.question3[0])
             },
+            processScore: function(ugItem) {
+                this.score={}
+                if (ugItem && ugItem.activity1Success && typeof parseInt(ugItem.activity1Success)=='number'){
+                    this.score.activity1Success=parseInt(ugItem.activity1Success)
+                }
+                if (ugItem && ugItem.activity2Success && typeof parseInt(ugItem.activity2Success)=='number'){
+                    this.score.activity2Success=parseInt(ugItem.activity2Success)
+                }
+                if (ugItem && ugItem.activity3Success && typeof parseInt(ugItem.activity3Success)=='number'){
+                    this.score.activity1Success=parseInt(ugItem.activity1Success)
+                }
+                if (ugItem && ugItem.activity1Fail && typeof parseInt(ugItem.activity1Fail)=='number'){
+                    this.score.activity1Fail=parseInt(ugItem.activity1Fail)
+                }
+                if (ugItem && ugItem.activity2Fail && typeof parseInt(ugItem.activity2Fail)=='number'){
+                    this.score.activity2Fail=parseInt(ugItem.activity2Fail)
+                }
+                if (ugItem && ugItem.activity3Fail && typeof parseInt(ugItem.activity3Fail)=='number'){
+                    this.score.activity3Fail=parseInt(ugItem.activity3Fail)
+                }
+                this.fire('scoreLoaded',this.score)
 
+            },
             processUg: function(ugItem) {
                 console.log(ugItem)
+                this.processScore(ugItem)
                 if (ugItem && ugItem.POIId) {
                     this.poiId = ugItem.POIId
                     this.$.poiRep.generateRequest()
@@ -82,17 +104,16 @@ Simple compass that rotate according to the angle parameter
 
                 }
 
-                if(ugItem && ugItem.startMediaId){
-                    this.ugStartPageId=ugItem.startMediaId
+                if (ugItem && ugItem.startMediaId) {
+                    this.ugStartPageId = ugItem.startMediaId
                     this.$.startPageLoader.generateRequest()
                 }
-                if(ugItem && ugItem.feedbackMediaId){
-                    this.feedbackMediaId=ugItem.feedbackMediaId
+                if (ugItem && ugItem.feedbackMediaId) {
+                    this.feedbackMediaId = ugItem.feedbackMediaId
                     this.$.feedbackPageLoader.generateRequest()
                 }
 
                 var questions = ugItem.activities
-
                 switch (questions.length) {
                     case 0:
                         break;

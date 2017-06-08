@@ -210,6 +210,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('ugStartPageLoaded', this.ugStartPageLoaded.bind(this))
+            this.$.currentMLG.addEventListener('scoreLoaded', this.setupScore.bind(this))
 
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
@@ -230,6 +231,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         openLinks: function() {
             this.$.quickLink.show()
+        },
+        setupScore: function(elem) {
+            console.log(elem)
         },
         enterLobby: function(elem) {
             this.roomName = elem.detail.roomName
@@ -330,12 +334,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.page = "feedback"
             }
-            if (this.inventoryItem && this.inventoryItem[0]) {
 
-                this.push('inventoryItems', this.inventoryItem[0])
-                this.addNotification(1)
-                this.inventoryItem = null
+            if (this.inventoryItemId) {
+                console.log(this.inventoryItem)
+                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
+                        acquiredBy: 'encoursdedev'
+                    })
+                    //this.addNotification(1)
             }
+
 
         },
         fireCustom: function() {
@@ -347,7 +354,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.resetActivity()
                 this.$.currentMLG.setupNextUnitGame();
             } else {
-                if (this.badgeId) { 
+                if (this.badgeId) {
                     firebase.database().ref('users/' + this.user.uid + '/badges/' + this.badgeId + '/').set({
                         status: 'acquired'
                     })
@@ -396,9 +403,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.inventoryItemId) {
                 console.log(this.inventoryItem)
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
-                    acquiredBy: 'encoursdedev'
-                })
-                //this.addNotification(1)
+                        acquiredBy: 'encoursdedev'
+                    })
+                    //this.addNotification(1)
             }
             //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
@@ -687,7 +694,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _pageChanged: function(page) {
-            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page!='chatroom') {
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom') {
                 firebase.database().ref('users/' + this.user.uid + '/page/').set({
                     page: page,
                 });
