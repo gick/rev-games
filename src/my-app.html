@@ -396,7 +396,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.inventoryItemId) {
                 console.log(this.inventoryItem)
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
-                    status: 'acquired'
+                    acquiredBy: this.user.uid
                 })
                 //this.addNotification(1)
             }

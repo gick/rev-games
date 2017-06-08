@@ -43,7 +43,6 @@
         </firebase-auth>
         <firebase-query path="/lobby/{{mlgid}}/{{roomkey}}/items" data="{{userItems}}"></firebase-query>
         <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-        <button on-click="testconsole">show info</button>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
                 <template is="dom-if" if={{_void(items)}}>
@@ -65,12 +64,6 @@
     Polymer({
         is: 'my-inventory',
 
-        testconsole: function() {
-            console.log(this.roomkey)
-            console.log(this.mlgid)
-            console.log(this.userItems)
-            console.log(this.itemIdTab)
-        },
         back: function() {
             if (this.persistedData && this.persistedData.page && this.persistedData.page.page) {
                 this.set('route.path', this.persistedData.page.page)
