@@ -7,29 +7,31 @@
         <style type="text/css">
         .image {
             width: 150px;
-            height: 150px; 
+            height: 150px;
         }
-
+        
         .markdown-html img {
             width: 200px;
             height: 200px;
             border-radius: 50%;
         }
-
+        
         .badge {
             display: inline-flex;
-            flex-direction: row;
+            flex-direction: column;
+                margin: 10px;
             align-items: center;
         }
         </style>
+        <iron-ajax auto id="badgeLoader" url="/badge/{{badgeId}}" handle-as="json" on-response='setupBadge'></iron-ajax>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
         <div>{{label}}</div>
         <div class="badge">
-        <marked-element markdown="{{itemMkdown}}">
+            <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
-        </marked-element>
+            </marked-element>
+            <div>{{badgeText}}</div>
         </div>
-        <div>{{badgeText}}</div>
     </template>
 </dom-module>
 <script>
@@ -37,6 +39,12 @@
     'use strict';
     Polymer({
         is: 'user-badge',
+        setupBadge: function(e) {
+            var badge = e.detail.__data__.response[0]
+            this._loadPage(badge.badgePageId)
+            this.set('badgeText', badge.badgeText)
+        },
+
         _loadPage: function(badgeMediaid) {
             if (badgeMediaid) {
                 this.url = '/staticmedia/' + badgeMediaid
@@ -49,25 +57,16 @@
         ready: function() {
             this.$.ajaxLoader.addEventListener('iron-ajax-response', this.handleResponse.bind(this))
 
-            if (!this.badgeMediaid) {
+            if (!this.badgeId) {
                 this.itemMkdown = "<img src='../../src/element/images/no_badge.png'>"
             }
 
         },
         properties: {
-            badgeMediaid: {
-                type: String,
-                notify: true,
-                observer: '_loadPage',
-            },
-            label: {
+            badgeId: {
                 type: String,
                 notify: true,
             },
-            badgeText: {
-                type: String,
-                notify: true,
-            }
         }
     })
 })();

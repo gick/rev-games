@@ -1,10 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<<<<<<< HEAD
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./element/auth-manager/badgeElement.html">
 <link rel="import" href="./element/inventory-view/inventory-item.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
@@ -28,16 +27,12 @@
         <firebase-query path="/users/{{user.uid}}/badges" data="{{userBadges}}"></firebase-query>
         <app-indexeddb-mirror key="profileData" data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Badges" image="" elevation="1" animated-shadow="false">
-            <div class="card-content">
+            <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
                 <template is="dom-if" if={{_void(items)}}>
                     <div>Vous n'avez aucun badges pour le moment essayez d'en gagner en jouant!</div>
                 </template>
-                <template is="dom-repeat" items="{{badgeIdTab}}">
-                    <iron-ajax auto id="badgeLoader" url="/badge/{{item}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
-                    <template is="dom-repeat" items="{{badge}}" as="badge">
-                        [[badge.label]]
-                        <user-badge badge-mediaid="{{badge.badgePageId}}" label="{{badge.label}}" badge-text="{{badge.badgeText}}"></user-badge>
-                    </template>
+                <template is="dom-repeat" items="{{badgeIdTab}}" as='badge'>
+                        <user-badge badge-id="{{badge}}"></user-badge>
                 </template>
             </div>
             <div class="card-actions">
