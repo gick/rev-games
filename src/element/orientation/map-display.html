@@ -23,7 +23,7 @@
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <google-map disable-street-view-control style="display:block;height:500px;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
-                <google-map-marker drag-events title="POI" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.latitude]]" longitude="[[  marker.longitude]]"></google-map-marker>
+                <google-map-marker drag-events title="POI" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.latitude]]" longitude="[[marker.longitude]]"></google-map-marker>
             </template>
             <template is="dom-repeat" items={{data}}>
                 <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
@@ -31,7 +31,6 @@
             <template is="dom-if" if={{isSolo}}>
                 <google-map-marker drag-events title="{{userData.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
             </template>
-
         </google-map>
     </template>
     <script>
@@ -93,11 +92,10 @@
                         longitude: coord.lng,
                         name: this.userData.username,
                     })
-                }
-                else{
-                    this.set('isSolo',true)
-                    this.set('latitude',coord.lat)
-                    this.set('longitude',coord.lng)
+                } else {
+                    this.set('isSolo', true)
+                    this.set('latitude', coord.lat)
+                    this.set('longitude', coord.lng)
 
                 }
 

@@ -115,7 +115,7 @@
                     lng: e.detail.longitude
                 }
                 var _userCoord = new google.maps.LatLng(e.detail.latitude, e.detail.longitude)
-                var _POICoord = new google.maps.LatLng(this.poi.latitude, this.poi.longitude)
+                var _POICoord = new google.maps.LatLng(this.poi.map.areaLat, this.poi.map.areaLong)
                 this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _POICoord)
                 console.log(this.headingDistance)
                 if (this.initialHeadingDistance == null) {
