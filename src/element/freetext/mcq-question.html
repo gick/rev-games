@@ -101,9 +101,12 @@
                     if (this.$.mcq.selectedItem && this.$.mcq.selectedItem.innerText && this.$.mcq.selectedItem.innerText.trim() == this.correctAnswer.trim()) {
                         this.$.correct.show();
                         this.$.wrong.hide();
+                        this.fire('correctAnswer')
                     } else {
                         this.$.wrong.show();
                         this.$.correct.hide();
+                        this.fire('wrongAnswer')
+
                     }
                     this.buttonText = "Next"
                 }

@@ -49,13 +49,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="card">
             <h1>Questions</h1>
             <iron-collapse id="quest1" opened="{{open1}}">
-                <generic-question id="question1" question="{{question1}}"></generic-question>
+                <generic-question score="{{question1Score}}" id="question1" question="{{question1}}"></generic-question>
             </iron-collapse>
             <iron-collapse id="quest2" opened="{{open2}}">
-                <generic-question id="question2" question="{{question2}}"></generic-question>
+                <generic-question score="{{question2Score}}" id="question2" question="{{question2}}"></generic-question>
             </iron-collapse>
             <iron-collapse id="quest3" opened="{{open3}}">
-                <generic-question id="question3" question="{{question3}}"></generic-question>
+                <generic-question score="{{question3Score}}" id="question3" question="{{question3}}"></generic-question>
             </iron-collapse>
         </div>
     </template>
@@ -64,12 +64,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-questions',
         ready: function() {
+            this.$.question1.addEventListener('correctAnswer', this.correctQuestion1.bind(this))
+            this.$.question2.addEventListener('correctAnswer', this.correctQuestion2.bind(this))
+            this.$.question3.addEventListener('correctAnswer', this.correctQuestion3.bind(this))
+
             this.$.question1.addEventListener('nextQuestion', this.setQuestion2.bind(this))
             this.$.question2.addEventListener('nextQuestion', this.setQuestion3.bind(this))
             this.$.question3.addEventListener('nextQuestion', this.nextActivity.bind(this))
             this.open1=true
 
         },
+        correctQuestion1:function(){
+            if(this.question1Score){
+                this.fire('userScoreChanged', this.question1Score)
+            }
+        },
+        correctQuestion2:function(){
+            if(this.question2Score){
+                this.fire('userScoreChanged', this.question2Score)
+            }
+        },
+        correctQuestion3:function(){
+            if(this.question3Score){
+                this.fire('userScoreChanged', this.question3Score)
+            }
+        },
+
         setQuestion2: function() {
             if (this.question2) {
                 this.$.quest1.toggle()
@@ -96,6 +116,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _question1Observer: function(newVal) {
             console.log(newVal)
         },
+        // Not using score fail at the moment because score belows 0 would be weird
+        _scoresObserver:function(newVal){
+            if(newVal.activity1Success)
+            {
+                this.question1Score=newVal.activity1Success
+            }
+            if(newVal.activity2Success)
+            {
+                this.question2Score=newVal.activity2Success
+            }
+            if(newVal.activity3Success)
+            {
+                this.question3Score=newVal.activity3Success
+            }
+
+        },
         properties: {
             question1: {
                 type: Object,
@@ -110,8 +146,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             question3: {
                 type: Object,
                 notify: true,
-                observer: '_question1Observer'
+                observer: '_question1Observer',
             },
+            scores:{
+                type:Object,
+                notify:true,
+                observer:'_scoresObserver'
+            }
 
 
         },

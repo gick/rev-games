@@ -72,17 +72,19 @@ Simple compass that rotate according to the angle parameter
                 if (ugItem && ugItem.activity1Success && typeof parseInt(ugItem.activity1Success)=='number'){
                     this.score.activity1Success=parseInt(ugItem.activity1Success)
                 }
-                if (ugItem && ugItem.activity2Success && typeof parseInt(ugItem.activity2Success)=='number'){
-                    this.score.activity2Success=parseInt(ugItem.activity2Success)
-                }
-                if (ugItem && ugItem.activity3Success && typeof parseInt(ugItem.activity3Success)=='number'){
-                    this.score.activity1Success=parseInt(ugItem.activity1Success)
-                }
                 if (ugItem && ugItem.activity1Fail && typeof parseInt(ugItem.activity1Fail)=='number'){
                     this.score.activity1Fail=parseInt(ugItem.activity1Fail)
                 }
+
+                if (ugItem && ugItem.activity2Success && typeof parseInt(ugItem.activity2Success)=='number'){
+                    this.score.activity2Success=parseInt(ugItem.activity2Success)
+                }
                 if (ugItem && ugItem.activity2Fail && typeof parseInt(ugItem.activity2Fail)=='number'){
                     this.score.activity2Fail=parseInt(ugItem.activity2Fail)
+                }
+
+                if (ugItem && ugItem.activity3Success && typeof parseInt(ugItem.activity3Success)=='number'){
+                    this.score.activity3Success=parseInt(ugItem.activity3Success)
                 }
                 if (ugItem && ugItem.activity3Fail && typeof parseInt(ugItem.activity3Fail)=='number'){
                     this.score.activity3Fail=parseInt(ugItem.activity3Fail)
