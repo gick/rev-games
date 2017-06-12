@@ -126,7 +126,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-document path="/users/{{user.uid}}" data={{currentScoreData}}></firebase-document>
-
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -177,7 +176,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-login id='loginForm' name='login'></my-login>
                 <my-badge id="badge" name="badge"></my-badge>
                 <my-scores id="scores" name="scores"></my-scores>
-
                 <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
                 <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                 <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
@@ -261,13 +259,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.collapser.toggle()
         },
         userScoreChanged: function(item) {
-            var that=this
-            var score=item.detail
-            if(this.currentScoreData && this.currentScoreData.currentScore && typeof this.currentScoreData.currentScore=='number'){
-                score=score + this.currentScoreData.currentScore
+            var that = this
+            var score = item.detail
+            if (this.currentScoreData && this.currentScoreData.currentScore && typeof this.currentScoreData.currentScore == 'number') {
+                score = score + this.currentScoreData.currentScore
             }
             if (item.detail && typeof item.detail == 'number')
-                firebase.database().ref('users/' + this.user.uid +'/' ).update({
+                firebase.database().ref('users/' + this.user.uid + '/').update({
                     'currentScore': score
                 })
         },
@@ -355,9 +353,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.inventoryItemId) {
                 console.log(this.inventoryItem)
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
-                        acquiredBy: 'encoursdedev'
-                    })
-                    this.$.inventaireToast.show()
+                    acquiredBy: 'encoursdedev'
+                })
+                this.$.inventaireToast.show()
             }
 
 
@@ -420,9 +418,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.inventoryItemId) {
                 console.log(this.inventoryItem)
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
-                        acquiredBy: 'encoursdedev'
-                    })
-                    this.$.inventaireToast.show()
+                    acquiredBy: 'encoursdedev'
+                })
+                this.$.inventaireToast.show()
             }
             //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
@@ -717,13 +715,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 });
 
             }
-            if(this.page=='activity'){
-                firebase.database().ref('users/' + this.user.uid).update({
-                    currentMLG: null,
-                    currentScore:null,
-                    hasChatSession:null,
-                    hasMapSession:null,
-                });
+            if (this.page == 'activity') {
+                if (this.user && this.user.uid)
+                    firebase.database().ref('users/' + this.user.uid).update({
+                        currentMLG: null,
+                        currentScore: null,
+                        hasChatSession: null,
+                        hasMapSession: null,
+                    });
             }
             // load page import on demand.
             console.log('my-' + page + '.html')
