@@ -377,7 +377,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
-                this.$.toast.hide()
+                this.$.inventaireToast.hide()
                 this.badgeNumber = 0
                 this.page = "activity"
             }
@@ -608,10 +608,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addNotification: function(value) {
             this.badgeNumber += value;
-            if (this.badgeNumber > 0) {
-                this.showBadge = false
-                this.$.toast.open()
-            }
         },
 
         updateNotification: function() {

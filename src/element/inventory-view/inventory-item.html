@@ -29,6 +29,9 @@
             <marked-element markdown="{{docPageMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>OK</paper-button>
+            </div>
         </paper-dialog>
         <div on-click="showDocPage" class="badge">
             <marked-element markdown="{{itemMkdown}}">
@@ -51,12 +54,12 @@
             this.set('itemText', item.itemText)
         },
 
-        showDocPage:function(){
+        showDocPage: function() {
             this.$.docPage.open()
         },
-        _loadDocPage:function(docpageid){
-            if(docpageid){
-                this.docPageId=docpageid
+        _loadDocPage: function(docpageid) {
+            if (docpageid) {
+                this.docPageId = docpageid
                 this.$.docPageLoader.generateRequest()
             }
         },
@@ -88,10 +91,10 @@
                 notify: true,
                 observer: '_loadPage',
             },
-            inventoryDocpage:{
-                type:String,
-                notify:true,
-                observer:'_loadDocPage',
+            inventoryDocpage: {
+                type: String,
+                notify: true,
+                observer: '_loadDocPage',
             },
             label: {
                 type: String,
