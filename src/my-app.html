@@ -193,7 +193,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </neon-animated-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <paper-toast id="toast" text="New item earned !"></paper-toast>
+        <paper-toast id="inventaireToast" text="Vous avez gagné un nouvel item d'inventaire !"></paper-toast>
         <!--<iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>-->
     </template>
     <script>
@@ -357,7 +357,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                         acquiredBy: 'encoursdedev'
                     })
-                    //this.addNotification(1)
+                    this.$.inventaireToast.show()
             }
 
 
@@ -422,7 +422,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                         acquiredBy: 'encoursdedev'
                     })
-                    //this.addNotification(1)
+                    this.$.inventaireToast.show()
             }
             //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
