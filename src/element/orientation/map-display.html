@@ -28,6 +28,10 @@
             <template is="dom-repeat" items={{data}}>
                 <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
             </template>
+            <template is="dom-if" if={{isSolo}}>
+                <google-map-marker drag-events title="{{userData.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
+            </template>
+
         </google-map>
     </template>
     <script>
@@ -42,8 +46,8 @@
                 this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
             },
-            poiObserver(poi){
-                if(this.markers && this.markers.length==0)
+            poiObserver(poi) {
+                if (this.markers && this.markers.length == 0)
                     this.showPOI(this.poi)
             },
             mapready: function() {
@@ -83,11 +87,19 @@
             updateUser: function(coord) {
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
-                var ref = firebase.database().ref('mapSession/' + this.userData.hasMapSession + '/' + this.user.uid + '/').set({
-                    latitude: coord.lat,
-                    longitude: coord.lng,
-                    name: this.userData.username,
-                })
+                if (this.userData.hasMapSession) { //case multiplayer
+                    var ref = firebase.database().ref('mapSession/' + this.userData.hasMapSession + '/' + this.user.uid + '/').set({
+                        latitude: coord.lat,
+                        longitude: coord.lng,
+                        name: this.userData.username,
+                    })
+                }
+                else{
+                    this.set('isSolo',true)
+                    this.set('latitude',coord.lat)
+                    this.set('longitude',coord.lng)
+
+                }
 
             },
 
@@ -210,7 +222,7 @@
                 }
                 this.splice('circles', 0, circles.length)
             },
-            observers: ['newData(userData.*,user.*,data.*)','poiObserver(poi.*)'],
+            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)'],
 
             properties: {
                 hasCoord: {
