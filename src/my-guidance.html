@@ -66,13 +66,13 @@
                 </div>
             </paper-dialog>
             <div>
-                <template is="dom-if" if="{{ismap}}" restamp>
+                <template is="dom-if" if="{{ismap}}">
                     <map-display hidden$='hasMap' doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
                 </template>
-                <template is="dom-if" if="{{isping}}" restamp>
+                <template is="dom-if" if="{{isping}}">
                     <my-ping style="position: relative" on-click="showDistance" initalheadingdistance="{{initialHeadingDistance}}" headingdistance="{{headingDistance}}"></my-compass>
                 </template>
-                <template is="dom-if" if="{{iscompass}}" restamp>
+                <template is="dom-if" if="{{iscompass}}">
                     <my-compass style="position: relative" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass>
                 </template>
             </div>
