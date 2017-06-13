@@ -41,6 +41,7 @@
         }
         </style>
         <my-orientation angle="{{angle}}"></my-orientation>
+        <paper-button on-click='setCard'>Set card</paper-button>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
@@ -107,7 +108,10 @@
                 this.$.map.mapready()
             }
         },
-
+        setCard:function(){
+            this.set('ismap',true)
+        }
+        ,
         updateCoord: function(e) {
             if (this.poi) {
                 var coord = {
