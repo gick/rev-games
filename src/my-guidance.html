@@ -40,8 +40,9 @@
             color: #212121;
         }
         </style>
+                            <paper-button raised on-click="nextActivity">Next</paper-button>
+
         <my-orientation angle="{{angle}}"></my-orientation>
-        <paper-button on-click='setCard'>Set card</paper-button>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
@@ -66,7 +67,7 @@
             </paper-dialog>
             <div>
                 <template is="dom-if" if="{{ismap}}" restamp>
-                    <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
+                    <map-display hidden$='hasMap' doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
                 </template>
                 <template is="dom-if" if="{{isping}}" restamp>
                     <my-ping style="position: relative" on-click="showDistance" initalheadingdistance="{{initialHeadingDistance}}" headingdistance="{{headingDistance}}"></my-compass>
