@@ -576,6 +576,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             firebase.database().ref('users/' + this.user.uid + '/').update({
                 currentMLG: elem.detail._id,
             });
+
+            firebase.database().ref('users/' + this.user.uid + '/').update({
+                mlgJSON: elem.detail,
+            });
+
             this.currentMLG = elem.detail;
             this.mlgId = elem.detail._id
             this.currentActivity = elem.detail._id
@@ -615,9 +620,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.currentPage = "/#" + this.page
         },
-
+        _cacheStateChanged:function(state){
+            console.log(state)
+        }
+        ,
         properties: {
-
+            cacheValue:{
+                type:String,
+                observer:'_cacheStateChanged'
+            },
             page: {
                 type: String,
                 reflectToAttribute: true,
@@ -675,10 +686,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         observers: [
             '_routePageChanged(route.page)',
-            '_userOnline(user.*)'
+            '_userOnline(currentScoreData.*)'
         ],
         _userOnline(user) {
-            console.log(user)
+            console.log(this.currentScoreData)
+            if(this.currentScoreData && !this.mlgId){
+                if(this.currentScoreData.mlgJSON){
+                    var mlg={detail:this.currentScoreData.mlgJSON}
+                    this.setupActivity(mlg)
+                    this.set('page',this.currentScoreData.page.page)
+
+                }
+               // this.set('page','activity')
                 /*  if (user && user.uid) {
                       firebase.database().ref('users/' + user.uid + '/').update({
                           status: 'online'
@@ -694,6 +713,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
                   }*/
+            }
         },
         _routePageChanged: function(page) {
             this.page = this.route.path || 'login';
@@ -704,6 +724,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         },
 
+
+
         _pageChanged: function(page) {
             if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom') {
                 firebase.database().ref('users/' + this.user.uid + '/page/').set({
@@ -711,6 +733,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 });
 
             }
+
+
             if (this.page == 'activity') {
                 if (this.user && this.user.uid)
                     firebase.database().ref('users/' + this.user.uid).update({
@@ -724,10 +748,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('my-' + page + '.html')
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);
-            if (page == "login" || page == "inventory") {
-                this.homeHidden = true
-            } else {
-                this.homeHidden = false
+            if(!this.user)
+            {
+                console.log('no user uid')
+            }
+            if(this.user){
+                console.log('user id')
             }
             this.set('route.path', page)
 
