@@ -146,6 +146,10 @@
                 return -1
             },
             addMarker: function(item) {
+                if(!item)
+                {
+                    return
+                }
                 this.removeMarker()
                 var map = this.get('mapsAPI')
                 var lat = item.latitude;
