@@ -84,7 +84,7 @@
             },
 
             updateUser: function(coord) {
-                var map = this.get('gmap')
+                var map = this.get('mapsAPI')
                 google.maps.event.trigger(map, 'resize');
 
                 this.set('userCoord', coord);
