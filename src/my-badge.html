@@ -25,6 +25,8 @@
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-query path="/users/{{user.uid}}/badges" data="{{userBadges}}"></firebase-query>
+        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
+
         <app-indexeddb-mirror key="profileData" data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Badges" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
