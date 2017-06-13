@@ -184,7 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                 <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                 <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                <my-guidance poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
+                <my-guidance doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
                 <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
                 <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                 <my-questions id="myQuestions" question3="{{question3}}" scores="{{scores}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
@@ -356,6 +356,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                     acquiredBy: 'encoursdedev'
                 })
+
                 this.$.inventaireToast.show()
             }
 
@@ -376,7 +377,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     })
                 }
 
-                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
                 this.$.inventaireToast.hide()
                 this.badgeNumber = 0
@@ -407,6 +407,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.instructions = false
             this.uginstructions = false
             this.score = 0
+            firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
 
         },
         setupScoreToBeat: function(score) {
