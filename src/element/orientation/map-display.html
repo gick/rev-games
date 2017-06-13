@@ -84,6 +84,9 @@
             },
 
             updateUser: function(coord) {
+                var map = this.get('gmap')
+                google.maps.event.trigger(map, 'resize');
+
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
                 if (this.userData.hasMapSession) { //case multiplayer
