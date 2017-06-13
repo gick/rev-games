@@ -87,9 +87,9 @@
         },
 
         resetMap: function() {
-            if (this.$.map && this.$.map.removeMarker) {
-                this.$.map.removeAllMarkers()
-                this.poi = null
+            if (this.$$('#map') && this.$$('#map').removeAllMarkers) {
+                this.$$('#map').removeAllMarkers()
+                this.set('poi', null)
             }
         },
 
