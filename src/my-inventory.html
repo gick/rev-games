@@ -21,6 +21,7 @@
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
         <firebase-query path="/lobby/{{mlgid}}/{{roomkey}}/items" data="{{userItems}}"></firebase-query>
         <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
