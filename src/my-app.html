@@ -330,11 +330,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
                 this.page = "feedback"
             }
-            if (this.inventoryItem && this.inventoryItem[0]) {
-
-                this.push('inventoryItems', this.inventoryItem[0])
+            if (this.inventoryItemId) {
+                console.log(this.inventoryItem)
+                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
+                    acquiredBy: 'encoursdedev'
+                })
                 this.addNotification(1)
-                this.inventoryItem = null
             }
 
         },
@@ -353,7 +354,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     })
                 }
 
-                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
                 this.$.toast.hide()
                 this.badgeNumber = 0
@@ -384,6 +384,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.instructions = false
             this.uginstructions = false
             this.score = 0
+            firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
 
         },
         setupScoreToBeat: function(score) {
@@ -398,7 +399,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                     acquiredBy: 'encoursdedev'
                 })
-                //this.addNotification(1)
+                this.addNotification(1)
             }
             //   if(!this.$.currentMLG.hasNextUnitGame())
             this.page = "feedback"
