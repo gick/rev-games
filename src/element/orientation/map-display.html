@@ -46,7 +46,7 @@
                 this.userCoord = null;
             },
             poiObserver(poi) {
-                if (this.markers && this.markers.length == 0)
+                if (this.markers && this.markers.length == 0 && poi)
                     this.showPOI(this.poi)
             },
             mapready: function() {

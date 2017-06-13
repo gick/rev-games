@@ -374,14 +374,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         nextUnit: function() {
             if (this.$.currentMLG.hasNextUnitGame()) {
                 this.resetActivity()
+                if (this.$$('#map') && this.$$('#map').resetMap) {
+                    this.$$('#map').resetMap()
+                }
+
                 this.$.currentMLG.setupNextUnitGame();
+
             } else {
                 if (this.badgeId) {
                     firebase.database().ref('users/' + this.user.uid + '/badges/' + this.badgeId + '/').set({
                         status: 'acquired'
                     })
                 }
-                firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
+               // firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
                 this.$.inventaireToast.hide()
                 this.badgeNumber = 0
@@ -736,7 +741,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         _pageChanged: function(page) {
-            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page!='scores') {
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores') {
                 firebase.database().ref('users/' + this.user.uid + '/page/').set({
                     page: page,
                 });
