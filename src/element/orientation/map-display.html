@@ -41,7 +41,7 @@
             ready: function() {
                 this.markers = [];
                 this.circles = [];
-               // this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
+                this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
             },
             poiObserver(poi) {
@@ -51,6 +51,7 @@
             mapready: function() {
                 if (this.poi)
                     this.showPOI(this.poi)
+
             },
 
             CenterControl: function(controlDiv, map, self) {
@@ -195,6 +196,7 @@
                     mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
                 var map = this.get('mapsAPI')
                 mapOverlay.setMap(map);
+                google.maps.event.trigger(map, 'resize');
             },
             _getMarkeIndexById: function(id) {
 
