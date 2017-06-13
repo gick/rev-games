@@ -36,7 +36,7 @@
             </div>
         </paper-dialog-scrollable>
         </paper-dialog>
-        <div on-click="dialog.open()" class="badge">
+        <div on-click="showDoc" class="badge">
             <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
@@ -55,6 +55,10 @@
             this._loadPage(item.itemPageId)
             this._loadDocPage(item.itemDocPageId)
             this.set('itemText', item.itemText)
+        },
+
+        showDoc: function() {
+            this.$.dialog.open()
         },
 
         _loadDocPage: function(docpageid) {
