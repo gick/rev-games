@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     .container {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
     
     .subcontainer {
@@ -61,15 +62,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Quitter le jeu</span>
                 </div>
                 <template is='dom-if' if='{{userData.hasChatSession}}'>
-                    <div>
+                    <div class='subcontainer'>
                         <paper-icon-button dialog-confirm on-click='goChat' icon="communication:chat-bubble-outline" item-icon></paper-icon-button>
+                        <span>Chat</span>
                     </div>
                 </template>
-                <template is='dom-if' if='{{userData.hasGoogleMap}}'>
-                    <div>
+                <template is='dom-if' if='{{userData.hasMapSession}}'>
+                    <div class='subcontainer'>
                         <paper-icon-button dialog-confirm on-click='goMap' icon="maps:map" item-icon></paper-icon-button>
+                        <span>Carte</span>
                     </div>
                 </template>
+                <template is='dom-if' if='{{userData.hasMapSession}}'>
+                    <div class='subcontainer'>
+                        <paper-icon-button dialog-confirm on-click='goScore' icon="icons:description" item-icon></paper-icon-button>
+                        <span>Scores</span>
+                    </div>
+                </template>
+                    <div class='subcontainer'>
+                        <paper-icon-button dialog-confirm on-click='logout' icon="icons:power-settings-new" item-icon></paper-icon-button>
+                        <span>Se déconnecter</span>
+                    </div>
+
             </div>
             <div class="buttons">
                 <paper-button dialog-confirm autofocus>Annuler</paper-button>
@@ -100,6 +114,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.quickLink.close()
 
             },
+            goScore: function() {
+                this.set('route.path', 'scores')
+                this.$.quickLink.close()
+
+            },
+
             goBadge: function() {
                 this.set('route.path', 'badge')
                 this.$.quickLink.close()

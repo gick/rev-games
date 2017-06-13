@@ -38,13 +38,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body>
-    <template is="dom-bind">
-        <platinum-sw-register skip-waiting clients-claim auto-register reload-on-install>
-            </platinum-sw-fetch>
-            <platinum-sw-cache default-cache-strategy="fastest"></platinum-sw-cache>
+    <template is="dom-bind" id='page-template'>
+        <platinum-sw-register state='{{state}}' skip-waiting clients-claim auto-register reload-on-install>
+            <platinum-sw-cache  default-cache-strategy="fastest"></platinum-sw-cache>
         </platinum-sw-register>
-        <my-app></my-app>
+        state {{state}}
+        <my-app cache-value='{{state}}'></my-app>
     </template>
 </body>
+    <script>
+      var t = document.querySelector('#page-template');
+
+
+      window.addEventListener('WebComponentsReady', function() {
+        // Explicitly call the register() method. We need to wait until the template's variables are
+        // all set first, since the configuration depends on bound variables.
+        document.querySelector('platinum-sw-register').register();
+      });
+    </script>
 
 </html>
