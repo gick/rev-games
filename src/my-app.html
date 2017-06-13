@@ -134,7 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
-                    <paper-badge for='menu' label="+"></paper-badge>
+                    <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
                 </template>
             </app-toolbar>
         </app-header>
