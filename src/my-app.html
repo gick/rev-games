@@ -123,7 +123,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <firebase-app api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
         </firebase-app>
-        
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-document path="/users/{{user.uid}}" data={{currentScoreData}}></firebase-document>
@@ -133,7 +132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header reveals>
             <app-toolbar>
                 <div main-title>REVERIES</div>
-                <iron-icon icon="add-circle-outline" on-click="openLinks"></iron-icon>
+                <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
+                <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
+                    <paper-badge for='menu' label="+"></paper-badge>
+                </template>
             </app-toolbar>
         </app-header>
         <quick-link id='quickLink'></quick-link>
@@ -356,6 +358,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                     acquiredBy: 'encoursdedev'
                 })
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    'newInventoryItem': true
+                })
 
                 this.$.inventaireToast.show()
             }
@@ -407,7 +412,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.instructions = false
             this.uginstructions = false
             this.score = 0
-            
+
 
         },
         setupScoreToBeat: function(score) {
@@ -421,6 +426,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 console.log(this.inventoryItem)
                 firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/items/' + this.inventoryItemId + '/').set({
                     acquiredBy: 'encoursdedev'
+                })
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    'newInventoryItem': true
                 })
                 this.$.inventaireToast.show()
             }
@@ -622,14 +630,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.showBadge = true
             this.currentPage = "/#" + this.page
         },
-        _cacheStateChanged:function(state){
+        _cacheStateChanged: function(state) {
             console.log(state)
-        }
-        ,
+        },
         properties: {
-            cacheValue:{
-                type:String,
-                observer:'_cacheStateChanged'
+            cacheValue: {
+                type: String,
+                observer: '_cacheStateChanged'
             },
             page: {
                 type: String,
@@ -692,30 +699,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ],
         _userOnline(user) {
             console.log(this.currentScoreData)
-            if(this.currentScoreData && !this.mlgId){
-                if(this.currentScoreData.mlgJSON){
-                    var mlg={detail:this.currentScoreData.mlgJSON}
-                    this.setupActivity(mlg)
-                    this.set('page',this.currentScoreData.page.page)
+                /*  if(this.currentScoreData && !this.mlgId){
+                      if(this.currentScoreData.mlgJSON){
+                          var mlg={detail:this.currentScoreData.mlgJSON}
+                          this.setupActivity(mlg)
+                          this.set('page',this.currentScoreData.page.page)
 
-                }
-               // this.set('page','activity')
-                /*  if (user && user.uid) {
-                      firebase.database().ref('users/' + user.uid + '/').update({
-                          status: 'online'
-                      });
-                      var ref = firebase.database().ref("users/" + user.uid + '/');
-                      ref.onDisconnect().update({
-                          status: 'offline'
-                      });
-                      var refPage = firebase.database().ref("users/" + user.uid + '/page/');
-                      ref.onDisconnect().set({
-                          page: ''
-                      });
+                      }
+                     // this.set('page','activity')
+                      /*  if (user && user.uid) {
+                            firebase.database().ref('users/' + user.uid + '/').update({
+                                status: 'online'
+                            });
+                            var ref = firebase.database().ref("users/" + user.uid + '/');
+                            ref.onDisconnect().update({
+                                status: 'offline'
+                            });
+                            var refPage = firebase.database().ref("users/" + user.uid + '/page/');
+                            ref.onDisconnect().set({
+                                page: ''
+                            });
 
 
-                  }*/
-            }
+                        }*/
+
         },
         _routePageChanged: function(page) {
             this.page = this.route.path || 'login';
@@ -750,11 +757,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('my-' + page + '.html')
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);
-            if(!this.user)
-            {
+            if (!this.user) {
                 console.log('no user uid')
             }
-            if(this.user){
+            if (this.user) {
                 console.log('user id')
             }
             this.set('route.path', page)

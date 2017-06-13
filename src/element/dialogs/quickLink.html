@@ -50,7 +50,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <h2>Liens rapides</h2>
             <div class='container'>
                 <div class='subcontainer'>
-                    <paper-icon-button dialog-confirm on-click='goInventory' src="/src/element/images/inventaire.png" item-icon></paper-icon-button>
+                    <paper-icon-button id='inventaire' dialog-confirm on-click='goInventory' src="/src/element/images/inventaire.png" item-icon></paper-icon-button>
+                    <template is='dom-if' if='{{userData.newInventoryItem}}'>
+                        <paper-badge for='inventaire' label="+"></paper-badge>
+                    </template>
                     <span>Inventaire</span>
                 </div>
                 <div class='subcontainer'>
@@ -79,11 +82,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Scores</span>
                     </div>
                 </template>
-                    <div class='subcontainer'>
-                        <paper-icon-button dialog-confirm on-click='logout' icon="icons:power-settings-new" item-icon></paper-icon-button>
-                        <span>Se déconnecter</span>
-                    </div>
-
+                <div class='subcontainer'>
+                    <paper-icon-button dialog-confirm on-click='logout' icon="icons:power-settings-new" item-icon></paper-icon-button>
+                    <span>Se déconnecter</span>
+                </div>
             </div>
             <div class="buttons">
                 <paper-button dialog-confirm autofocus>Annuler</paper-button>
@@ -106,6 +108,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 this.set('route.path', 'inventory')
                 this.$.quickLink.close()
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    'newInventoryItem': null
+                })
+
 
             },
 
