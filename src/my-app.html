@@ -248,7 +248,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.roomId = elem.detail.roomId
             this.page = "lobby"
         },
-        _hasNewItem:function(userData){
+        _hasNewItem: function(userData) {
             console.log(userData)
             return userData.newInventoryItem && userData.currentMLG
         },
@@ -704,11 +704,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             '_inventoryItem(currentScoreData.newInventoryItem)'
 
         ],
-        _inventoryItem:function(a){
+        _inventoryItem: function(a) {
 
             console.log(a)
-        }
-        ,
+        },
         _userOnline(user) {
             console.log(this.currentScoreData)
                 /*  if(this.currentScoreData && !this.mlgId){
@@ -757,13 +756,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
             if (this.page == 'activity') {
-                if (this.user && this.user.uid)
+                if (this.user && this.user.uid) {
                     firebase.database().ref('users/' + this.user.uid).update({
                         currentMLG: null,
                         currentScore: null,
                         hasChatSession: null,
                         hasMapSession: null,
                     });
+                    firebase.database().ref('users/' + this.user.uid + '/').update({
+                        'newInventoryItem': false
+                    })
+                }
             }
             // load page import on demand.
             console.log('my-' + page + '.html')
