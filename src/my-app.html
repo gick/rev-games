@@ -133,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-toolbar>
                 <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
-                <template is='dom-if' if='{{_hasNewItem(currentScoreData.newInventoryItem,currentScoreData.currentMLG)}}'>
+                <template is='dom-if' if='{{_hasNewItem(currentScoreData)}}'>
                     <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
                 </template>
             </app-toolbar>
@@ -248,9 +248,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.roomId = elem.detail.roomId
             this.page = "lobby"
         },
-        _hasNewItem:function(a,b){
-            console.log(a,b)
-            return a && b
+        _hasNewItem:function(userData){
+            console.log(userData)
+            return userData.newInventoryItem && userData.currentMLG
         },
         restartPOIMap: function() {
             if (this.$$('#map') && this.$$('#map').resetMap) {
@@ -712,6 +712,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         ],
         _inventoryItem:function(a){
+
             console.log(a)
         }
         ,
