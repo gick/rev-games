@@ -243,6 +243,10 @@
                     }
                 }
             },
+            dataUpdate:function(data){
+                console.log(data)
+            }
+            ,
             removeAllCircles: function(item) {
                 var circles = this.get('circles')
                 for (var i = 0; i < circles.length; i++) {
@@ -250,7 +254,7 @@
                 }
                 this.splice('circles', 0, circles.length)
             },
-            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)'],
+            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)','dataUpdate(data.*)'],
 
             properties: {
                 hasCoord: {
