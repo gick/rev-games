@@ -60,9 +60,9 @@
                         if (this.markers[0].areaLat != this.poi.map.areaLat) {
                             this.removeAllMarkers()
                             this.showPOI(this.poi)
-                        var map = this.get('mapsAPI')
+                            var map = this.get('mapsAPI')
 
-                        map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
+                            map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
 
 
                         }
@@ -106,6 +106,8 @@
             },
 
             updateUser: function(coord) {
+                        var map = this.get('mapsAPI')
+
                 google.maps.event.trigger(map, 'resize');
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
