@@ -45,9 +45,19 @@
                 this.userCoord = null;
             },
             poiObserver(poi) {
-                if (this.markers && this.markers.length >= 0 && poi){
-                    this.removeAllMarkers()
-                    this.showPOI(this.poi)
+
+                if (this.markers && this.markers.length >= 0 && poi) {
+                    if (this.markers.length == 0) {
+                        this.removeAllMarkers()
+                        this.showPOI(this.poi)
+                    } else {
+                        if (this.markers[0].areaLat != this.poi.map.areaLat) {
+                            this.removeAllMarkers()
+                            this.showPOI(this.poi)
+
+                        }
+                    }
+
                 }
             },
             mapready: function() {
@@ -88,7 +98,7 @@
             updateUser: function(coord) {
                 var map = this.get('mapsAPI')
                 google.maps.event.trigger(map, 'resize');
-                map.setCenter(new google.maps.LatLng(coord.lat,coord.lng))
+                map.setCenter(new google.maps.LatLng(coord.lat, coord.lng))
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
                 if (this.userData.hasMapSession) { //case multiplayer
@@ -151,8 +161,7 @@
                 return -1
             },
             addMarker: function(item) {
-                if(!item)
-                {
+                if (!item) {
                     return
                 }
                 this.removeMarker()
