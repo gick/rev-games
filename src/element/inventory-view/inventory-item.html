@@ -26,8 +26,8 @@
         <iron-ajax auto id="itemLoader" url="/inventory/{{itemId}}" handle-as="json" on-response='setupItem'></iron-ajax>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{item}}"></iron-ajax>
         <iron-ajax id="docPageLoader" url="/staticmedia/{{docPageId}}" handle-as="json" last-response="{{docPageElement}}"></iron-ajax>
-        <paper-dialog>
-        <paper-dialog-scrollable id="dialog">
+        <paper-dialog id="dialog">
+        <paper-dialog-scrollable >
             <marked-element markdown="{{docPageMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
@@ -36,7 +36,7 @@
             </div>
         </paper-dialog-scrollable>
         </paper-dialog>
-        <div on-click="dialog.open()" class="badge">
+        <div on-click="showDoc" class="badge">
             <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
@@ -55,6 +55,10 @@
             this._loadPage(item.itemPageId)
             this._loadDocPage(item.itemDocPageId)
             this.set('itemText', item.itemText)
+        },
+
+        showDoc: function() {
+            this.$.dialog.open()
         },
 
         _loadDocPage: function(docpageid) {
