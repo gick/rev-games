@@ -26,8 +26,8 @@
         <iron-ajax auto id="itemLoader" url="/inventory/{{itemId}}" handle-as="json" on-response='setupItem'></iron-ajax>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{item}}"></iron-ajax>
         <iron-ajax id="docPageLoader" url="/staticmedia/{{docPageId}}" handle-as="json" last-response="{{docPageElement}}"></iron-ajax>
-        <paper-dialog>
-        <paper-dialog-scrollable id="dialog">
+        <paper-dialog id="dialog">
+        <paper-dialog-scrollable >
             <marked-element markdown="{{docPageMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
