@@ -69,11 +69,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             </style>
             <div class="card">
-                    <paper-button on-click="next">Next</paper-button>
-
+                <paper-button on-click="next">Next</paper-button>
                 <h1>QR codes</h1>
                 <iron-collapse opened="{{!isDisabled}}">
-                    <image-resizer  id="qrscan" name='Take picture' url='/qrscan'></image-resizer>
+                    <image-resizer id="qrscan" name='Take picture' url='/qrscan'></image-resizer>
                 </iron-collapse>
                 <paper-dialog id="dialog" class="size">
                     <div id="scanBar" style="width:84%;height:20px;opacity:0.6;background-color:red"></div>
@@ -149,12 +148,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.isDisabled = false
             },
             next: function() {
-              //  this.fire('poi-reached-from-qrcode', null)
+                //  this.fire('poi-reached-from-qrcode', null)
                 this.$.qrValid.hide()
                 this.$.processing.hide()
 
                 this.$.qrInvalid.hide()
-                this.$.qrscan.clear()
+                if (this.$$('#qrscan').clear)
+                    this.$$('#qrscan').clear()
                 this.isDisabled = false
             },
             _poiObserver: function(item) {
