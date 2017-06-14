@@ -133,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-toolbar>
                 <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
-                <template is='dom-if' if='{{_hasNewItem(currentScoreData)}}'>
+                <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
                     <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
                 </template>
             </app-toolbar>
