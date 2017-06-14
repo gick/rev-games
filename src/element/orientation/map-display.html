@@ -50,10 +50,20 @@
                     if (this.markers.length == 0) {
                         this.removeAllMarkers()
                         this.showPOI(this.poi)
+
+
+                        var map = this.get('mapsAPI')
+
+                        map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
+
                     } else {
                         if (this.markers[0].areaLat != this.poi.map.areaLat) {
                             this.removeAllMarkers()
                             this.showPOI(this.poi)
+                        var map = this.get('mapsAPI')
+
+                        map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
+
 
                         }
                     }
@@ -96,9 +106,7 @@
             },
 
             updateUser: function(coord) {
-                var map = this.get('mapsAPI')
                 google.maps.event.trigger(map, 'resize');
-                map.setCenter(new google.maps.LatLng(coord.lat, coord.lng))
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
                 if (this.userData.hasMapSession) { //case multiplayer
