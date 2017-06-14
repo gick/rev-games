@@ -202,6 +202,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-app',
         ready: function() {
+            
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(this.setGeoloc.bind(this))
+            }else{
+                alert('Geolocation is not supported, please change phone')
+            }
+
+
             this.inventoryItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
@@ -235,6 +243,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
 
             this.$.lobbyselection.addEventListener('roomChoosen', this.enterLobby.bind(this))
+        },
+        setGeoloc:function(arg){
+            if(!arg){
+                alert("Merci d'autoriser le GPS et de recharger la page")
+            }
         },
         openLinks: function() {
             this.$.quickLink.show()
