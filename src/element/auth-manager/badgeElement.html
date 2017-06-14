@@ -6,10 +6,16 @@
     <template>
         <style type="text/css">
         .image {
-            width: 150px;
-            height: 150px;
+            width: 50px;
+            height: 50px;
         }
         
+        .markdown-html img {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+        }
+
         .markdown-html img {
             width: 200px;
             height: 200px;
@@ -25,13 +31,20 @@
         </style>
         <iron-ajax auto id="badgeLoader" url="/badge/{{badgeId}}" handle-as="json" on-response='setupBadge'></iron-ajax>
         <iron-ajax id="ajaxLoader" url="{{url}}" handle-as="json" last-response="{{badge}}"></iron-ajax>
-        <div>{{label}}</div>
-        <div class="badge">
+        <div class="badge" on-click="showBadgeDetail">
             <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
+        </div>
+        <paper-dialog>
+        <div>{{label}}</div>
+        <div class="badge" on-click="showBadgeDetail">
+            <marked-element markdown="{{itemMkdown}}">
+                <div class="markdown-dialog"></div>
+            </marked-element>
             <div>{{badgeText}}</div>
         </div>
+        </paper-dialog>
     </template>
 </dom-module>
 <script>
@@ -43,6 +56,7 @@
             var badge = e.detail.__data__.response[0]
             this._loadPage(badge.badgePageId)
             this.set('badgeText', badge.badgeText)
+            this;set('label', badge.label)
         },
 
         _loadPage: function(badgeMediaid) {
@@ -50,6 +64,9 @@
                 this.url = '/staticmedia/' + badgeMediaid
                 this.$.ajaxLoader.generateRequest()
             }
+        },
+        showBadgeDetail: function() {
+
         },
         handleResponse: function(response) {
             this.itemMkdown = response.detail.__data__.response[0].mkdown
