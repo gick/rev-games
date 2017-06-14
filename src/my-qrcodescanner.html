@@ -69,6 +69,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             </style>
             <div class="card">
+                    <paper-button on-click="next">Next</paper-button>
+
                 <h1>QR codes</h1>
                 <iron-collapse opened="{{!isDisabled}}">
                     <image-resizer  id="qrscan" name='Take picture' url='/qrscan'></image-resizer>
@@ -147,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.isDisabled = false
             },
             next: function() {
-                this.fire('poi-reached-from-qrcode', null)
+              //  this.fire('poi-reached-from-qrcode', null)
                 this.$.qrValid.hide()
                 this.$.processing.hide()
 
