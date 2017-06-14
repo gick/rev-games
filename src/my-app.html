@@ -707,8 +707,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         observers: [
             '_routePageChanged(route.page)',
-            '_userOnline(currentScoreData.*)'
+            '_userOnline(currentScoreData.*)',
+            '_inventoryItem(currentScoreData.newInventoryItem)'
+
         ],
+        _inventoryItem:function(a){
+            console.log(a)
+        }
+        ,
         _userOnline(user) {
             console.log(this.currentScoreData)
                 /*  if(this.currentScoreData && !this.mlgId){
