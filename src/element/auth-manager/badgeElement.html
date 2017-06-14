@@ -55,7 +55,7 @@
             var badge = e.detail.__data__.response[0]
             this._loadPage(badge.badgePageId)
             this.set('badgeText', badge.badgeText)
-            this;set('label', badge.label)
+            this.set('label', badge.label)
         },
 
         _loadPage: function(badgeMediaid) {
