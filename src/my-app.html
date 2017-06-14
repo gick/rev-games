@@ -134,7 +134,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
-                    <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
+                    <template is='dom-if' if='{{currentScoreData.currentMLG}}'>
+                        <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
+                    </template>
                 </template>
             </app-toolbar>
         </app-header>
@@ -386,7 +388,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         status: 'acquired'
                     })
                 }
-               // firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
+                // firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
                 this.$.inventaireToast.hide()
                 this.badgeNumber = 0
