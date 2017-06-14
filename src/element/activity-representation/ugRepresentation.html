@@ -68,28 +68,28 @@ Simple compass that rotate according to the angle parameter
                 this.fire('question3Loaded', this.question3[0])
             },
             processScore: function(ugItem) {
-                this.score={}
-                if (ugItem && ugItem.activity1Success && typeof parseInt(ugItem.activity1Success)=='number'){
-                    this.score.activity1Success=parseInt(ugItem.activity1Success)
+                this.score = {}
+                if (ugItem && ugItem.activity1Success && typeof parseInt(ugItem.activity1Success) == 'number') {
+                    this.score.activity1Success = parseInt(ugItem.activity1Success)
                 }
-                if (ugItem && ugItem.activity1Fail && typeof parseInt(ugItem.activity1Fail)=='number'){
-                    this.score.activity1Fail=parseInt(ugItem.activity1Fail)
-                }
-
-                if (ugItem && ugItem.activity2Success && typeof parseInt(ugItem.activity2Success)=='number'){
-                    this.score.activity2Success=parseInt(ugItem.activity2Success)
-                }
-                if (ugItem && ugItem.activity2Fail && typeof parseInt(ugItem.activity2Fail)=='number'){
-                    this.score.activity2Fail=parseInt(ugItem.activity2Fail)
+                if (ugItem && ugItem.activity1Fail && typeof parseInt(ugItem.activity1Fail) == 'number') {
+                    this.score.activity1Fail = parseInt(ugItem.activity1Fail)
                 }
 
-                if (ugItem && ugItem.activity3Success && typeof parseInt(ugItem.activity3Success)=='number'){
-                    this.score.activity3Success=parseInt(ugItem.activity3Success)
+                if (ugItem && ugItem.activity2Success && typeof parseInt(ugItem.activity2Success) == 'number') {
+                    this.score.activity2Success = parseInt(ugItem.activity2Success)
                 }
-                if (ugItem && ugItem.activity3Fail && typeof parseInt(ugItem.activity3Fail)=='number'){
-                    this.score.activity3Fail=parseInt(ugItem.activity3Fail)
+                if (ugItem && ugItem.activity2Fail && typeof parseInt(ugItem.activity2Fail) == 'number') {
+                    this.score.activity2Fail = parseInt(ugItem.activity2Fail)
                 }
-                this.fire('scoreLoaded',this.score)
+
+                if (ugItem && ugItem.activity3Success && typeof parseInt(ugItem.activity3Success) == 'number') {
+                    this.score.activity3Success = parseInt(ugItem.activity3Success)
+                }
+                if (ugItem && ugItem.activity3Fail && typeof parseInt(ugItem.activity3Fail) == 'number') {
+                    this.score.activity3Fail = parseInt(ugItem.activity3Fail)
+                }
+                this.fire('scoreLoaded', this.score)
 
             },
             processUg: function(ugItem) {
@@ -114,30 +114,31 @@ Simple compass that rotate according to the angle parameter
                     this.feedbackMediaId = ugItem.feedbackMediaId
                     this.$.feedbackPageLoader.generateRequest()
                 }
+                if (ugItem && ugItem.activities) {
+                    var questions = ugItem.activities
 
-                var questions = ugItem.activities
-                switch (questions.length) {
-                    case 0:
-                        break;
-                    case 1:
-                        this.question1Id = questions[0];
-                        this.$.question1Loader.generateRequest();
-                        break;
-                    case 2:
-                        this.question1Id = questions[0];
-                        this.$.question1Loader.generateRequest();
-                        this.question2Id = questions[1];
-                        this.$.question2Loader.generateRequest();
-                        break;
-                    case 3:
-                        this.question1Id = questions[0];
-                        this.$.question1Loader.generateRequest();
-                        this.question2Id = questions[1];
-                        this.$.question2Loader.generateRequest();
-                        this.question3Id = questions[2];
-                        this.$.question3Loader.generateRequest();
+                    switch (questions.length) {
+                        case 0:
+                            break;
+                        case 1:
+                            this.question1Id = questions[0];
+                            this.$.question1Loader.generateRequest();
+                            break;
+                        case 2:
+                            this.question1Id = questions[0];
+                            this.$.question1Loader.generateRequest();
+                            this.question2Id = questions[1];
+                            this.$.question2Loader.generateRequest();
+                            break;
+                        case 3:
+                            this.question1Id = questions[0];
+                            this.$.question1Loader.generateRequest();
+                            this.question2Id = questions[1];
+                            this.$.question2Loader.generateRequest();
+                            this.question3Id = questions[2];
+                            this.$.question3Loader.generateRequest();
+                    }
                 }
-
             },
 
             properties: {}
