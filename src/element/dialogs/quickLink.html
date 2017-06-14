@@ -111,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.set('route.path', 'inventory')
                 this.$.quickLink.close()
                 firebase.database().ref('users/' + this.user.uid + '/').update({
-                    'newInventoryItem': null
+                    'newInventoryItem': false
                 })
 
 

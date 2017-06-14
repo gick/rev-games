@@ -69,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         signup: function() {
             var pseudo = this.pseudo
-            var that=this
+            var that = this
             this.$.auth.createUserWithEmailAndPassword(this.mail, this.pass).then(function(user) {
                 var ref = firebase.database().ref("users/" + user.uid + '/');
                 ref.onDisconnect().update({
@@ -81,6 +81,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     username: pseudo,
                     status: 'online'
                 });
+
+            }, function(error) {
+
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                if (errorCode == 'auth/weak-password') {
+                    alert('Mot de passe trop faible.');
+                } else {
+                    alert(errorMessage);
+                }
+                console.log(error);
 
             })
 

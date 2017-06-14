@@ -134,9 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
-                    <template is='dom-if' if='{{currentScoreData.currentMLG}}'>
-                        <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
-                    </template>
+                    <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
                 </template>
             </app-toolbar>
         </app-header>
@@ -250,7 +248,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.roomId = elem.detail.roomId
             this.page = "lobby"
         },
-
+        _hasNewItem: function(userData) {
+            console.log(userData)
+            return userData.newInventoryItem && userData.currentMLG
+        },
         restartPOIMap: function() {
             if (this.$$('#map') && this.$$('#map').resetMap) {
                 this.$$('#map').resetMap()
@@ -390,7 +391,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 // firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
-                this.$.inventaireToast.hide()
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    'newInventoryItem': false
+                })
                 this.badgeNumber = 0
                 this.page = "activity"
             }
@@ -419,8 +422,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.instructions = false
             this.uginstructions = false
             this.score = 0
-
-
         },
         setupScoreToBeat: function(score) {
             this.scoreToBeat = score.detail
@@ -594,9 +595,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 currentMLG: elem.detail._id,
             });
 
-            firebase.database().ref('users/' + this.user.uid + '/').update({
-                mlgJSON: elem.detail,
-            });
 
             this.currentMLG = elem.detail;
             this.mlgId = elem.detail._id
@@ -702,8 +700,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         observers: [
             '_routePageChanged(route.page)',
-            '_userOnline(currentScoreData.*)'
+            '_userOnline(currentScoreData.*)',
+            '_inventoryItem(currentScoreData.newInventoryItem)'
+
         ],
+        _inventoryItem: function(a) {
+
+            console.log(a)
+        },
         _userOnline(user) {
             console.log(this.currentScoreData)
                 /*  if(this.currentScoreData && !this.mlgId){
@@ -743,7 +747,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         _pageChanged: function(page) {
-            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores') {
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page!='mapview') {
                 firebase.database().ref('users/' + this.user.uid + '/page/').set({
                     page: page,
                 });
@@ -752,13 +756,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
             if (this.page == 'activity') {
-                if (this.user && this.user.uid)
+                if (this.user && this.user.uid) {
                     firebase.database().ref('users/' + this.user.uid).update({
                         currentMLG: null,
                         currentScore: null,
                         hasChatSession: null,
                         hasMapSession: null,
                     });
+                    firebase.database().ref('users/' + this.user.uid + '/').update({
+                        'newInventoryItem': false
+                    })
+                }
             }
             // load page import on demand.
             console.log('my-' + page + '.html')

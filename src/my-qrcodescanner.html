@@ -83,17 +83,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-collapse>
                 <iron-collapse id="qrInvalid">
                     <div>{{poiincorrectMessage}}</div>
-                    <paper-button raised on-click="retry">Retry</paper-button>
+                    <paper-button raised on-click="retry">Réessayer</paper-button>
                 </iron-collapse>
                 <iron-collapse id="qrValid">
                     <div>{{poireachedMessage}}</div>
-                    <paper-button on-click="next">Next</paper-button>
+                    <paper-button on-click="next">Suivant</paper-button>
                 </iron-collapse>
                 <iron-collapse id="uploadFailed">
-                    <div>Upload failed</div>
-                    <paper-button on-click="retry">Retry</paper-button>
+                    <div>Echec du téléchargement</div>
+                    <paper-button on-click="retry">Réessayer</paper-button>
                 </iron-collapse>
+                <iron-collapse id="scanFailed">
+                    <div>QR code non reconnu</div>
+                    <paper-button on-click="retry">Merci de rescanner le QR-code</paper-button>
+                </iron-collapse>
+
             </div>
+
         </template>
         <script>
         Polymer({
@@ -106,10 +112,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 this.isDisabled = false
             },
+
+            showScanFailed: function() {
+                this.$.processing.hide()
+                this.$.qrValid.hide()
+                this.$.qrInvalid.hide()
+                this.$.scanFailed.show()
+
+                this.$.uploadFailed.hide()
+            }
+
+            ,
+
             showError: function() {
                 this.$.processing.hide()
                 this.$.qrValid.hide()
                 this.$.qrInvalid.hide()
+                this.$.scanFailed.hide()
+
                 this.$.uploadFailed.show()
             }
 
@@ -138,10 +158,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         this.$.qrInvalid.show()
                     }
                 }
+                else //QR code scan failed 
+                {
+                    this.showScanFailed()
+                }
             },
             retry: function() {
                 this.$.processing.hide()
-
+                this.$.scanFailed.hide()
                 this.$.qrInvalid.hide()
                 this.$.qrValid.hide()
                 this.$.uploadFailed.hide()
@@ -150,6 +174,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             next: function() {
              this.fire('poi-reached-from-qrcode', null)
                 this.$.qrValid.hide()
+                this.$.scanFailed.hide()
+
                 this.$.processing.hide()
 
                 this.$.qrInvalid.hide()
