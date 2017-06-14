@@ -203,11 +203,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'my-app',
         ready: function() {
             
-            if(navigator.geolocation){
-                navigator.geolocation.getCurrentPosition(this.setGeoloc.bind(this))
-            }else{
-                alert('Geolocation is not supported, please change phone')
-            }
 
 
             this.inventoryItems = []
@@ -603,6 +598,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('start page loaded')
         },
         setupActivity: function(elem) {
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(this.setGeoloc.bind(this))
+            }else{
+                alert('Geolocation is not supported, please change phone')
+            }
+
             this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
             firebase.database().ref('users/' + this.user.uid + '/').update({
                 currentMLG: elem.detail._id,
