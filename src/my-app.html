@@ -391,7 +391,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 // firebase.database().ref('lobby/' + this.mlgId + '/' + this.roomId.key + '/').remove()
                 this.resetActivity()
-                this.$.inventaireToast.hide()
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    'newInventoryItem': false
+                })
                 this.badgeNumber = 0
                 this.page = "activity"
             }
@@ -593,9 +595,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 currentMLG: elem.detail._id,
             });
 
-            firebase.database().ref('users/' + this.user.uid + '/').update({
-                mlgJSON: elem.detail,
-            });
 
             this.currentMLG = elem.detail;
             this.mlgId = elem.detail._id
