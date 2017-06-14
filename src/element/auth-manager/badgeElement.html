@@ -37,7 +37,7 @@
                 <div class="markdown-html"></div>
             </marked-element>
         </div>
-        <paper-dialog>
+        <paper-dialog id="badgeDialog">
             <div>{{label}}</div>
             <marked-element markdown="{{itemMkdown}}">
                 <div class="markdown-dialog"></div>
@@ -65,7 +65,7 @@
             }
         },
         showBadgeDetail: function() {
-
+            this.$.badgeDialog.open()
         },
         handleResponse: function(response) {
             this.itemMkdown = response.detail.__data__.response[0].mkdown
