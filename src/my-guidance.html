@@ -47,14 +47,14 @@
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
             <iron-collapse opened="{{poiReached}}">
-                <paper-button style="position: relative;float:right;margin-right: 30px" raised on-click="nextActivity">Next</paper-button>
+                <paper-button style="position: relative;float:right;margin-right: 30px" raised on-click="nextActivity">Suivant</paper-button>
             </iron-collapse>
             <paper-icon-button style="position: relative;float:right;margin-right: 50px" icon="vaadin:question-circle" on-click="showInstruction">
             </paper-icon-button>
             <paper-dialog id="poiReached">
-                <h2>POI Reached</h2>
+                <h2>Destination atteinte!</h2>
                 <div class="buttons">
-                    <paper-button raised on-click="nextActivity">Next</paper-button>
+                    <paper-button raised on-click="nextActivity">Suivant</paper-button>
                 </div>
             </paper-dialog>
             <paper-dialog id="docPage">
