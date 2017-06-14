@@ -211,16 +211,26 @@
                 });
                 this.push('circles', circle);
 
-                var imageBounds = {
+                var iutBounds = {
                         north: 48.08688243445837,
                         south: 48.084934794118055,
                         east: -0.7553060352802277,
                         west: -0.7604934275150299
                     },
-
-                    mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
+                mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', iutBounds);
                 var map = this.get('mapsAPI')
                 mapOverlay.setMap(map);
+
+                var echologiaBounds = {
+                        north: 48.11013912056205,
+                        south: 48.10738820428109,
+                        east: -0.7168310880661011,
+                        west: -0.7257789373397827
+                    },
+                mapOverlay2 = new google.maps.GroundOverlay('http://i.imgur.com/Cb3zRzg.jpg', echologiaBounds);
+                mapOverlay2.setMap(map);
+                mapOverlay2.setOpacity(0.30);
+
                 google.maps.event.trigger(map, 'resize');
             },
             _getMarkeIndexById: function(id) {
