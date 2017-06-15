@@ -131,7 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-header reveals>
             <app-toolbar>
-                <div main-title>REVERIES</div>
+                <div main-title>REVERIES {{allowPass}}</div>
                 <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
                     <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                 <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                 <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                <my-guidance allow-pass='true' doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
+                <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
                 <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
                 <my-qrcodescanner allow-pass={{allowPass}} poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                 <my-questions id="myQuestions" question3="{{question3}}" scores="{{scores}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
