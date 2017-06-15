@@ -17,10 +17,7 @@
         </style>
         <paper-card heading="Admin options" image="" elevation="" animated-shadow="false">
             <div class="card-content">
-                <paper-radio-group selected="noPass">
-                    <paper-radio-button name="noPass">Do not allow skip activities</paper-radio-button>
-                    <paper-radio-button  name="pass">Allow skip activities</paper-radio-button>
-                </paper-radio-group>
+                <paper-toggle-button checked='{{val}}' id='skip'>Allow skip activities</paper-toggle-button>
             </div>
             <div class="card-actions">
             </div>
@@ -35,9 +32,15 @@
         is: 'my-admin',
         ready: function() {
 
-            this.set('allowPass','OK')
+            this.$.skip.addEventListener('active-changed',this.setPassValue.bind(this))
         },
-
+        setPassValue:function(){
+            if(this.val){
+                this.set('allowPass','OK')
+            } else {
+            this.set('allowPass',null)
+            }
+        },
         properties: {
 
             allowPass: {
