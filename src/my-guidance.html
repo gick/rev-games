@@ -165,7 +165,9 @@
             console.log(this.poi)
                 // body...
         },
-
+        _allowPass:function(elem){
+            console.log(elem)
+        },
         is: 'my-guidance',
 
         observers: ['poiSet(poi.*)'],
@@ -174,6 +176,7 @@
             allowPass: {
                 type: Boolean,
                 notify: true,
+                observer:'_allowPass',
             },
             poi: {
                 type: Object,
