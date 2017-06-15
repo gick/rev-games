@@ -19,7 +19,7 @@
             <div class="card-content">
                 <paper-radio-group selected="noPass">
                     <paper-radio-button name="noPass">Do not allow skip activities</paper-radio-button>
-                    <paper-radio-button checked='{{allowPass}}' name="pass">Allow skip activities</paper-radio-button>
+                    <paper-radio-button  name="pass">Allow skip activities</paper-radio-button>
                 </paper-radio-group>
             </div>
             <div class="card-actions">
@@ -33,12 +33,16 @@
     'use strict';
     Polymer({
         is: 'my-admin',
-        ready: function() {},
+        ready: function() {
+
+            this.set('allowPass','OK')
+        },
 
         properties: {
 
             allowPass: {
-                type: Boolean,
+                type: String,
+                notify:true,
                 reflectToAttribute: true,
             },
 
