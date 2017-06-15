@@ -2,7 +2,6 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
-
 <dom-module id="my-admin">
     <template>
         <style type="text/css">
@@ -18,6 +17,7 @@
         <paper-card heading="Admin options" image="" elevation="" animated-shadow="false">
             <div class="card-content">
                 <paper-toggle-button checked='{{val}}' id='skip'>Allow skip activities</paper-toggle-button>
+                <paper-button on-click='resetMultiplayer'>Reset multiplayer games</paper-button>
             </div>
             <div class="card-actions">
             </div>
@@ -32,20 +32,25 @@
         is: 'my-admin',
         ready: function() {
 
-            this.$.skip.addEventListener('active-changed',this.setPassValue.bind(this))
+            this.$.skip.addEventListener('active-changed', this.setPassValue.bind(this))
         },
-        setPassValue:function(){
-            if(!this.val){
-                this.set('allowPass','OK')
+        setPassValue: function() {
+            if (!this.val) {
+                this.set('allowPass', 'Admin')
             } else {
-            this.set('allowPass',null)
+                this.set('allowPass', null)
             }
         },
+
+        resetMultiplayer: function() {
+            var ref = firebase.database().ref('mapSession/').set({})
+        },
+
         properties: {
 
             allowPass: {
                 type: String,
-                notify:true,
+                notify: true,
                 reflectToAttribute: true,
             },
 
