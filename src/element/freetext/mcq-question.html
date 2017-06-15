@@ -69,7 +69,7 @@
                         <div style="margin-top:40px" class="card-actions">
                             <paper-button raised on-click="validateOrNext">{{buttonText}}</paper-button>
                             <template is="dom-if" if="{{mediaId}}" restamp=true>
-                                <paper-button raised on-click="showClue">Show clue</paper-button>
+                                <paper-button raised on-click="showClue">Indice</paper-button>
                             </template>
                         </div>
                     </template>
@@ -83,7 +83,7 @@
         Polymer({
             is: 'mcq-question',
             ready: function() {
-                this.buttonText = "Validate"
+                this.buttonText = "Valider"
                     // this.hasClue=false
             },
             nextQuestion: function() {
@@ -97,7 +97,7 @@
             },
 
             validateOrNext: function() {
-                if (this.buttonText == "Validate") {
+                if (this.buttonText == "Valider") {
                     if (this.$.mcq.selectedItem && this.$.mcq.selectedItem.innerText && this.$.mcq.selectedItem.innerText.trim() == this.correctAnswer.trim()) {
                         this.$.correct.show();
                         this.$.wrong.hide();
@@ -108,11 +108,11 @@
                         this.fire('wrongAnswer')
 
                     }
-                    this.buttonText = "Next"
+                    this.buttonText = "Suivant"
                 }
                 else{
                     this.nextQuestion()
-                    this.buttonText="Validate"
+                    this.buttonText="Valider"
                 }
             },
             _mediaIdObserver: function(newval) {
