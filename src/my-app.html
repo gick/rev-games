@@ -132,7 +132,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header reveals>
             <app-toolbar>
                 <div main-title>REVERIES</div>
-                <iron-icon id='menu' icon="add-circle-outline" on-click="openLinks"></iron-icon>
+                <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
                     <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
                 </template>
@@ -174,6 +174,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-drawer>
             <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
                 <my-chatroom name="chatroom"></my-chatroom>
+                <my-admin allow-pass='{{allowPass}}' name="admin"></my-admin>
+
                 <my-register name="register"></my-register>
                 <my-profile name="profile"></my-profile>
                 <my-login id='loginForm' name='login'></my-login>
@@ -186,9 +188,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
                 <my-uginstructions mkdown="{{ugMkdown}}" id="uginstructions" name="uginstructions"></my-uginstructions>
                 <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                <my-guidance doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
+                <my-guidance allow-pass={{allowPass}} doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
                 <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
-                <my-qrcodescanner poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                <my-qrcodescanner allow-pass={{allowPass}} poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                 <my-questions id="myQuestions" question3="{{question3}}" scores="{{scores}}" question2="{{question2}}" question1="{{question1}}" name="questions"></my-questions>
                 <my-feedback id="feedback" mkdown="{{feedbackMkdown}}" name="feedback"></my-feedback>
             </neon-animated-pages>
@@ -598,11 +600,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('start page loaded')
         },
         setupActivity: function(elem) {
-            if(navigator.geolocation){
-                navigator.geolocation.getCurrentPosition(this.setGeoloc.bind(this))
-            }else{
-                alert('Geolocation is not supported, please change phone')
-            }
 
             this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
             firebase.database().ref('users/' + this.user.uid + '/').update({

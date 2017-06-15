@@ -113,6 +113,7 @@
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
                 if (this.userData.hasMapSession) { //case multiplayer
+                    this.set('isSolo', false)
                     var ref = firebase.database().ref('mapSession/' + this.userData.hasMapSession + '/' + this.user.uid + '/').set({
                         latitude: coord.lat,
                         longitude: coord.lng,

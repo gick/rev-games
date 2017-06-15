@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-button.html">
+
+<dom-module id="my-admin">
+    <template>
+        <style type="text/css">
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        
+        paper-card {
+            display: block;
+        }
+        </style>
+        <paper-card heading="Admin options" image="" elevation="" animated-shadow="false">
+            <div class="card-content">
+                <paper-radio-group selected="noPass">
+                    <paper-radio-button name="noPass">Do not allow skip activities</paper-radio-button>
+                    <paper-radio-button checked='{{allowPass}}' name="pass">Allow skip activities</paper-radio-button>
+                </paper-radio-group>
+            </div>
+            <div class="card-actions">
+            </div>
+        </paper-card>
+        </div>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'my-admin',
+        ready: function() {},
+
+        properties: {
+
+            allowPass: {
+                type: Boolean,
+                reflectToAttribute: true,
+            },
+
+        }
+    })
+})();
+</script>

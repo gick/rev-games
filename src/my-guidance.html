@@ -40,8 +40,9 @@
             color: #212121;
         }
         </style>
-                            <paper-button raised on-click="nextActivity">Next</paper-button>
-
+        <template is='dom-if' if='{{allowPass}}'>
+            <paper-button raised on-click="nextActivity">Next</paper-button>
+        </template>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
@@ -67,7 +68,7 @@
             </paper-dialog>
             <div>
                 <template is="dom-if" if="{{ismap}}">
-                    <map-display  doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
+                    <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
                 </template>
                 <template is="dom-if" if="{{isping}}">
                     <my-ping style="position: relative" on-click="showDistance" initalheadingdistance="{{initialHeadingDistance}}" headingdistance="{{headingDistance}}"></my-compass>
@@ -109,10 +110,9 @@
                 this.$.map.mapready()
             }
         },
-        setCard:function(){
-            this.set('ismap',true)
-        }
-        ,
+        setCard: function() {
+            this.set('ismap', true)
+        },
         updateCoord: function(e) {
             if (this.poi) {
                 var coord = {
@@ -171,6 +171,10 @@
         observers: ['poiSet(poi.*)'],
 
         property: {
+            allowPass: {
+                type: Boolean,
+                notify: true,
+            },
             poi: {
                 type: Object,
                 notify: true,
