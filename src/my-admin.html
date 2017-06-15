@@ -35,7 +35,7 @@
             this.$.skip.addEventListener('active-changed',this.setPassValue.bind(this))
         },
         setPassValue:function(){
-            if(this.val){
+            if(!this.val){
                 this.set('allowPass','OK')
             } else {
             this.set('allowPass',null)
