@@ -108,6 +108,9 @@
 
             updateUser: function(coord) {
                 var map = this.get('mapsAPI')
+                if (coord.lat && coord.lng) {
+                    map.setCenter(new google.maps.LatLng(coord.lat, coord.lng))
+                }
 
                 google.maps.event.trigger(map, 'resize');
                 this.set('userCoord', coord);
@@ -244,13 +247,12 @@
                     }
                 }
             },
-            dataUpdate:function(data){
+            dataUpdate: function(data) {
                 console.log(data)
-                for(var i in data.base){
+                for (var i in data.base) {
 
                 }
-            }
-            ,
+            },
             removeAllCircles: function(item) {
                 var circles = this.get('circles')
                 for (var i = 0; i < circles.length; i++) {
@@ -258,7 +260,7 @@
                 }
                 this.splice('circles', 0, circles.length)
             },
-            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)','dataUpdate(data.*)'],
+            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)', 'dataUpdate(data.*)'],
 
             properties: {
                 hasCoord: {

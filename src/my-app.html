@@ -770,7 +770,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (this.user && this.user.uid) {
                     firebase.database().ref('users/' + this.user.uid).update({
                         currentMLG: null,
-                        currentScore: null,
                         hasChatSession: null,
                         hasMapSession: null,
                     });

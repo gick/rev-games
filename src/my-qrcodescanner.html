@@ -69,7 +69,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             </style>
             <div class="card">
-                <paper-button on-click="next">Next</paper-button>
+                <template is='dom-if' if='{{allowPass}}'>
+                    <paper-button on-click="next">Next</paper-button>
+                </template>
                 <h1>QR codes</h1>
                 <iron-collapse opened="{{!isDisabled}}">
                     <image-resizer id="qrscan" name='Take picture' url='/qrscan'></image-resizer>
@@ -97,9 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div>QR code non reconnu</div>
                     <paper-button on-click="retry">Merci de rescanner le QR-code</paper-button>
                 </iron-collapse>
-
             </div>
-
         </template>
         <script>
         Polymer({
@@ -157,8 +157,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     } else {
                         this.$.qrInvalid.show()
                     }
-                }
-                else //QR code scan failed 
+                } else //QR code scan failed 
                 {
                     this.showScanFailed()
                 }
@@ -172,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.isDisabled = false
             },
             next: function() {
-             this.fire('poi-reached-from-qrcode', null)
+                this.fire('poi-reached-from-qrcode', null)
                 this.$.qrValid.hide()
                 this.$.scanFailed.hide()
 
@@ -195,12 +194,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
-
+            _allowPass:function(elem){
+                console.log(elem)
+            },
             behaviors: [
                 Polymer.NeonAnimationRunnerBehavior
             ],
 
             properties: {
+                allowPass: {
+                    type: String,
+                    notify: true,
+                    observer: '_allowPass',
+                },
+
                 poi: {
                     type: Object,
                     notify: true,
