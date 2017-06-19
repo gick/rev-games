@@ -40,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
     <template is="dom-bind" id='page-template'>
         <platinum-sw-register state='{{state}}' skip-waiting clients-claim auto-register reload-on-install>
-            <platinum-sw-cache  precache="{{precacheList}}" default-cache-strategy="network-first"></platinum-sw-cache>
+            <platinum-sw-cache  precache="{{precacheList}}" default-cache-strategy="fastest"></platinum-sw-cache>
         </platinum-sw-register>
         <my-app cache-value='{{state}}'></my-app>
     </template>
