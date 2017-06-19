@@ -1,0 +1,106 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+
+<link rel="import" href="../../../bower_components/paper-item/paper-item-shared-styles.html">
+<dom-module id="mlg-listitem">
+    <template>
+        <style include="shared-styles">
+        paper-icon-item{
+            margin-bottom: 10px;
+        }
+        </style>
+        <paper-icon-item on-click="fireChosen">
+            <iron-icon icon="{{_computeIcon(data.gameType)}}" item-icon=""></iron-icon>
+            <iron-icon icon="{{_computePlayerIcon(data.isCompetition)}}" item-icon=""></iron-icon>
+            <paper-item-body two-line="">
+                <div><span>{{data.label}}</span></div>
+                <div secondary="">Difficulté : <span>{{_computeDifficulty(data.gameDifficulty)}}</span></div>
+                <div secondary="">Durée : {{data.gameDuration}} minutes</div>
+                <div secondary="">Proximité : {{data.gameProximity}} km</div>
+                <template is="dom-if" if="{{data.score}}">
+                    <template is="dom-repeat" items="{{userscore}}" as="scores" filter="{{_computeScore(data.unitGames)}}">
+                        <div secondary="">Score : {{scores.score}}</div>
+                    </template>
+                </template>
+            </paper-item-body>
+            
+                 <div><paper-icon-button on-click="sendID" icon="vaadin:play" item-icon=""></paper-icon-button></div>
+            
+        </paper-icon-item>
+    </template>
+    <script>
+    Polymer({
+
+        is: 'mlg-listitem',
+        ready: function() {
+
+        },
+
+        sendID: function(elem) {
+            this.fire('activitySelected', this.data);
+            //this.fire('scoreToBeat', elem.model.scores.score)
+            //this.scoretobeat = elem.model.scores.score;
+        },
+
+        fireChosen:function(){
+            //this.set('activity-choosen',this);
+        },
+
+        _computePlayerIcon: function(multi) {
+            if (multi){
+                return "vaadin:users"
+            } else {
+                return "vaadin:user"
+            }
+        },
+
+        _computeIcon: function(type) {
+            if (type == "cuisine") {
+                return "vaadin:cross-cutlery"
+            } else if (type == "quizz") {
+                return "icons:help"
+            } else {
+                return "vaadin:location-arrow-circle-o"
+            }
+        },
+
+        _computeDifficulty: function(level) {
+            console.log(level)
+            switch(level) {
+                case '1': return "★"
+                case '2': return "★★"
+                case '3': return "★★★"
+                case '4': return "★★★★"
+                case '5': return "★★★★★"
+                default: return "★"          
+            }
+        },
+
+        _computeScore: function(idGame) {
+            if (!idGame) {
+                return null;
+            } else {
+                return function(scores) {
+                    return (scores.id.indexOf(idGame) != -1);
+                };
+            }
+        },
+
+        properties: {
+            data: {
+                type: Object,
+                notify: true,
+            },
+        },
+
+    });
+    </script>
+</dom-module>

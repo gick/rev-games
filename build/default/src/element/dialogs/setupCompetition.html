@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-auth.html">
+
+<link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<dom-module id="setup-competition">
+    <style include="shared-styles">
+    .container {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .subcontainer {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        padding: 5px;
+    }
+    
+    paper-icon-button {
+        padding-bottom: 0;
+    }
+    </style>
+    <template>
+        <app-location use-hash-as-path="" route="{{route}}"></app-location>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data="{{userData}}">
+        </firebase-document>
+        <paper-dialog id="quickLink" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+            <h2>Jeu multi</h2>
+            <div class="content">
+                Dans le mode de jeu multi, vous pourrez voir les autres joueurs sur la carte, échanger avec eux sur le chat et essayer d'être le mieux positionné dans le tableau des scores!
+            </div>
+            <div class="buttons">
+                <paper-button on-click="setupMulti" dialog-confirm="" autofocus="">OK</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        Polymer({
+            is: 'setup-competition',
+            ready: function() {},
+            show: function() {
+                this.$.quickLink.open()
+            },
+            newData:function(data){
+                console.log(data)
+            },
+            setupSolo: function() {
+                this.set('userData.hasChatSession',null)
+
+                this.set('userData.hasMapSession',null)
+
+            },
+            setupMulti: function() {
+                this.set('userData.hasChatSession',this.gameId)
+
+                this.set('userData.hasMapSession',this.gameId)
+                this.set('userData.currentScore',0)
+
+            },
+
+            properties: {
+                gameId: {
+                    type: String,
+                    notify: true
+                }
+
+            },
+            observers: ['newData(userData.*,user.*)']
+        });
+    })();
+    </script>
+</dom-module>

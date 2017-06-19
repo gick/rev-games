@@ -1,0 +1,164 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<dom-module id="my-lobby">
+    <template>
+        <style>
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        
+        paper-card {
+            display: block;
+        }
+        
+        h1 {
+            font-size: 22px;
+            margin: 16px 0;
+            color: #212121;
+        }
+        </style>
+        <firebase-query id="users" log="" path="/users" order-by-child="currentRoom" equal-to="{{roomId}}" data="{{users}}"></firebase-query>
+        <firebase-auth id="auth" user="{{user}}" provider="google"></firebase-auth>
+        <app-location use-hash-as-path="" route="{{route}}"></app-location>
+        <paper-card heading="Jeu : {{gameName}}" image="" elevation="2" animated-shadow="true">
+            <div class="card-content">
+                <div>Salle : {{roomName}}, en attente d'autres joueurs</div>
+                <template is="dom-repeat" items="{{users}}" as="user">
+                    <paper-icon-item>
+                        <iron-icon icon="account-circle" item-icon="">
+                        </iron-icon>
+                        <div>Pseudo : {{user.username}}</div>
+                    </paper-icon-item>
+                </template>
+            </div>
+            <div>
+                <paper-spinner-lite active="" class="green"></paper-spinner-lite>
+            </div>
+            <div class="card-actions">
+                <paper-button on-click="logout">Quitter la salle</paper-button>
+            </div>
+        </paper-card>
+        
+    </template>
+    <script>
+    Polymer({
+
+        is: 'my-lobby',
+
+        deleteUser: function() {
+            //exemple fonctionnel de suppression on pourra utiliser le principe pour supprimer le pseudo du lobb si l'user quitte la page
+            this.$.doc.ref.child(this.idForDeletion).remove()
+        },
+
+
+        unlockButton: function() {
+            if (this.count == 5 /*this.data.numberPlayers*/ ) {
+                this.$.playButton.disabled = false
+            } else {
+                this.$.playButton.disabled = true
+            }
+        },
+        logout: function() {
+            firebase.database().ref('lobby/' + this.gameId + '/' + this.roomId + '/player/' + this.user.uid).remove().then(
+                function() {
+                    this.set('route.path', 'activity')
+                }.bind(this))
+
+        },
+        updateUsers: function(data) {
+            console.log(data)
+
+        },
+        updateUserTab: function() {
+            var usersWaiting = Object.values(this.data)
+            this.count = 0
+            console.log(usersWaiting)
+            console.log(usersWaiting.length)
+            this.splice('usersTab', 0, 5)
+            for (var i = 0; i < 5; i++) {
+                if (i < usersWaiting.length) {
+                    if (usersWaiting[i].userName == this.user.email) {
+                        var usersIds = Object.keys(this.data)
+                        this.idForDeletion = usersIds[i]
+                        console.log(this.idForDeletion)
+                    }
+                    console.log
+                    this.push('usersTab', usersWaiting[i].userName)
+                    this.count += 1
+                } else {
+                    this.push('usersTab', "Awaiting player")
+                }
+
+            }
+        },
+
+        _isWaiting: function(userNick) {
+            console.log(userNick)
+            if (userNick == "Awaiting player") {
+                return true
+            } else {
+                return false
+            }
+        },
+        userChange: function(user) {
+            console.log(user)
+        },
+        properties: {
+
+            usersTab: {
+                type: Array,
+                value: []
+            },
+
+            gameId: {
+                type: String,
+                notify: true,
+
+            },
+            gameName: {
+                type: String,
+                notify: true,
+
+            },
+
+            roomId: {
+                type: String,
+                notify: true,
+            },
+            roomName: {
+                type: String,
+                notify: true,
+            },
+
+            idForDeletion: {
+                type: String,
+                notify: true
+            }
+
+        },
+
+        observers: [
+            'updateUsers(data.*)'
+        ]
+
+    });
+    </script>
+</dom-module>

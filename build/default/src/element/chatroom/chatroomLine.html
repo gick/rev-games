@@ -1,0 +1,120 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="./imageResizer.html">
+<dom-module id="chatroom-line">
+    <style include="shared-styles">
+    .element {
+        align-self: stretch;
+    }
+    
+    .remove {
+        background-color: #eeeeee;
+    }
+    
+    .header {
+        width: 100%;
+    }
+    
+    .suppress-action {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        padding: 10px;
+    }
+    
+    .markdown-html img {
+        max-width: 500px;
+        max-height: 500px;
+    }
+    
+    .inner {
+        display: inline-flex;
+        flex-flow: column;
+        align-items: baseline;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+    }
+    </style>
+    <template>
+        <app-location use-hash-as-path="" route="{{route}}"></app-location>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
+        </firebase-auth>
+        <firebase-document path="/users/{{user.uid}}" data="{{userData}}">
+        </firebase-document>
+        <paper-input value="{{line}}" label="Envoyer un message" on-keydown="checkForEnter"></paper-input>
+        <paper-icon-button on-click="sendline" icon="icons:send" item-icon=""></paper-icon-button>
+        <image-resizer id="photoScan" name="Photo" url="/userFile"></image-resizer>
+        <paper-button style="float:right" on-click="back">RETOUR</paper-button>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        Polymer({
+            is: 'chatroom-line',
+            ready: function() {
+                this.$.photoScan.addEventListener('success', this.getPhotoResponse.bind(this))
+
+            },
+            checkForEnter: function(e) {
+                // check if 'enter' was pressed
+                if (e.keyCode === 13) {
+                    this.sendline()
+                }
+            }
+
+            ,
+            back: function() {
+                if (this.userData && this.userData.page && this.userData.page.page) {
+                    this.set('route.path', this.userData.page.page)
+                } else {
+                    this.set('route.path', 'profile')
+
+                }
+            },
+
+
+            clearChat: function() {
+                firebase.database().ref('messages/' + this.userData.hasChatSession).set({})
+
+            },
+            newData: function(data) {
+                console.log(data)
+            },
+            getPhotoResponse: function(e) {
+                var fileId = JSON.parse(event.detail.xhr.response)._id
+                var ref = firebase.database().ref('messages/' + this.userData.hasChatSession)
+                var newPostRef = ref.push();
+                newPostRef.set({
+                    image: fileId,
+                    author: this.userData.username
+                });
+
+            },
+            sendline: function() {
+                var ref = firebase.database().ref('messages/' + this.userData.hasChatSession)
+                var newPostRef = ref.push();
+                newPostRef.set({
+                    line: this.line,
+                    author: this.userData.username
+                });
+                this.line = ''
+
+            },
+            properties: {},
+            observers: ['newData(userData.*)']
+        });
+    })();
+    </script>
+</dom-module>

@@ -1,0 +1,51 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-ripple/paper-ripple.html">
+<dom-module id="my-compass">
+
+	<template>
+        <style>
+            .circle {
+            display: inline-block;
+            position: relative;
+            border-radius: 50%;
+            height:250px; 
+            width: 250px;
+            font-size: 30px;
+            color: #555;
+            text-align: center;
+            vertical-align:middle;
+        }
+        </style>
+       	<div class="circle">
+            <img style="height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;" id="compass" src="../images/compassContourn.png">
+            <img style="height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;" id="compass" style$="{{computeCompass(angle)}}" src="../images/compassInterior.png">
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+
+        Polymer({
+            is: 'my-compass',
+
+            computeCompass: function(angle) {
+
+                if (this.headingdegree <= 0) {
+                    return 'transform: rotate('+ ((360 - this.headingdegree) - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
+                } else {
+                    return 'transform: rotate('+ (this.headingdegree - angle) +'deg); height 50%; width : 50%; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto;';
+                }
+
+            },
+
+            properties: {
+
+                headingdegree: {
+                    type: Number,
+                    notify: true,
+                },
+            }
+        })
+    })();
+    </script>
+</dom-module>

@@ -1,0 +1,279 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/file-upload/file-upload.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-down-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-up-animation.html">
+<link rel="import" href="./element/chatroom/imageResizer.html">
+
+<body>
+    <dom-module id="my-qrcodescanner">
+        <template>
+            <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+            
+            .card {
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                padding: 16px;
+                margin: 24px;
+                border-radius: 5px;
+                background-color: #fff;
+                color: #757575;
+            }
+            
+            .circle {
+                display: inline-block;
+                height: 64px;
+                width: 64px;
+                border-radius: 50%;
+                background: #ddd;
+                line-height: 64px;
+                font-size: 30px;
+                color: #555;
+                text-align: center;
+            }
+            
+            paper-dialog.size {
+                width: 300px;
+                height: 300px;
+            }
+            
+            h1 {
+                font-size: 22px;
+                margin: 16px 0;
+                color: #212121;
+            }
+            
+            img.fitting {
+                height: 100%;
+                width: 100%;
+                margin-left: -24px;
+                margin-top: -44px;
+            }
+            </style>
+            <div class="card">
+                <template is="dom-if" if="{{allowPass}}">
+                    <paper-button on-click="next">Next</paper-button>
+                </template>
+                <h1>QR codes</h1>
+                <iron-collapse opened="{{!isDisabled}}">
+                    <image-resizer id="qrscan" name="Take picture" url="/qrscan"></image-resizer>
+                </iron-collapse>
+                <paper-dialog id="dialog" class="size">
+                    <div id="scanBar" style="width:84%;height:20px;opacity:0.6;background-color:red"></div>
+                    <img src="./element/images/qrcode.png" class="fitting">
+                </paper-dialog>
+                <iron-collapse id="processing">
+                    <img src="./element/images/processing.gif" style="width:200px;">
+                </iron-collapse>
+                <iron-collapse id="qrInvalid">
+                    <div>{{poiincorrectMessage}}</div>
+                    <paper-button raised="" on-click="retry">Réessayer</paper-button>
+                </iron-collapse>
+                <iron-collapse id="qrValid">
+                    <div>{{poireachedMessage}}</div>
+                    <paper-button on-click="next">Suivant</paper-button>
+                </iron-collapse>
+                <iron-collapse id="uploadFailed">
+                    <div>Echec du téléchargement</div>
+                    <paper-button on-click="retry">Réessayer</paper-button>
+                </iron-collapse>
+                <iron-collapse id="scanFailed">
+                    <div>QR code non reconnu</div>
+                    <paper-button on-click="retry">Merci de rescanner le QR-code</paper-button>
+                </iron-collapse>
+            </div>
+        </template>
+        <script>
+        Polymer({
+
+            is: 'my-qrcodescanner',
+            ready: function() {
+                this.$.qrscan.addEventListener('success', this.qrscanListener.bind(this))
+                this.$.qrscan.addEventListener('before-upload', this.showProcess.bind(this))
+                this.$.qrscan.addEventListener('error', this.showError.bind(this))
+
+                this.isDisabled = false
+            },
+
+            showScanFailed: function() {
+                this.$.processing.hide()
+                this.$.qrValid.hide()
+                this.$.qrInvalid.hide()
+                this.$.scanFailed.show()
+
+                this.$.uploadFailed.hide()
+            }
+
+            ,
+
+            showError: function() {
+                this.$.processing.hide()
+                this.$.qrValid.hide()
+                this.$.qrInvalid.hide()
+                this.$.scanFailed.hide()
+
+                this.$.uploadFailed.show()
+            }
+
+            ,
+            showProcess: function() {
+                this.$.processing.show()
+
+            },
+            qrscanListener: function(item) {
+                this.$.dialog.open();
+                this.$.processing.hide()
+
+                this.playAnimation('down', 'down');
+                if (item && item.detail && item.detail.xhr && item.detail.xhr.response) {
+                    var code = item.detail.xhr.response
+                    if (this.poi) {
+                        var pass = code == '[' + this.poi._id + ']'
+                        if (!pass) {
+                            this.$.qrInvalid.show()
+                            this.isDisabled = true
+                        } else {
+                            this.$.qrValid.show()
+                            this.isDisabled = true
+                        }
+                    } else {
+                        this.$.qrInvalid.show()
+                    }
+                } else //QR code scan failed 
+                {
+                    this.showScanFailed()
+                }
+            },
+            retry: function() {
+                this.$.processing.hide()
+                this.$.scanFailed.hide()
+                this.$.qrInvalid.hide()
+                this.$.qrValid.hide()
+                this.$.uploadFailed.hide()
+                this.isDisabled = false
+            },
+            next: function() {
+                this.fire('poi-reached-from-qrcode', null)
+                this.$.qrValid.hide()
+                this.$.scanFailed.hide()
+
+                this.$.processing.hide()
+
+                this.$.qrInvalid.hide()
+                if (this.$$('#qrscan').clear)
+                    this.$$('#qrscan').clear()
+                this.isDisabled = false
+            },
+            _poiObserver: function(item) {
+                console.log(item)
+            },
+
+            _computeImg: function(img) {
+                if (!img) {
+                    this.target = "/qrscan"
+                } else {
+                    this.uploadFailed.show();
+                }
+            },
+
+            _allowPass:function(elem){
+                console.log(elem)
+            },
+            behaviors: [
+                Polymer.NeonAnimationRunnerBehavior
+            ],
+
+            properties: {
+                allowPass: {
+                    type: String,
+                    notify: true,
+                    observer: '_allowPass',
+                },
+
+                poi: {
+                    type: Object,
+                    notify: true,
+                    obersver: '_poiObserver',
+                },
+                poiincorrectMessage: {
+                    type: String,
+                    notify: true,
+                },
+                poireachedMessage: {
+                    type: String,
+                    notify: true,
+                },
+
+                animationConfig: {
+                    value: function() {
+                        return {
+                            'down': {
+                                name: 'transform-animation',
+                                transformFrom: 'translateY(-125%)',
+                                transformTo: 'translateY(1280%)',
+                                node: this.$.scanBar,
+                                timing: {
+                                    duration: 2000
+                                },
+                            },
+                            'up': {
+                                name: 'transform-animation',
+                                transformFrom: 'translateY(1280%)',
+                                transformTo: 'translateY(-125%)',
+                                node: this.$.scanBar,
+                                timing: {
+                                    duration: 2000
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+
+            listeners: {
+                "neon-animation-finish": "animationComplete"
+            },
+            observers: [
+                'fileChanged(filelist)',
+            ],
+
+            fileChanged: function(newfile) {
+                console.log(newfile)
+            },
+            resetElement: function() {
+
+            },
+            animationComplete: function(event, animHandler) {
+                switch (animHandler) {
+                    case "down":
+                        this.playAnimation('up', 'up');
+                        break;
+                    case "up":
+                        this.$.dialog.close();
+                        break;
+                    default:
+                        null;
+                }
+            },
+
+        });
+        </script>
+    </dom-module>
+</body>

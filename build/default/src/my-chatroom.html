@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="./element/chatroom/chatroomLine.html">
+<link rel="import" href="./element/chatroom/chatroomElement.html">
+<dom-module id="my-chatroom">
+    <template>
+        <style type="text/css">
+        :host {
+            display: block;
+            padding: 10px;
+        }
+        
+        paper-card {
+            display: block;
+        }
+        </style>
+        <paper-card heading="Chat" image="" elevation="" animated-shadow="false">
+            <div class="card-content">
+                <chatroom-element></chatroom-element>
+            </div>
+            <div class="card-actions">
+                <chatroom-line></chatroom-line>
+            </div>
+        </paper-card>
+        
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'my-chatroom',
+        ready: function() {},
+
+        properties: {
+
+            items: {
+                type: Array,
+                notify: true,
+            },
+
+        }
+    })
+})();
+</script>
