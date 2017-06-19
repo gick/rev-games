@@ -19,8 +19,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="./bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="manifest" href="/manifest.json">
     <link rel="import" href="/src/my-app.html">
-    <link rel="import" href="../bower_components/platinum-sw/platinum-sw-elements.html">
-    <link rel="import" href="../bower_components/platinum-sw/platinum-sw-register.html">
     <script>
     // load webcomponents polyfills
 
@@ -39,19 +37,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <body>
     <template is="dom-bind" id='page-template'>
-        <platinum-sw-register state='{{state}}' skip-waiting clients-claim auto-register reload-on-install>
-            <platinum-sw-cache  precache="{{precacheList}}" default-cache-strategy="fastest"></platinum-sw-cache>
-        </platinum-sw-register>
         <my-app cache-value='{{state}}'></my-app>
     </template>
 </body>
     <script>
-
-      window.addEventListener('WebComponentsReady', function() {
-        // Explicitly call the register() method. We need to wait until the template's variables are
-        // all set first, since the configuration depends on bound variables.
-        document.querySelector('platinum-sw-register').register();
-      });
     </script>
 
 </html>
