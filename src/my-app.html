@@ -179,8 +179,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-login id='loginForm' name='login'></my-login>
                 <my-badge id="badge" name="badge"></my-badge>
                 <my-scores id="scores" name="scores"></my-scores>
-                <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
-                <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}"
+                roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}">
+                </my-inventory>
+                <my-activity id="activityPicker" name="activity">
+                </my-activity>
                 <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
                 <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
                 <my-instructions id="instructions" mkdown="{{mkdown}}" name="instructions"></my-instructions>
@@ -195,7 +198,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-header-layout>
         </app-drawer-layout>
         <paper-toast id="inventaireToast" text="Vous avez gagné un nouvel item d'inventaire !"></paper-toast>
-        <!--<iron-ajax method="POST" id="userScore" url="/user" body="{{ajaxBody}}" handleAs="json" on-response="validateScoreUser"></iron-ajax>-->
     </template>
     <script>
     Polymer({
@@ -229,7 +231,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#cluepoiinstruction').addEventListener('next-called-from-cluepoiinstruction', this.nextFromCluePOIInstruction.bind(this))
 
             this.showBadge = true
-            this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
@@ -423,9 +424,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.uginstructions = false
             this.score = 0
         },
-        setupScoreToBeat: function(score) {
-            this.scoreToBeat = score.detail
-        },
+    
         authChanged: function(status) {
             this.$$('#loginForm').setStatus(status)
         },
@@ -654,25 +653,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 value: 0
             },
 
-            userscore: {
-                type: Array,
-                notify: true
-            },
-
             currentActivity: {
                 type: String,
                 notify: true
-            },
-
-            scoreToBeat: {
-                type: Number,
-                notify: true,
-            },
-
-            currentScore: {
-                type: Number,
-                notify: true,
-                observer: '_scoreUpdated'
             },
 
             currentItemId: {
@@ -780,13 +763,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             this.set('route.path', page)
 
-        },
-
-        _scoreUpdated: function(newScore) {
-            if (newScore > this.scoreToBeat) {
-                this.$.validateScoreUser.generateRequest();
-                this.scoreToBeat = newScore
-            }
         },
 
     });

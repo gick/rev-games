@@ -25,11 +25,6 @@
                 <div secondary>Difficulté : <span>{{_computeDifficulty(data.gameDifficulty)}}</span></div>
                 <div secondary>Durée : {{data.gameDuration}} minutes</div>
                 <div secondary>Proximité : {{data.gameProximity}} km</div>
-                <template is="dom-if" if="{{data.score}}">
-                    <template is="dom-repeat" items="{{userscore}}" as="scores" filter="{{_computeScore(data.unitGames)}}">
-                        <div secondary>Score : {{scores.score}}</div>
-                    </template>
-                </template>
             </paper-item-body>
             
                  <div><paper-icon-button on-click="sendID" icon="vaadin:play" item-icon></paper-icon-button></div>
@@ -81,16 +76,6 @@
                 case '4': return "★★★★"
                 case '5': return "★★★★★"
                 default: return "★"          
-            }
-        },
-
-        _computeScore: function(idGame) {
-            if (!idGame) {
-                return null;
-            } else {
-                return function(scores) {
-                    return (scores.id.indexOf(idGame) != -1);
-                };
             }
         },
 

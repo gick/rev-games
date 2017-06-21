@@ -26,7 +26,7 @@
         <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
-                <template is="dom-if" if={{_void(items)}}>
+                <template is="dom-if" if="{{_void(items)}}">
                     <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
                 </template>
                 <template is="dom-repeat" items="{{itemIdTab}}">

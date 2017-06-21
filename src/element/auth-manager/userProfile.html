@@ -105,21 +105,6 @@
                     </div>
                 </template>
             </div>
-            <!--<div role="listbox">
->>>>>>> Stashed changes
-                    <paper-icon-item>
-                        <iron-icon icon="social:person" item-icon></iron-icon>
-                        {{name}}
-                    </paper-icon-item>
-                    <paper-icon-item>
-                        <iron-icon icon="icons:mail" item-icon></iron-icon>
-                        {{email}}
-                    </paper-icon-item>
-                </div> -->
-        </div>
-        <template is="dom-repeat" items="{{badges}}" as item>
-            <user-badge></user-badge>
-        </template>
         </div>
     </template>
 </dom-module>
@@ -129,11 +114,6 @@
     Polymer({
         is: 'user-profile',
 
-
-        ready: function() {
-
-
-        },
         _pageChanged:function(newpage){
             console.log(newpage)
             if(typeof newpage.value==='object'){
@@ -153,21 +133,9 @@
         '_pageChanged(page.*)',
         ],
         properties: {
-            badges: {
-                type: Array,
-                value: []
-            },
-            avatar: {
-                type: String,
-                notify: true
-            },
             name: {
                 type: String,
                 notify: true
-            },
-            email: {
-                type: String,
-                notify: true,
             }
         }
     })
