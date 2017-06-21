@@ -38,18 +38,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 color: #757575;
             }
             
-            .circle {
-                display: inline-block;
-                height: 64px;
-                width: 64px;
-                border-radius: 50%;
-                background: #ddd;
-                line-height: 64px;
-                font-size: 30px;
-                color: #555;
-                text-align: center;
-            }
-            
             paper-dialog.size {
                 width: 300px;
                 height: 300px;
@@ -247,20 +235,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 }
             },
-
-            listeners: {
-                "neon-animation-finish": "animationComplete"
-            },
-            observers: [
-                'fileChanged(filelist)',
-            ],
-
-            fileChanged: function(newfile) {
-                console.log(newfile)
-            },
-            resetElement: function() {
-
-            },
+            
             animationComplete: function(event, animHandler) {
                 switch (animHandler) {
                     case "down":
@@ -273,6 +248,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         null;
                 }
             },
+
+            listeners: {
+                "neon-animation-finish": "animationComplete"
+            },
+            observers: [
+                'fileChanged(filelist)',
+            ],
+
+            fileChanged: function(newfile) {
+                console.log(newfile)
+            },            
 
         });
         </script>

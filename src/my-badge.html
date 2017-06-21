@@ -31,7 +31,7 @@
         <app-indexeddb-mirror key="profileData" data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Badges" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
-                <template is="dom-if" if={{_void(items)}}>
+                <template is="dom-if" if="{{_void(items)}}">
                     <div>Vous n'avez aucun badges pour le moment essayez d'en gagner en jouant!</div>
                 </template>
                 <template is="dom-repeat" items="{{badgeIdTab}}" as='badge'>
