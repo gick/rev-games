@@ -207,7 +207,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             
 
 
-            this.inventoryItems = []
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
             this.$.currentMLG.addEventListener('startPageLoaded', this.setupStartPage.bind(this))
             this.$.currentMLG.addEventListener('feedbackPageLoaded', this.setupFeedbackPage.bind(this))
@@ -220,7 +219,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.currentMLG.addEventListener('question2Loaded', this.setupQuestion2.bind(this))
             this.$.currentMLG.addEventListener('question3Loaded', this.setupQuestion3.bind(this))
             this.$.currentMLG.addEventListener('ugStartPageLoaded', this.ugStartPageLoaded.bind(this))
-            this.$.currentMLG.addEventListener('scoreLoaded', this.setupScore.bind(this))
 
             this.$.currentMLG.addEventListener('cluePOILoaded', this.setupCluePOI.bind(this))
             this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
@@ -234,24 +232,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$$('#cluepoiinstruction').addEventListener('next-called-from-cluepoiinstruction', this.nextFromCluePOIInstruction.bind(this))
 
             this.showBadge = true
-            this.$$('#activityPicker').addEventListener('scoreToBeat', this.setupScoreToBeat.bind(this))
             this.$$('#qrcode').addEventListener('poi-reached-from-qrcode', this.poiReached.bind(this))
             this.$$('#feedback').addEventListener('next-called-from-feedback', this.nextUnit.bind(this))
             this.$$('#map').addEventListener('poi-reached-from-mapview', this.poiReached.bind(this))
 
             this.$.lobbyselection.addEventListener('roomChoosen', this.enterLobby.bind(this))
         },
-        setGeoloc:function(arg){
-            if(!arg){
-                alert("Merci d'autoriser le GPS et de recharger la page")
-            }
-        },
         openLinks: function() {
             this.$.quickLink.show()
-        },
-        setupScore: function(elem) {
-            if (elem && elem.detail)
-                this.scores = elem.detail
         },
         enterLobby: function(elem) {
             this.roomName = elem.detail.roomName
@@ -270,10 +258,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         setupCompetition: function() {
             this.$.setupCompetition.show()
         },
-        _toggleCollapse: function() {
-            this.$.footer.toggle()
-            this.$.collapser.toggle()
-        },
         userScoreChanged: function(item) {
             var that = this
             var score = item.detail
@@ -284,10 +268,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebase.database().ref('users/' + this.user.uid + '/').update({
                     'currentScore': score
                 })
-        },
-        _icon: function(itemOpen) {
-            console.log(itemOpen)
-            return itemOpen ? 'arrow-circle-up-o' : 'arrow-circle-down-o';
         },
         nextFromCluePOIInstruction: function() {
             if (this.poiMap) {
@@ -380,10 +360,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         },
-        fireCustom: function() {
-            this.addNotification(1)
-
-        },
         nextUnit: function() {
             if (this.$.currentMLG.hasNextUnitGame()) {
                 this.resetActivity()
@@ -432,9 +408,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.instructions = false
             this.uginstructions = false
             this.score = 0
-        },
-        setupScoreToBeat: function(score) {
-            this.scoreToBeat = score.detail
         },
         authChanged: function(status) {
             this.$$('#loginForm').setStatus(status)
@@ -710,7 +683,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         observers: [
-            '_routePageChanged(route.page)',
             '_userOnline(currentScoreData.*)',
             '_inventoryItem(currentScoreData.newInventoryItem)'
 
@@ -790,13 +762,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             this.set('route.path', page)
 
-        },
-
-        _scoreUpdated: function(newScore) {
-            if (newScore > this.scoreToBeat) {
-                this.$.validateScoreUser.generateRequest();
-                this.scoreToBeat = newScore
-            }
         },
 
     });
