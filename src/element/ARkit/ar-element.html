@@ -1,0 +1,27 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="ar-import.html">
+<dom-module id="ar-element">
+    <template>
+        <style>
+        :host {
+            display: block;
+        }
+        /* Thanks IE 10. */
+        
+        .hidden {
+            display: none !important;
+        }
+        </style>
+        <a-scene embedded artoolkit='sourceType: webcam;'>
+            <a-box position='0 0 0.5' material='opacity: 0.5;'></a-box>
+            <a-marker-camera preset='hiro'></a-marker-camera>
+        </a-scene>
+    </template>
+</dom-module>
+<script>
+'use strict';
+
+Polymer({
+
+    is: 'ar-element',
+})

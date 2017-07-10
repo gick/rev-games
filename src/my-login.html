@@ -24,6 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../src/element/auth-manager/auth-manager.html">
 <link rel="import" href="../src/element/auth-manager/userProfile.html">
+<link rel="import" href="../src/element/ARkit/ar-element.html">
+
 <dom-module id="my-login">
     <template>
         <style>
@@ -45,6 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known={{status}} user="{{user}}" provider="google">
         </firebase-auth>
+        <ar-element></ar-element>
         <paper-card heading="Login" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
                 <paper-input name="email" value={{mail}} label="Email" required></paper-input>
