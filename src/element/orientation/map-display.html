@@ -27,9 +27,7 @@
             <template is="dom-repeat" items={{data}}>
                 <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
             </template>
-            <template is="dom-if" if={{isSolo}}>
-                <google-map-marker drag-events title="{{userData.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
-            </template>
+            <google-map-marker drag-events title="{{userData.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
         </google-map>
     </template>
     <script>
@@ -54,7 +52,7 @@
 
                         var map = this.get('mapsAPI')
                         if (poi && poi.map) {
-                            map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
+                            map.setCenter(new google.maps.LatLng(poi.map.mapLatitude, poi.map.mapLongitude))
                         }
 
                     } else {
@@ -63,7 +61,7 @@
                             this.showPOI(this.poi)
                             var map = this.get('mapsAPI')
                             if (poi && poi.map) {
-                                map.setCenter(new google.maps.LatLng(poi.map.areaLat, poi.map.areaLong))
+                                map.setCenter(new google.maps.LatLng(poi.map.mapLatitude, poi.map.mapLongitude))
                             }
 
                         }
@@ -191,25 +189,17 @@
                     fillColor: '#FF0000',
                     fillOpacity: 0.35,
                     center: {
-                        lat: item.map.areaLat,
-                        lng: item.map.areaLong,
+                        lat: item.map.mapLatitude,
+                        lng: item.map.mapLongitude,
                     },
                     radius: item.map.areaRadius,
                 })
                 circle.setMap(map);
-                console.log({
-                    latitude: lat,
-                    longitude: long,
-                    areaLat: item.map.areaLat,
-                    areaLong: item.map.areaLong,
-                    radius: item.map.areaRadius,
-                    id: item._id,
-                })
                 this.push('markers', {
                     latitude: lat,
                     longitude: long,
-                    areaLat: item.map.areaLat,
-                    areaLong: item.map.areaLong,
+                    areaLat: item.map.mapLatitude,
+                    areaLong: item.map.mapLongitude,
                     radius: item.map.areaRadius,
                     id: item._id,
                 });

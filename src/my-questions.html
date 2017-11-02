@@ -9,16 +9,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
-
-<link rel="import" href="./element/freetext/generic-question.html">
+<link rel="import" href="./element/helper/next-question.html">
+<link rel="import" href="./element/helper/generic-resource-viewer.html">
 <dom-module id="my-questions">
     <template>
         <style>
-        :host {
+         :host {
             display: block;
             padding: 10px;
         }
-        
+
         .card {
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             padding: 16px;
@@ -27,19 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background-color: #fff;
             color: #757575;
         }
-        
-        .circle {
-            display: inline-block;
-            height: 64px;
-            width: 64px;
-            border-radius: 50%;
-            background: #ddd;
-            line-height: 64px;
-            font-size: 30px;
-            color: #555;
-            text-align: center;
-        }
-        
+
         h1 {
             font-size: 22px;
             margin: 16px 0;
@@ -49,13 +37,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="card">
             <h1>Questions</h1>
             <iron-collapse id="quest1" opened="{{open1}}">
-                <generic-question score="{{question1Score}}" id="question1" question="{{question1}}"></generic-question>
+                <generic-resource-viewer question-over={{question1Over}} resource-type="{{questions.0.type}}" item={{questions.0}} class="resourceViewer"></generic-resource-viewer>
+                <next-question page-name='questions' question-over={{question1Over}} activity-over={{activityOver}}></next-question>
             </iron-collapse>
             <iron-collapse id="quest2" opened="{{open2}}">
-                <generic-question score="{{question2Score}}" id="question2" question="{{question2}}"></generic-question>
+                <generic-resource-viewer question-over={{question2Over}} resource-type="{{questions.1.type}}" item={{questions.1}} class="resourceViewer"></generic-resource-viewer>
+                <next-question question-over={{question2Over}}></next-question>
             </iron-collapse>
             <iron-collapse id="quest3" opened="{{open3}}">
-                <generic-question score="{{question3Score}}" id="question3" question="{{question3}}"></generic-question>
+                <generic-resource-viewer question-over={{question3Over}} resource-type="{{questions.2.type}}" item={{questions.2}} class="resourceViewer"></generic-resource-viewer>
             </iron-collapse>
         </div>
     </template>
@@ -64,94 +54,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         is: 'my-questions',
         ready: function() {
-            this.$.question1.addEventListener('correctAnswer', this.correctQuestion1.bind(this))
-            this.$.question2.addEventListener('correctAnswer', this.correctQuestion2.bind(this))
-            this.$.question3.addEventListener('correctAnswer', this.correctQuestion3.bind(this))
-
-            this.$.question1.addEventListener('nextQuestion', this.setQuestion2.bind(this))
-            this.$.question2.addEventListener('nextQuestion', this.setQuestion3.bind(this))
-            this.$.question3.addEventListener('nextQuestion', this.nextActivity.bind(this))
-            this.open1=true
+            this.open1 = true
+            this.set('activityOver', this.questions.length)
+            this.set('remainingQuestion', this.questions.length)
+            this.addEventListener('next-question', this.nextQuestion.bind(this))
+        },
+        resetQuestions:function(){
 
         },
-        correctQuestion1:function(){
-            if(this.question1Score){
-                this.fire('userScoreChanged', this.question1Score)
+        nextQuestion: function() {
+            this.activityOver = this.activityOver - 1
+            this.set('remainingQuestion', this.remainingQuestion - 1)
+            switch (this.remainingQuestion) {
+                case 2:
+                    this.open1 = false
+                    this.open2 = true
+                    break
+                case 1:
+                    this.open1 = false
+                    this.open2 = false
+                    this.open3 = true
+                    break
+                case 0:
+                    switch (this.questions.length) {
+                        case 1:
+                        this.open1=true
+                        break
+                        case 2:
+                        this.open2=true
+                        break
+                        case 3:
+                        this.open3=true
+                    }
+                    break
+
             }
-        },
-        correctQuestion2:function(){
-            if(this.question2Score){
-                this.fire('userScoreChanged', this.question2Score)
-            }
-        },
-        correctQuestion3:function(){
-            if(this.question3Score){
-                this.fire('userScoreChanged', this.question3Score)
-            }
+
+
         },
 
-        setQuestion2: function() {
-            if (this.question2) {
-                this.$.quest1.toggle()
-                this.$.quest2.toggle() 
-                
-            } else {
-                this.nextActivity()
-            }
-        },
-        setQuestion3: function() {
-            if (this.question3) {
-                this.$.quest2.toggle()
-                this.$.quest3.toggle()
-            } else {
-                this.nextActivity()
-            }
-        },
-        nextActivity: function() {
-            this.open1=true
+        _newQuestionObserver: function(newVal) {
+            this.open1 = true
             this.open2=false
             this.open3=false
-            this.fire('next-called-from-questions')
-        },
-        _question1Observer: function(newVal) {
-            console.log(newVal)
+            this.question1Over=false
+            this.question2Over=false
+            this.question3Over=false
+            this.set('activityOver', this.questions.length)
+            this.set('remainingQuestion', this.questions.length)
         },
         // Not using score fail at the moment because score belows 0 would be weird
-        _scoresObserver:function(newVal){
-            if(newVal.activity1Success)
-            {
-                this.question1Score=newVal.activity1Success
+        _scoresObserver: function(newVal) {
+            if (newVal.activity1Success) {
+                this.question1Score = newVal.activity1Success
             }
-            if(newVal.activity2Success)
-            {
-                this.question2Score=newVal.activity2Success
+            if (newVal.activity2Success) {
+                this.question2Score = newVal.activity2Success
             }
-            if(newVal.activity3Success)
-            {
-                this.question3Score=newVal.activity3Success
+            if (newVal.activity3Success) {
+                this.question3Score = newVal.activity3Success
             }
 
         },
         properties: {
-            question1: {
+            questions: {
+                type: Array,
+                notify: true,
+                observer:'_newQuestionObserver',
+            },
+            name: {
+                type: String,
+                notify: true,
+            },
+            scores: {
                 type: Object,
                 notify: true,
-                observer: '_question1Observer'
-            },
-            question2: {
-                type: Object,
-                notify: true,
-                observer: '_question1Observer'
-            },
-            question3: {
-                type: Object,
-                notify: true,
-                observer: '_question1Observer',
-            },
-            scores:{
-                type:Object,
-                notify:true,
-                observer:'_scoresObserver'
             }
 
 

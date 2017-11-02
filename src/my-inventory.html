@@ -3,8 +3,7 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="./element/inventory-view/inventory-item.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="./element/viewers/inventory-element.html">
 <dom-module id="my-inventory">
     <template>
         <style type="text/css">
@@ -21,16 +20,11 @@
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
-        <firebase-query path="/lobby/{{mlgid}}/{{roomkey}}/items" data="{{userItems}}"></firebase-query>
-        <app-indexeddb-mirror key="profileData"  data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+        <firebase-query path="/users/{{user.uid}}/inventory" data="{{inventoryItems}}"></firebase-query>
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
-                <template is="dom-if" if={{_void(items)}}>
-                    <div>Vous n'avez aucun item d'inventaire pour le momemt, finissez quelques jeux!</div>
-                </template>
-                <template is="dom-repeat" items="{{itemIdTab}}">
-                    <inventory-item item-id="{{item}}"></inventory-item>
+                <template is="dom-repeat" items="{{inventoryItems}}">
+                    <inventory-element media="[[item.media]]" item-text="[[item.itemText]]" inventory-doc="[[item.inventoryDoc]]"></inventory-element>
                 </template>
             </div>
             <div class="card-actions">

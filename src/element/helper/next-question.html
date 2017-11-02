@@ -1,0 +1,51 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<dom-module id="next-question">
+    <template>
+        <style include="common-styles">
+
+        </style>
+        <iron-collapse opened="{{questionOver}}">
+            <paper-button raised on-click="nextQuestion">Next question</paper-button>
+        </iron-collapse>
+
+        <iron-collapse opened="{{!activityOver}}">
+            <paper-button raised on-click="nextPage">Next Page</paper-button>
+        </iron-collapse>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'next-question',
+
+        ready: function() {
+
+        },
+        nextQuestion:function(){
+            this.fire('next-question')
+        },
+
+        nextPage:function(){
+            this.fire('next-page', {source:this.pageName})
+        },
+        properties: {
+            pageName: {
+                type: String,
+                notify: true,
+            },
+            questionOver:{
+                type:Boolean,
+                notify:true,
+                value:false,
+            },
+            activityOver: {
+                type: Number,
+                notify: true,
+            },
+        }
+    })
+})();
+</script>

@@ -1,0 +1,90 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<link rel="import" href="./staticmedia-viewer.html">
+<dom-module id="inventory-element">
+    <template>
+        <style type="text/css">
+        .image {
+            width: 150px;
+            height: 150px;
+        }
+    .inventoryViewer img{
+        width:200px;
+    }
+
+        img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
+
+        .headerText {
+            padding-left: 10px;
+            display: inline-flex;
+            align-self: center;
+        }
+
+        .resourceReadwrite {
+            display: inline-flex;
+            flex-direction: row;
+            justify-content: space-between;
+            background-color: lightgreen;
+            width: 100%;
+        }
+
+        .inventory {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height:300px;
+            margin:10px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+        </style>
+        <div class="inventory">
+            <staticmedia-viewer inventory on-click="showDoc" default-mkdown="[[defaultMkdown]]" style="display:inline-flex;" mkdown="[[media.mkdown]]"></staticmedia-viewer>
+            <div>{{itemText}}</div>
+        </div>
+        <paper-dialog id="inventoryDoc">
+            <paper-dialog-scrollable>
+            <staticmedia-viewer viewer-style="" style="display:inline-flex;" mkdown="[[inventoryDoc.mkdown]]"></staticmedia-viewer>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>OK</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+</dom-module>
+<script>
+(function() {
+    'use strict';
+    Polymer({
+        is: 'inventory-element',
+
+
+        ready: function() {
+            this.defaultMkdown = "<img style='width:150px;height:150px' src='../../src/element/image/carrot.png'>"
+
+        },
+        showDoc:function(){
+            this.$.inventoryDoc.open()
+        },
+        properties: {
+            media: {
+                type: Object,
+                notify: true,
+            },
+            itemText: {
+                type: String,
+                notify: true,
+            },
+            inventoryDoc: {
+                type: Object,
+                notify: true,
+            },
+        }
+    })
+})();
+</script>
