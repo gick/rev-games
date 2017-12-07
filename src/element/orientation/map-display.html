@@ -174,7 +174,7 @@
                 return -1
             },
             addMarker: function(item) {
-                if (!item) {
+                if (item.value==null) {
                     return
                 }
                 this.removeMarker()
