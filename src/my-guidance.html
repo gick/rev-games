@@ -40,7 +40,7 @@
             color: #212121;
         }
         </style>
-            <paper-button raised on-click="nextActivity">Next</paper-button>
+        <paper-button raised on-click="nextActivity">Next</paper-button>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
@@ -82,13 +82,13 @@
 
         ready: function() {
             this.$.gmapi.addEventListener('api-load', this.mapready.bind(this));
-            this.set('mapready',false)
+            this.set('mapready', false)
 
             this.$.loc.addEventListener('geo-response',
                 this.updateCoord.bind(this));
         },
-        mapready:function(){
-            this.set('mapready',true)
+        mapready: function() {
+            this.set('mapready', true)
         },
         resetMap: function() {
             if (this.$$('#map') && this.$$('#map').removeAllMarkers) {
@@ -115,7 +115,7 @@
             this.set('ismap', true)
         },
         updateCoord: function(e) {
-            if(!this.mapready){
+            if (!this.mapready) {
                 return
             }
             if (this.poi) {
@@ -160,12 +160,13 @@
 
         nextActivity: function() {
             this.open = false;
-            this.fire('next-page', {source:'guidance'});
+            this.fire('next-page', { source: 'guidance' });
             this.initialHeadingDistance = null;
         },
 
         poiSet: function(poi) {
-            this.poi=poi
+            if (this.mapready)
+                this.poi = poi
             // body...
         },
         _allowPass: function(elem) {
