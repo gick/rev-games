@@ -44,7 +44,7 @@
             },
             poiObserver(poi) {
 
-                if (this.markers && this.markers.length >= 0 && poi) {
+                if (this.googleLoaded && this.markers && this.markers.length >= 0 && poi) {
                     if (this.markers.length == 0) {
                         this.removeAllMarkers()
                         this.showPOI(this.poi)
@@ -56,7 +56,7 @@
                         }
 
                     } else {
-                        if (this.markers[0].areaLat != this.poi.map.areaLat) {
+                        if (this.googleLoaded && this.markers[0].areaLat != this.poi.map.areaLat) {
                             this.removeAllMarkers()
                             this.showPOI(this.poi)
                             var map = this.get('mapsAPI')
@@ -70,6 +70,7 @@
                 }
             },
             mapready: function() {
+                this.googleLoaded=true
                 if (this.poi)
                     this.showPOI(this.poi)
 
