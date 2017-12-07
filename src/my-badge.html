@@ -4,8 +4,7 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="./element/auth-manager/badgeElement.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="./element/viewers/badge-element.html">
 
 <dom-module id="my-badge">
     <template>
@@ -25,16 +24,11 @@
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-query path="/users/{{user.uid}}/badges" data="{{userBadges}}"></firebase-query>
-        <firebase-document path="/users/{{user.uid}}" data={{userData}}></firebase-document>
 
-        <app-indexeddb-mirror key="profileData" data={{userData}} persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <paper-card heading="Badges" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
-                <template is="dom-if" if={{_void(items)}}>
-                    <div>Vous n'avez aucun badges pour le moment essayez d'en gagner en jouant!</div>
-                </template>
-                <template is="dom-repeat" items="{{badgeIdTab}}" as='badge'>
-                        <user-badge badge-id="{{badge}}"></user-badge>
+                <template is="dom-repeat" items="{{userBadges}}">
+                        <badge-element badge-text="[[item.badgeText]]" media="[[item.media]]"></badge-element>
                 </template>
             </div>
             <div class="card-actions">
@@ -57,28 +51,12 @@
             }
         },
 
-        getBadges: function() {
-            if (this.badgeIdTab) {
-                this.splice('badgeIdTab', 0, this.badgeIdTab.length)
-            }
-            for (var i = 0; i < this.userBadges.length; i++) {
-                this.push('badgeIdTab', this.userBadges[i].$key)
-            }1
-            console.log(this.badgeIdTab)
-        },
 
         properties: {
 
-          badgeIdTab: {
-            type: Array,
-            value: []
-          },
 
         },
 
-        observers: [
-            'getBadges(userBadges.*)'
-        ]
     })
 })();
 </script>

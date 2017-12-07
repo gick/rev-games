@@ -149,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <!--<template is="dom-if" if="{{inventory}}">-->
                     <a name="badge" href="/#badge">Badge</a>
-                    <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span><paper-badge for="test" label="{{badgeNumber}}" hidden="{{showBadge}}"></paper-badge></a>
+                    <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span></a>
                     <!--</template>-->
                     <a name="activity" href="/#activity">Activity</a>
                     <a name="lobbyselection" href="/#lobbyselection">Lobby</a>
@@ -222,6 +222,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if(currentPage=='feedback'){
                 if(this.lastUnitGame){
+                    if(this.badge){
+                        this.page='badge'
+                        this.$.userManager.addBadge(this.badge)
+                        return
+                    }
                     this.page='activity'
                     return
                 } else {
@@ -262,8 +267,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 })
         },
         resetActivity: function() {
-
-
+            this.set('currentMLG',null)
+            this.set('badge',null)
         },
 
         resetUnitGame:function(){
@@ -293,6 +298,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.currentMLG.startpage) {
                 this.set('startpage', this.currentMLG.startpage)
                 this.push('pageList', 'instructions')
+            }
+            if(this.currentMLG.badge){
+                this.badge=this.currentMLG.badge
             }
             this.totalUnitGames=this.currentMLG.unitGames.length
             this.setupUnitGame(this.unitGamesIndex)
