@@ -179,8 +179,8 @@
                 }
                 this.removeMarker()
                 var map = this.get('mapsAPI')
-                var lat = item.latitude;
-                var long = item.longitude;
+                var lat = item.value.latitude;
+                var long = item.value.longitude;
                 var circle = new google.maps.Circle({
                     strokeColor: '#FF0000',
                     id: item._id,
@@ -189,18 +189,18 @@
                     fillColor: '#FF0000',
                     fillOpacity: 0.35,
                     center: {
-                        lat: item.map.mapLatitude,
-                        lng: item.map.mapLongitude,
+                        lat: item.value.map.mapLatitude,
+                        lng: item.value.map.mapLongitude,
                     },
-                    radius: item.map.areaRadius,
+                    radius: item.value.map.areaRadius,
                 })
                 circle.setMap(map);
                 this.push('markers', {
                     latitude: lat,
                     longitude: long,
-                    areaLat: item.map.mapLatitude,
-                    areaLong: item.map.mapLongitude,
-                    radius: item.map.areaRadius,
+                    areaLat: item.value.map.mapLatitude,
+                    areaLong: item.value.map.mapLongitude,
+                    radius: item.value.map.areaRadius,
                     id: item._id,
                 });
                 this.push('circles', circle);
