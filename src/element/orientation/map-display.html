@@ -43,7 +43,7 @@
                 this.userCoord = null;
             },
             poiObserver(poi) {
-
+                console.log('poi')
                 if (this.googleLoaded && this.markers && this.markers.length >= 0 && poi) {
                     if (this.markers.length == 0) {
                         this.removeAllMarkers()
