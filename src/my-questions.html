@@ -42,10 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </iron-collapse>
             <iron-collapse id="quest2" opened="{{open2}}">
                 <generic-resource-viewer question-over={{question2Over}} resource-type="{{questions.1.type}}" item={{questions.1}} class="resourceViewer"></generic-resource-viewer>
-                <next-question question-over={{question2Over}}></next-question>
+                <next-question page-name='questions'  question-over={{question2Over}} activity-over={{activityOver}}></next-question>
             </iron-collapse>
             <iron-collapse id="quest3" opened="{{open3}}">
                 <generic-resource-viewer question-over={{question3Over}} resource-type="{{questions.2.type}}" item={{questions.2}} class="resourceViewer"></generic-resource-viewer>
+                <next-question page-name='questions'  question-over={{question3Over}} activity-over={{activityOver}}></next-question>
+
             </iron-collapse>
         </div>
     </template>
@@ -72,8 +74,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break
                 case 1:
                     this.open1 = false
-                    this.open2 = false
-                    this.open3 = true
+                    this.open2 = true
+                    this.open3 = false
                     break
                 case 0:
                     switch (this.questions.length) {

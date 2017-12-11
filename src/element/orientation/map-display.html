@@ -70,7 +70,7 @@
                 }
             },
             mapready: function() {
-                this.googleLoaded=true
+                this.googleLoaded = true
                 if (this.poi)
                     this.showPOI(this.poi)
 
@@ -175,16 +175,16 @@
                 return -1
             },
             addMarker: function(item) {
-                if(item==null){
+                if (item == null) {
                     return
                 }
-                if (item.value==null) {
+                if (item.map == null) {
                     return
                 }
                 this.removeMarker()
                 var map = this.get('mapsAPI')
-                var lat = item.value.latitude;
-                var long = item.value.longitude;
+                var lat = item.latitude;
+                var long = item.longitude;
                 var circle = new google.maps.Circle({
                     strokeColor: '#FF0000',
                     id: item._id,
@@ -193,18 +193,18 @@
                     fillColor: '#FF0000',
                     fillOpacity: 0.35,
                     center: {
-                        lat: item.value.map.mapLatitude,
-                        lng: item.value.map.mapLongitude,
+                        lat: item.map.mapLatitude,
+                        lng: item.map.mapLongitude,
                     },
-                    radius: item.value.map.areaRadius,
+                    radius: item.map.areaRadius,
                 })
                 circle.setMap(map);
                 this.push('markers', {
                     latitude: lat,
                     longitude: long,
-                    areaLat: item.value.map.mapLatitude,
-                    areaLong: item.value.map.mapLongitude,
-                    radius: item.value.map.areaRadius,
+                    areaLat: item.map.mapLatitude,
+                    areaLong: item.map.mapLongitude,
+                    radius: item.map.areaRadius,
                     id: item._id,
                 });
                 this.push('circles', circle);

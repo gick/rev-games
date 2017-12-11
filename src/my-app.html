@@ -220,17 +220,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.inventaireToast.show()
                 this.$.userManager.addInventoryItem(this.inventoryItem)
             }
-            if(currentPage=='feedback'){
-                if(this.lastUnitGame){
-                    if(this.badge){
-                        this.page='badge'
+            if (currentPage == 'feedback') {
+                if (this.lastUnitGame) {
+                    if (this.badge) {
+                        this.page = 'badge'
                         this.$.userManager.addBadge(this.badge)
                         return
                     }
-                    this.page='activity'
+                    this.page = 'activity'
                     return
                 } else {
-                    this.unitGamesIndex=this.unitGamesIndex+1;
+                    this.unitGamesIndex = this.unitGamesIndex + 1;
                     this.resetUnitGame()
                     this.setupUnitGame(this.unitGamesIndex)
                     return
@@ -267,12 +267,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 })
         },
         resetActivity: function() {
-            this.set('currentMLG',null)
-            this.set('badge',null)
+            this.set('currentMLG', null)
+            this.set('badge', null)
         },
 
-        resetUnitGame:function(){
-            this.splice('pageList',0,this.pageList.length)
+        resetUnitGame: function() {
+            this.splice('pageList', 0, this.pageList.length)
             this.restartPOIMap()
 
         },
@@ -288,7 +288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         setupActivity: function(elem) {
-            this.unitGamesIndex=0
+            this.unitGamesIndex = 0
             this.pageList = []
             this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
             firebase.database().ref('users/' + this.user.uid + '/').update({
@@ -299,15 +299,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.set('startpage', this.currentMLG.startpage)
                 this.push('pageList', 'instructions')
             }
-            if(this.currentMLG.badge){
-                this.badge=this.currentMLG.badge
+            if (this.currentMLG.badge) {
+                this.badge = this.currentMLG.badge
             }
-            this.totalUnitGames=this.currentMLG.unitGames.length
+            this.totalUnitGames = this.currentMLG.unitGames.length
             this.setupUnitGame(this.unitGamesIndex)
         },
         setupUnitGame: function(index) {
-            if(index==this.totalUnitGames-1){
-                this.lastUnitGame=true
+            this.set('questions', [])
+            if (index == this.totalUnitGames - 1) {
+                this.lastUnitGame = true
             }
             this.currentUnitGame = this.currentMLG.unitGames[index]
             if (this.currentUnitGame.startMedia) {
@@ -322,14 +323,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.inventoryItem = this.currentUnitGame.inventoryItem
                 this.set('inventoryPage', this.currentUnitGame.inventoryPage)
             }
+            //TODO Add free text activities
+            /*   if (this.currentUnitGame.freetextActivities) {
+                   this.freetextActivities = this.currentUnitGame.mcqActivities
+                   this.questions = this.mcqActivities
+                   this.push('pageList', 'questions')
+               }*/
 
 
-            if (this.currentUnitGame.mcqActivities) {
+            if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
                 this.mcqActivities = this.currentUnitGame.mcqActivities
-                this.questions = this.mcqActivities
+                this.freetextActivities = this.currentUnitGame.freetextActivities
+                for (var i = 0; i < this.freetextActivities.length; i++) {
+                    this.push('questions', this.freetextActivities[i])
+                }
+
+                for (var i = 0; i < this.mcqActivities.length; i++) {
+                    this.push('questions', this.mcqActivities[i])
+                }
+
                 this.push('pageList', 'questions')
             }
-
             if (this.currentUnitGame.feedbackMedia) {
                 this.feedbackMedia = this.currentUnitGame.feedbackMedia
             }
@@ -474,26 +488,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         _pageChanged: function(page) {
-          /*  if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
-                firebase.database().ref('users/' + this.user.uid + '/page/').set({
-                    page: page,
-                });
+            /*  if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
+                  firebase.database().ref('users/' + this.user.uid + '/page/').set({
+                      page: page,
+                  });
 
-            }
+              }
 
 
-            if (this.page == 'activity') {
-                if (this.user && this.user.uid) {
-                    firebase.database().ref('users/' + this.user.uid).update({
-                        currentMLG: null,
-                        hasChatSession: null,
-                        hasMapSession: null,
-                    });
-                    firebase.database().ref('users/' + this.user.uid + '/').update({
-                        'newInventoryItem': false
-                    })
-                }
-            }*/
+              if (this.page == 'activity') {
+                  if (this.user && this.user.uid) {
+                      firebase.database().ref('users/' + this.user.uid).update({
+                          currentMLG: null,
+                          hasChatSession: null,
+                          hasMapSession: null,
+                      });
+                      firebase.database().ref('users/' + this.user.uid + '/').update({
+                          'newInventoryItem': false
+                      })
+                  }
+              }*/
             // load page import on demand.
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);

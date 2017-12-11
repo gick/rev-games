@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.$.wrong.show();
                     this.$.correct.hide();
                 }
-                this.set('question-over',true)
+                this.fire('question-over')
 
             },
             observers: [
