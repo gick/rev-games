@@ -205,6 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'my-app',
         ready: function() {
 
+                this.set('questions',[])
 
 
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
@@ -306,7 +307,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.setupUnitGame(this.unitGamesIndex)
         },
         setupUnitGame: function(index) {
-            this.set('questions', [])
             if (index == this.totalUnitGames - 1) {
                 this.lastUnitGame = true
             }
@@ -323,15 +323,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.inventoryItem = this.currentUnitGame.inventoryItem
                 this.set('inventoryPage', this.currentUnitGame.inventoryPage)
             }
-            //TODO Add free text activities
-            /*   if (this.currentUnitGame.freetextActivities) {
-                   this.freetextActivities = this.currentUnitGame.mcqActivities
-                   this.questions = this.mcqActivities
-                   this.push('pageList', 'questions')
-               }*/
-
 
             if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
+                if(this.questions.length>0){
+                    this.splice('questions',0,this.questions.length)
+                }
+
                 this.mcqActivities = this.currentUnitGame.mcqActivities
                 this.freetextActivities = this.currentUnitGame.freetextActivities
                 for (var i = 0; i < this.freetextActivities.length; i++) {
@@ -341,7 +338,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 for (var i = 0; i < this.mcqActivities.length; i++) {
                     this.push('questions', this.mcqActivities[i])
                 }
-
                 this.push('pageList', 'questions')
             }
             if (this.currentUnitGame.feedbackMedia) {

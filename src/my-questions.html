@@ -36,74 +36,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <div class="card">
             <h1>Questions</h1>
-            <iron-collapse id="quest1" opened="{{open1}}">
-                <generic-resource-viewer question-over={{question1Over}} resource-type="{{questions.0.type}}" item={{questions.0}} class="resourceViewer"></generic-resource-viewer>
-                <next-question page-name='questions' question-over={{question1Over}} activity-over={{activityOver}}></next-question>
-            </iron-collapse>
-            <iron-collapse id="quest2" opened="{{open2}}">
-                <generic-resource-viewer question-over={{question2Over}} resource-type="{{questions.1.type}}" item={{questions.1}} class="resourceViewer"></generic-resource-viewer>
-                <next-question page-name='questions'  question-over={{question2Over}} activity-over={{activityOver}}></next-question>
-            </iron-collapse>
-            <iron-collapse id="quest3" opened="{{open3}}">
-                <generic-resource-viewer question-over={{question3Over}} resource-type="{{questions.2.type}}" item={{questions.2}} class="resourceViewer"></generic-resource-viewer>
-                <next-question page-name='questions'  question-over={{question3Over}} activity-over={{activityOver}}></next-question>
-
-            </iron-collapse>
+            <template is="dom-repeat" items="{{questions}}">
+                <generic-resource-viewer question-over="{{item.questionOver}}" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
+                <template is=dom-if if="[[checkLast(item.questionOver,index)]]" restamp>
+                    <paper-button raised on-click="nextPage">Next Page</paper-button>
+                </template>
+            </template>
         </div>
     </template>
     <script>
     Polymer({
 
         is: 'my-questions',
-        ready: function() {
-            this.open1 = true
-            this.set('activityOver', this.questions.length)
-            this.set('remainingQuestion', this.questions.length)
-            this.addEventListener('next-question', this.nextQuestion.bind(this))
-        },
-        resetQuestions:function(){
+        ready: function() {},
+        resetQuestions: function() {
 
         },
-        nextQuestion: function() {
-            this.activityOver = this.activityOver - 1
-            this.set('remainingQuestion', this.remainingQuestion - 1)
-            switch (this.remainingQuestion) {
-                case 2:
-                    this.open1 = false
-                    this.open2 = true
-                    break
-                case 1:
-                    this.open1 = false
-                    this.open2 = true
-                    this.open3 = false
-                    break
-                case 0:
-                    switch (this.questions.length) {
-                        case 1:
-                        this.open1=true
-                        break
-                        case 2:
-                        this.open2=true
-                        break
-                        case 3:
-                        this.open3=true
-                    }
-                    break
-
-            }
-
-
+        checkLast:function(questionOver,index){
+            console.log(questionOver)
+            console.log(index)
+            return (questionOver && (index==this.questions.length -1))
         },
 
-        _newQuestionObserver: function(newVal) {
-            this.open1 = true
-            this.open2=false
-            this.open3=false
-            this.question1Over=false
-            this.question2Over=false
-            this.question3Over=false
-            this.set('activityOver', this.questions.length)
-            this.set('remainingQuestion', this.questions.length)
+        nextPage:function(){
+            this.fire('next-page',{source:'questions'})
         },
         // Not using score fail at the moment because score belows 0 would be weird
         _scoresObserver: function(newVal) {
@@ -122,7 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             questions: {
                 type: Array,
                 notify: true,
-                observer:'_newQuestionObserver',
             },
             name: {
                 type: String,

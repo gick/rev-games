@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.$.wrong.show();
                     this.$.correct.hide();
                 }
-                this.fire('question-over')
+                this.set('questionOver',true)
 
             },
             observers: [
@@ -100,6 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             properties: {
                 questionOver: {
                     type: Boolean,
+                    notify:true,
                     reflectToAttribute: true,
                 },
                 question: {

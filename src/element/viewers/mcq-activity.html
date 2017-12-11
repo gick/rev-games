@@ -105,7 +105,7 @@
                     this.$.wrong.show();
                     this.$.correct.hide();
                 }
-                this.fire('question-over')
+                this.set('questionOver',true)
             },
             _mediaObserver: function(newval) {
                 if (newval) {
@@ -131,6 +131,11 @@
             ],
 
             properties: {
+                questionOver:{
+                    type:Boolean,
+                    notify:true,
+                    reflectToAttribute:true,
+                },
                 question: {
                     type: String,
                     notify: true,
