@@ -205,7 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'my-app',
         ready: function() {
 
-                this.set('questions',[])
+            this.set('questions', [])
 
 
             this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
@@ -321,12 +321,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (this.currentUnitGame.inventoryItem) {
                 this.inventoryItem = this.currentUnitGame.inventoryItem
-                this.set('inventoryPage', this.currentUnitGame.inventoryPage)
+                if (typeof this.currentUnitGame.inventoryPage == "string") {
+                    this.set('inventoryPage', this.currentUnitGame.inventoryPage)
+                } else {
+                    this.set('inventoryPage',this.currentUnitGame.inventoryPage[1])
+                }
             }
 
             if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
-                if(this.questions.length>0){
-                    this.splice('questions',0,this.questions.length)
+                if (this.questions.length > 0) {
+                    this.splice('questions', 0, this.questions.length)
                 }
 
                 this.mcqActivities = this.currentUnitGame.mcqActivities
@@ -338,10 +342,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 for (var i = 0; i < this.mcqActivities.length; i++) {
                     this.push('questions', this.mcqActivities[i])
                 }
-                this.push('pageList', 'questions')
+                if (this.questions.length > 0)
+                    this.push('pageList', 'questions')
             }
             if (this.currentUnitGame.feedbackMedia) {
-                this.feedbackMedia = this.currentUnitGame.feedbackMedia
+                    this.feedbackMedia = this.currentUnitGame.feedbackMedia
+
             }
             this.push('pageList', 'feedback')
 
