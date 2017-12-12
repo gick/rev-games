@@ -21,6 +21,8 @@
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-query path="/users/{{user.uid}}/inventory" data="{{inventoryItems}}"></firebase-query>
+        <firebase-query path="/users/{{user.uid}}/page" data="{{page}}"></firebase-query>
+
         <paper-card heading="Inventaire" image="" elevation="1" animated-shadow="false">
             <div class="card-content" style='display:inline-flex;flex-wrap: wrap;'>
                 <template is="dom-repeat" items="{{inventoryItems}}">
@@ -40,8 +42,8 @@
         is: 'my-inventory',
 
         back: function() {
-            if (this.persistedData && this.persistedData.page && this.persistedData.page.page) {
-                this.set('route.path', this.persistedData.page.page)
+            if (this.page) {
+                this.set('route.path', this.page[0].$val)
             } else {
                 this.set('route.path', 'profile')
 

@@ -133,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
         <app-header reveals>
             <app-toolbar>
-                <div main-title>REVERIES {{allowPass}}</div>
+                <div main-title>REVERIES</div>
                 <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
                 <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
                     <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
@@ -142,15 +142,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
         <quick-link id='quickLink'></quick-link>
         <setup-competition game-id={{mlgId}} id='setupCompetition'></setup-competition>
-        <app-drawer-layout fullbleed>
-            <!-- Drawer content -->
+        <!--<app-drawer-layout fullbleed>
             <app-drawer id="drawer">
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                    <!--<template is="dom-if" if="{{inventory}}">-->
                     <a name="badge" href="/#badge">Badge</a>
                     <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span></a>
-                    <!--</template>-->
                     <a name="activity" href="/#activity">Activity</a>
                     <a name="lobbyselection" href="/#lobbyselection">Lobby</a>
                     <a name="lobby" href="/#lobby">Lobby</a>
@@ -173,7 +170,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <a name="questions" href="/#questions">Questions</a>
                     </template>
                 </iron-selector>
-            </app-drawer>
+            </app-drawer>-->
             <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
                 <my-chatroom name="chatroom"></my-chatroom>
                 <my-admin allow-pass='{{allowPass}}' name="admin"></my-admin>
@@ -275,6 +272,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         resetUnitGame: function() {
             this.splice('pageList', 0, this.pageList.length)
             this.restartPOIMap()
+            this.startMedia=null
+            this.feedbackMedia=null
+            this.startPage=null
 
         },
         authChanged: function(status) {
@@ -486,7 +486,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         _pageChanged: function(page) {
-            /*  if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
+              if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
                   firebase.database().ref('users/' + this.user.uid + '/page/').set({
                       page: page,
                   });
@@ -505,7 +505,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           'newInventoryItem': false
                       })
                   }
-              }*/
+              }
             // load page import on demand.
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);
