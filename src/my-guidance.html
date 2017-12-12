@@ -147,6 +147,9 @@
         },
 
         userReachpoi: function(newDistance) {
+            if(newDistance==0){
+                return
+            }
             if (this.poi) {
                 if (newDistance <= this.poi.map.areaRadius) {
                     this.$.userAtpoi.open()
