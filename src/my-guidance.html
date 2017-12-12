@@ -90,11 +90,8 @@
         mapready:function(){
             this.set('mapready',true)
         },
-        resetMap: function() {
-            if (this.$$('#map') && this.$$('#map').removeAllMarkers) {
-                this.$$('#map').removeAllMarkers()
-                this.set('poi', null)
-            }
+        setPOI: function() {
+            this.$$('#map').showPOI(this.poi)
         },
 
         _hasInstruction: function() {
@@ -124,7 +121,7 @@
                     lng: e.detail.longitude
                 }
                 var _userCoord = new google.maps.LatLng(e.detail.latitude, e.detail.longitude)
-                var _poiCoord = new google.maps.LatLng(this.poi.map.mapLatitude, this.poi.map.mapLongitude)
+                var _poiCoord = new google.maps.LatLng(this.poi.latitude, this.poi.longitude)
                 this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _poiCoord)
                 console.log(this.headingDistance)
                 if (this.initialHeadingDistance == null) {

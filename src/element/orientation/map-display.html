@@ -15,14 +15,10 @@
         </style>
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
-        </firebase-document>
-        <firebase-query id="query" path="/mapSession/{{userData.hasMapSession}}" data="{{data}}">
-        </firebase-query>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-map disable-street-view-control style="display:block;height:500px;width:100%;" zoom=15 api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" map={{mapsAPI}} id="gmap" latitude={{lat}} longitude={{long}}>
             <template is="dom-repeat" items={{markers}} as="marker">
-                <google-map-marker drag-events title="Destination" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.areaLat]]" longitude="[[marker.areaLong]]"></google-map-marker>
+                <google-map-marker drag-events title="Destination" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.latitude]]" longitude="[[marker.longitude]]"></google-map-marker>
             </template>
             <template is="dom-repeat" items={{data}}>
                 <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
@@ -41,33 +37,6 @@
                 this.circles = [];
                 this.$.gmap.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.userCoord = null;
-            },
-            poiObserver(poi) {
-                console.log('poi')
-                if (this.googleLoaded && this.markers && this.markers.length >= 0 && poi) {
-                    if (this.markers.length == 0) {
-                        this.removeAllMarkers()
-                        this.showPOI(this.poi)
-
-
-                        var map = this.get('mapsAPI')
-                        if (poi && poi.map) {
-                            map.setCenter(new google.maps.LatLng(poi.map.mapLatitude, poi.map.mapLongitude))
-                        }
-
-                    } else {
-                        if (this.googleLoaded && this.markers[0].areaLat != this.poi.map.areaLat) {
-                            this.removeAllMarkers()
-                            this.showPOI(this.poi)
-                            var map = this.get('mapsAPI')
-                            if (poi && poi.map) {
-                                map.setCenter(new google.maps.LatLng(poi.map.mapLatitude, poi.map.mapLongitude))
-                            }
-
-                        }
-                    }
-
-                }
             },
             mapready: function() {
                 this.googleLoaded = true
@@ -114,19 +83,10 @@
                 google.maps.event.trigger(map, 'resize');
                 this.set('userCoord', coord);
                 this.set('hasCoord', true);
-                if (this.userData.hasMapSession) { //case multiplayer
-                    this.set('isSolo', false)
-                    var ref = firebase.database().ref('mapSession/' + this.userData.hasMapSession + '/' + this.user.uid + '/').set({
-                        latitude: coord.lat,
-                        longitude: coord.lng,
-                        name: this.userData.username,
-                    })
-                } else {
-                    this.set('isSolo', true)
-                    this.set('latitude', coord.lat)
-                    this.set('longitude', coord.lng)
+                this.set('isSolo', true)
+                this.set('latitude', coord.lat)
+                this.set('longitude', coord.lng)
 
-                }
 
             },
 
@@ -181,7 +141,7 @@
                 if (item.map == null) {
                     return
                 }
-                this.removeMarker()
+                this.removeAllMarkers()
                 var map = this.get('mapsAPI')
                 var lat = item.latitude;
                 var long = item.longitude;
@@ -193,8 +153,8 @@
                     fillColor: '#FF0000',
                     fillOpacity: 0.35,
                     center: {
-                        lat: item.map.mapLatitude,
-                        lng: item.map.mapLongitude,
+                        lat: lat,
+                        lng: long,
                     },
                     radius: item.map.areaRadius,
                 })
@@ -209,16 +169,10 @@
                 });
                 this.push('circles', circle);
 
-                var imageBounds = {
-                        north: 48.08688243445837,
-                        south: 48.084934794118055,
-                        east: -0.7553060352802277,
-                        west: -0.7604934275150299
-                    },
+                console.log(this.markers)
+                console.log(this.circles)
 
-                    mapOverlay = new google.maps.GroundOverlay('http://i.imgur.com/tMcvllZ.png', imageBounds);
                 var map = this.get('mapsAPI')
-                mapOverlay.setMap(map);
                 google.maps.event.trigger(map, 'resize');
             },
             _getMarkeIndexById: function(id) {
@@ -254,7 +208,7 @@
                 }
                 this.splice('circles', 0, circles.length)
             },
-            observers: ['newData(userData.*,user.*,data.*)', 'poiObserver(poi.*)', 'dataUpdate(data.*)'],
+            observers: ['newData(userData.*,user.*,data.*)', 'dataUpdate(data.*)'],
 
             properties: {
                 hasCoord: {

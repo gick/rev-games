@@ -171,28 +171,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                 </iron-selector>
             </app-drawer>-->
-            <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
-                <my-chatroom name="chatroom"></my-chatroom>
-                <my-admin allow-pass='{{allowPass}}' name="admin"></my-admin>
-                <my-register name="register"></my-register>
-                <my-profile name="profile"></my-profile>
-                <my-login id='loginForm' name='login'></my-login>
-                <my-badge id="badge" name="badge"></my-badge>
-                <my-scores id="scores" name="scores"></my-scores>
-                <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
-                <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
-                <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
-                <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
-                <my-instructions id="instructions" media="{{startpage}}" name="instructions"></my-instructions>
-                <my-uginstructions start-media=[[startMedia]] id="uginstructions" name="uginstructions"></my-uginstructions>
-                <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-                <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
-                <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
-                <my-qrcodescanner allow-pass={{allowPass}} poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
-                <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
-                <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
-            </neon-animated-pages>
-            </app-header-layout>
+        <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
+            <my-chatroom name="chatroom"></my-chatroom>
+            <my-admin allow-pass='{{allowPass}}' name="admin"></my-admin>
+            <my-register name="register"></my-register>
+            <my-profile name="profile"></my-profile>
+            <my-login id='loginForm' name='login'></my-login>
+            <my-badge id="badge" name="badge"></my-badge>
+            <my-scores id="scores" name="scores"></my-scores>
+            <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
+            <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+            <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
+            <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
+            <my-instructions id="instructions" media="{{startpage}}" name="instructions"></my-instructions>
+            <my-uginstructions start-media=[[startMedia]] id="uginstructions" name="uginstructions"></my-uginstructions>
+            <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
+            <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
+            <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
+            <my-qrcodescanner allow-pass={{allowPass}} poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+            <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
+            <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
+        </neon-animated-pages>
+        </app-header-layout>
         </app-drawer-layout>
         <paper-toast id="inventaireToast" text="Vous avez gagné un nouvel item d'inventaire !"></paper-toast>
     </template>
@@ -271,10 +271,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         resetUnitGame: function() {
             this.splice('pageList', 0, this.pageList.length)
-            this.restartPOIMap()
-            this.startMedia=null
-            this.feedbackMedia=null
-            this.startPage=null
+            this.startMedia = null
+            this.feedbackMedia = null
+            this.startPage = null
 
         },
         authChanged: function(status) {
@@ -318,6 +317,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.currentUnitGame.POI) {
                 this.POI = this.currentUnitGame.POI
                 this.push('pageList', 'guidance')
+                if (this.$$('#map') && this.$$('#map').setPOI) {
+                    this.$$('#map').setPOI()
+                }
+
             }
             if (this.currentUnitGame.inventoryItem) {
                 this.inventoryItem = this.currentUnitGame.inventoryItem
@@ -486,26 +489,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         _pageChanged: function(page) {
-              if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
-                  firebase.database().ref('users/' + this.user.uid + '/page/').set({
-                      page: page,
-                  });
+            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
+                firebase.database().ref('users/' + this.user.uid + '/page/').set({
+                    page: page,
+                });
 
-              }
+            }
 
 
-              if (this.page == 'activity') {
-                  if (this.user && this.user.uid) {
-                      firebase.database().ref('users/' + this.user.uid).update({
-                          currentMLG: null,
-                          hasChatSession: null,
-                          hasMapSession: null,
-                      });
-                      firebase.database().ref('users/' + this.user.uid + '/').update({
-                          'newInventoryItem': false
-                      })
-                  }
-              }
+            if (this.page == 'activity') {
+                if (this.user && this.user.uid) {
+                    firebase.database().ref('users/' + this.user.uid).update({
+                        currentMLG: null,
+                        hasChatSession: null,
+                        hasMapSession: null,
+                    });
+                    firebase.database().ref('users/' + this.user.uid + '/').update({
+                        'newInventoryItem': false
+                    })
+                }
+            }
             // load page import on demand.
             this.importHref(
                 this.resolveUrl('my-' + page + '.html'), null, null, true);
