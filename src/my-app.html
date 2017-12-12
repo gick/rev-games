@@ -321,11 +321,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (this.currentUnitGame.inventoryItem) {
                 this.inventoryItem = this.currentUnitGame.inventoryItem
-                if (typeof this.currentUnitGame.inventoryPage == "string") {
-                    this.set('inventoryPage', this.currentUnitGame.inventoryPage)
-                } else {
-                    this.set('inventoryPage',this.currentUnitGame.inventoryPage[1])
-                }
+                this.set('inventoryPage', "questions")
             }
 
             if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
@@ -346,7 +342,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.push('pageList', 'questions')
             }
             if (this.currentUnitGame.feedbackMedia) {
-                    this.feedbackMedia = this.currentUnitGame.feedbackMedia
+                this.feedbackMedia = this.currentUnitGame.feedbackMedia
 
             }
             this.push('pageList', 'feedback')

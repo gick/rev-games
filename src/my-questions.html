@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <h1>Questions</h1>
             <template is="dom-repeat" items="{{questions}}">
                 <generic-resource-viewer question-over="{{item.questionOver}}" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
-                <template is=dom-if if="[[checkLast(item.questionOver,index)]]" restamp>
+                <template is=dom-if if="[[item.questionOver]]" restamp>
                     <paper-button raised on-click="nextPage">Next Page</paper-button>
                 </template>
             </template>
@@ -52,10 +52,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         resetQuestions: function() {
 
         },
-        checkLast:function(questionOver,index){
-            console.log(questionOver)
-            console.log(index)
-            return (questionOver && (index==this.questions.length -1))
+        checkLast:function(item,index){
+            return (item.questionOver && (index==this.questions.length -1))
         },
 
         nextPage:function(){
