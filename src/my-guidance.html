@@ -40,7 +40,7 @@
             color: #212121;
         }
         </style>
-            <paper-button raised on-click="nextActivity">Next</paper-button>
+        <paper-button raised on-click="nextActivity">Next</paper-button>
         <my-orientation angle="{{angle}}"></my-orientation>
         <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
@@ -66,15 +66,8 @@
             </paper-dialog>
             <div>
                 <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="{{poi.latitude}}" long="{{poi.longitude}}" poi={{poi}}></map-display>
-                <template is="dom-if" if="{{isping}}">
-                    <my-ping style="position: relative" on-click="showDistance" initalheadingdistance="{{initialHeadingDistance}}" headingdistance="{{headingDistance}}"></my-compass>
-                </template>
-                <template is="dom-if" if="{{iscompass}}">
-                    <my-compass style="position: relative" angle="{{angle}}" headingdegree="{{headingDegree}}"></my-compass>
-                </template>
             </div>
         </div>
-        <paper-toast id="distToast" text="{{_computeDistance(headingDistance)}}"></paper-toast>
         <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
     </template>
     <script>
@@ -82,13 +75,13 @@
 
         ready: function() {
             this.$.gmapi.addEventListener('api-load', this.mapready.bind(this));
-            this.set('mapready',false)
+            this.set('mapready', false)
 
             this.$.loc.addEventListener('geo-response',
                 this.updateCoord.bind(this));
         },
-        mapready:function(){
-            this.set('mapready',true)
+        mapready: function() {
+            this.set('mapready', true)
         },
         setPOI: function() {
             this.$$('#map').showPOI(this.poi)
@@ -112,7 +105,7 @@
             this.set('ismap', true)
         },
         updateCoord: function(e) {
-            if(!this.mapready){
+            if (!this.mapready) {
                 return
             }
             if (this.poi) {
@@ -120,15 +113,14 @@
                     lat: e.detail.latitude,
                     lng: e.detail.longitude
                 }
-                var _userCoord = new google.maps.LatLng(e.detail.latitude, e.detail.longitude)
-                var _poiCoord = new google.maps.LatLng(this.poi.latitude, this.poi.longitude)
-                this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(_userCoord, _poiCoord)
+                this.userCoord = new google.maps.LatLng(e.detail.latitude, e.detail.longitude)
+                this.poiCoord = new google.maps.LatLng(this.poi.latitude, this.poi.longitude)
+                this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(this.userCoord, this.poiCoord)
                 console.log(this.headingDistance)
                 if (this.initialHeadingDistance == null) {
                     this.initialHeadingDistance = this.headingDistance
                 }
                 this.userReachpoi(this.headingDistance)
-                this.headingDegree = google.maps.geometry.spherical.computeHeading(_userCoord, _poiCoord)
                 if (this.$$('#map'))
                     this.$$('#map').updateUser(coord)
             }
@@ -147,7 +139,7 @@
         },
 
         userReachpoi: function(newDistance) {
-            if(newDistance==0){
+            if (newDistance == 0) {
                 return
             }
             if (this.poi) {
@@ -160,7 +152,7 @@
 
         nextActivity: function() {
             this.open = false;
-            this.fire('next-page', {source:'guidance'});
+            this.fire('next-page', { source: 'guidance' });
             this.initialHeadingDistance = null;
         },
 
