@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
             <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
             <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
-            <my-qrcodescanner allow-pass={{allowPass}} poi="{{poi}}" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poireachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+            <my-qrcodescanner allow-pass={{allowPass}} poi="[[POI]]" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poiReachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
             <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
             <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
         </neon-animated-pages>
@@ -265,7 +265,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 })
         },
         resetActivity: function() {
-            this.set('currentMLG', null)
+            this.set('currentMLG', null)              
+
             this.set('badge', null)
         },
 
@@ -314,12 +315,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.startMedia = this.currentUnitGame.startMedia
                 this.push('pageList', 'uginstructions')
             }
-            if (this.currentUnitGame.POI) {
+            if (this.currentUnitGame.poiGuidMap) {
                 this.POI = this.currentUnitGame.POI
                 this.push('pageList', 'guidance')
                 if (this.$$('#map') && this.$$('#map').setPOI) {
                     this.$$('#map').setPOI()
                 }
+
+            }
+            if(this.currentUnitGame.poiQRValidation){
+                this.push('pageList', 'qrcodescanner')
+                this.POI = this.currentUnitGame.POI
+                this.poiIncorrectMessage=this.currentUnitGame.poiIncorrectMessage
+                this.poiReachedMessage=this.currentUnitGame.poiReachedMessage
+
 
             }
             if (this.currentUnitGame.inventoryItem) {
