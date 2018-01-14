@@ -85,10 +85,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-collapse>
                 <iron-collapse id="qrInvalid">
                     <div>{{poiincorrectMessage}}</div>
+                    <div>Vous n'avez pas scanné le bon QR code</div>
                     <paper-button raised on-click="retry">Réessayer</paper-button>
                 </iron-collapse>
                 <iron-collapse id="qrValid">
                     <div>{{poireachedMessage}}</div>
+                    <div>Vous avez scanné le bon QR code</div>
                     <paper-button on-click="next">Suivant</paper-button>
                 </iron-collapse>
                 <iron-collapse id="uploadFailed">
@@ -171,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.isDisabled = false
             },
             next: function() {
-                this.fire('poi-reached-from-qrcode', null)
+                this.fire('next-page', null)
                 this.$.qrValid.hide()
                 this.$.scanFailed.hide()
 
