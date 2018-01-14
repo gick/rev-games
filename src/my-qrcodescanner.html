@@ -173,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.isDisabled = false
             },
             next: function() {
-                this.fire('next-page', null)
+                this.fire('next-page', { source: 'qrcodescanner' })
                 this.$.qrValid.hide()
                 this.$.scanFailed.hide()
 
