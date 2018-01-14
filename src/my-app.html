@@ -333,7 +333,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             if (this.currentUnitGame.inventoryItem) {
                 this.inventoryItem = this.currentUnitGame.inventoryItem
-                this.set('inventoryPage', "questions")
+                if (this.currentUnitGame.inventoryQuestion) {
+                    this.set('inventoryPage', "questions")
+                }
+                if (this.currentUnitGame.inventoryStart) {
+                    this.set('inventoryPage', "uginstructions")
+                }
+                if (this.currentUnitGame.inventoryPOI) {
+                    this.set('inventoryPage', "guidance")
+                }
+
             }
 
             if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
