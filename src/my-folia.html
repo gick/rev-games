@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/file-upload/file-upload.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./element/viewers/staticmedia-viewer.html">
+<link rel="import" href="./element/helper/next-page.html">
+<link rel="import" href="./element/chatroom/imageResizer.html">
+
+<dom-module id="my-folia">
+  <template>
+        <style>
+         :host {
+            display: block;
+            padding: 10px;
+        }
+
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            margin: 24px;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #757575;
+        }
+
+        paper-card {
+            display: block;
+        }
+
+
+        h1 {
+            font-size: 22px;
+            margin: 16px 0;
+            color: #212121;
+        }
+        </style>
+<iron-ajax url="/uploadfiles/[[foliaId]]" id="ajaxLoader"></iron-ajax>
+
+<paper-card heading="Utilisation de Folia" image="" elevation="2" animated-shadow="false">
+  <div class="card-content">
+    <file-upload name="Leaf" on-success="updateLeaf" id="imageScan" method="POST" accept="image/*;capture=camera" target="/leaf">Feuille
+    </file-upload>
+    <file-upload name="Mask" on-success="updateColoriage" additional="[[postParams]]" method="POST" accept="image/*;capture=camera" target="/coloriage">Feuille
+    </file-upload>
+    <iron-image style="width:400px; height:400px; background-color: lightgray;" sizing="contain" prevent-load="{{hasLeaf}}" preload src="/file/[[leafId]]"></iron-image>
+    <iron-image style="width:400px; height:400px; background-color: lightgray;" sizing="contain" prevent-load="{{hasColoriage}}" preload src="/file/[[coloriageId]]"></iron-image>
+    <paper-button raised enabled="[[foliaReady]]" on-click="uploadFolia">Upload folia</paper-button>
+    <paper-button raised enabled="[[foliaReady]]" on-click="startFolia">Start folia</paper-button>
+
+  </div>
+</paper-card>
+</template>
+  <script>
+    Polymer({
+      is: 'my-folia',
+      ready: function() {
+        this.hasLeaf = false
+        this.hasColoriage = false
+        this.foliaReady = false
+        this.params = {}
+      },
+      startFolia: function() {
+        var es = new EventSource('/execfolia/' + this.foliaId)
+        es.onerror = function(e) {
+          es.close()
+          console.log("EventSource failed.");
+        };
+        es.onmessage=function(data){
+          if(data==='EOF')
+            {
+              es.close()
+            }
+          console.log(data)
+        }
+      },
+      uploadFolia: function() {
+        this.$.ajaxLoader.generateRequest()
+      },
+      updateColoriage: function(evt) {
+        let result = JSON.parse(evt.detail.xhr.response)
+        this.coloriageId = result.resource.coloriage
+        this.hasColoriage = true
+        this.foliaId = result.resource._id
+        this.params.id = result.resource._id
+        this.foliaReady = true
+      },
+      updateLeaf: function(evt) {
+        let result = JSON.parse(evt.detail.xhr.response)
+        this.leafId = result.leaf
+        this.hasLeaf = true
+        this.postParams = {
+          leafId: this.leafId
+        }
+      },
+      property: {
+        leafId: {
+          type: String,
+          notify: true,
+        },
+        coloriageId: {
+          type: String,
+          notify: true,
+        },
+      }
+    });
+  </script>
+</dom-module>

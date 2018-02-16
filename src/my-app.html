@@ -179,6 +179,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-login id='loginForm' name='login'></my-login>
             <my-badge id="badge" name="badge"></my-badge>
             <my-scores id="scores" name="scores"></my-scores>
+            <my-folia id="folia" name="folia" leaf-id={{leafId}} coloriage-id={{coloriageId}}></my-folia>
+
             <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
             <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
             <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
@@ -265,7 +267,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 })
         },
         resetActivity: function() {
-            this.set('currentMLG', null)              
+            this.set('currentMLG', null)
 
             this.set('badge', null)
         },
