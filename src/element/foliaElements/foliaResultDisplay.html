@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         </style>
-        <iron-ajax method="GET" last-response={{foliaResult}} content-type="application/json"  on-response="populateResult" id="populateResult" url="/populateResult/5a8d98c16b96b751e26688f7"></iron-ajax>
+        <iron-ajax method="GET" last-response={{foliaResult}} content-type="application/json"  on-response="populateResult" id="populateResult" url="/populateResult/[[foliaId]]"></iron-ajax>
 
         <paper-card heading="Résultats de l'analyse"  style='display:block;' image="" elevation="2" animated-shadow="false">
           <div class="card-content">
