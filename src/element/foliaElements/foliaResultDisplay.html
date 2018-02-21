@@ -1,0 +1,60 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="folia-result-display">
+  <template>
+        <style>
+         :host {
+            display: block;
+            padding: 10px;
+        }
+        .result{
+          display:block;
+        }
+
+        </style>
+        <iron-ajax method="GET" last-response={{foliaResult}} content-type="application/json"  on-response="populateResult" id="populateResult" url="/populateResult/5a8d98c16b96b751e26688f7"></iron-ajax>
+
+        <paper-card heading="Résultats de l'analyse"  style='display:block;' image="" elevation="2" animated-shadow="false">
+          <div class="card-content">
+          <template is="dom-repeat" items="{{results}}">
+              <div class="result"> {{item.specie}} : {{item.confidence}}% </div>
+        </template>
+        <div>
+        </paper-card>
+</template>
+  <script>
+    Polymer({
+      is: 'folia-result-display',
+      ready:function(){
+
+      },
+      populateResult:function(){
+         var delimiter =String.fromCharCode(10)
+         var res = this.foliaResult.resource.result.split(delimiter)
+         var formatedResult=[]
+         for(var i=0;i<9;i++){
+           var formatted=res[i].split(',')
+           formatedResult.push({specie:formatted[0],confidence:formatted[1]})
+         }
+         this.results=formatedResult
+      },
+      populate:function(){
+        this.$.populateResult.generateRequest()
+      },
+      property: {
+        foliaId:{type:String,notify:true},
+      }
+    });
+  </script>
+</dom-module>

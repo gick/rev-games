@@ -8,8 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <dom-module id="event-source-manager">
   <template>
@@ -18,29 +17,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             display: block;
             padding: 10px;
         }
-
+        .detail{
+          box-shadow : 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+          position:relative;
+          padding:20px;
+        }
 
         </style>
-        <iron-ajax method="GET" content-type="application/json"  on-response="resultPopulated" id="populateResult" url="/populateResult/[[foliaId]]"></iron-ajax>
-        <iron-ajax method="GET" content-type="application/json"  on-response="showResult" id="populateMask" url="/populateMask/[[foliaId]]"></iron-ajax>
-
-        <paper-card heading="Analyse de la feuille" image="" elevation="2" animated-shadow="false">
+        <paper-card  style='display:block;' heading="Analyse de l'image en cours" image="" elevation="2" animated-shadow="false">
           <div class="card-content">
             <div>
-            Merci de patienter, analyse de l'image en cours : <span>{{currentLine}}</span>
+              Merci de patienter, analyse de l'image en cours
             </div>
-          <template is="dom-if" if="{{foliaSuccess}}" restamp>
-
-            <div>
-              <paper-textarea id="foliaResult"> </paper-textarea>
-              <iron-image></iron-image>
-            </div>
-          </template>
+              <div hidden={{!showDetails}} class="detail">
+                  <b> Etape :</b> [[count]]
+            <br>  <b> En cours :</b> [[currentLine]]
+            <br>  <b> Temps écoulé (millisecondes) : [[timeElapsed]]
+            </div
 
           </div>
           <div class="card-actions">
-            <paper-button raised enabled="[[foliaReady]]" on-click="information">Plus d'informations</paper-button>
-            <paper-button raised enabled="[[foliaReady]]" on-click="information">Interrompre Folia</paper-button>
+            <paper-toggle-button raised enabled="[[foliaRunning]]" checked="{{showDetails}}">Afficher détails</paper-button>
           </div>
 
         </paper-card>
@@ -50,29 +47,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'event-source-manager',
       ready:function(){
         this.messageArray=[]
-      },
-      resultPopulated:function(evt){
-        this.$.populateMask.generateRequest()
-      },
-      showResult:function(evt){
-        console.log(evt.detail.__data__.response)
+        this.showDetails=true
       },
       startFolia: function() {
-        this.computing=false
         if(!this.foliaId){
+
           return false
         }
+        var that=this
+
+        this.count=0
         var es = new EventSource('/execfolia/' + this.foliaId)
         es.onerror = function(e) {
+          that.fire('finishComputation',null)
           es.close()
-          that.computing=false
-          that.$.populateResult.generateRequest();
         };
-        this.computing=true
-        var that=this
+        es.onclose=function(e){
+          console.log('finito')
+        }
         es.onmessage = function(msg) {
-          console.log(msg.data)
-          that.currentLine=msg.data
+          var msgJS=JSON.parse(msg.data)
+
+          that.currentLine=msgJS.data
+          that.timeElapsed=msgJS.timestamp
+          that.count=that.count + 1
         }
 
       },
