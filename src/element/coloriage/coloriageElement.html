@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/drawing-overlay/drawing-overlay.html">
+
+<dom-module id="coloriage-element">
+  <template>
+        <style>
+         :host {
+            display: block;
+            padding: 10px;
+        }
+
+
+        .wrapper{
+          position:relative;
+        }
+        .coloriage{
+          position:absolute;
+          z-index: 10;
+          top:0;
+          left:0;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 16px 0;
+            color: #212121;
+        }
+        </style>
+        <template is="dom-if" if="[[fileId]]" restamp>
+
+        <div>
+            <h3>Instruction</h3>
+            Tracez une ligne allant d'un bord à l'autre de la feuille en essayant de capturer toute les couleurs présentes
+        </div>
+      </template>
+
+<div class="wrapper">
+    <iron-image  loaded="{{imageLoaded}}" id="photo" style="max-width:600px; max-height:600px; background-color: lightgray;"  src="/file/[[fileId]]"></iron-image>
+    <drawing-overlay id="coloriage" min-width=15 max-width=15 class="coloriage" width="[[imageWidth]]" height="[[imageHeight]]" image="{{coloriage}}" active="{{active}}" empty="{{empty}}"  background-color="rgba(255,255,255,0)"></drawing-overlay>
+
+
+</div>
+<template is="dom-if" if="[[fileId]]" restamp>
+<div>
+    <paper-button raised on-click="resetColor">Annuler coloriage</paper-button>
+    <paper-button raised on-click="sendFolia">Accepter</paper-button>
+</div>
+</template>
+</template>
+  <script>
+    Polymer({
+      is: 'coloriage-element',
+      ready: function() {
+        this.$.photo.addEventListener('loaded-changed',this.resizeColor.bind(this))
+      },
+      resizeColor:function(){
+        if(this.imageLoaded)
+        {
+          let imageWidth  = Number(this.$.photo.clientWidth);
+          let imageHeight  = Number(this.$.photo.clientHeight);
+
+          this.imageWidth=imageWidth
+          this.imageHeight=imageHeight
+
+        }
+      },
+      resetColor: function() {
+        this.$.coloriage.clear()
+      },
+      sendFolia: function() {
+        this.$.coloriage.encodeImage()
+        this.fire('imageEncoded',{image:this.coloriage,width:this.imageWidth,height:this.imageHeight})
+      },
+      property: {
+        coloriage: {
+          type: String,
+          notify: true,
+        },
+        fileId: {
+          type: String,
+          notify: true,
+        },
+      }
+    });
+  </script>
+</dom-module>

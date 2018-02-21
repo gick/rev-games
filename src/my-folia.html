@@ -9,10 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/file-upload/file-upload.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="./element/viewers/staticmedia-viewer.html">
 <link rel="import" href="./element/helper/next-page.html">
-<link rel="import" href="./element/chatroom/imageResizer.html">
+<link rel="import" href="./element/coloriage/coloriageElement.html">
+<link rel="import" href="./element/foliaElements/eventSourceManager.html">
 
 <dom-module id="my-folia">
   <template>
@@ -42,74 +43,72 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #212121;
         }
         </style>
-<iron-ajax url="/uploadfiles/[[foliaId]]" id="ajaxLoader"></iron-ajax>
+
+
+<iron-ajax method="POST" content-type="application/json"  on-response="checkFoliaReady" body=[[bodyParam]] url="/coloriage/[[foliaId]]" id="coloriageUpload"></iron-ajax>
+<iron-ajax method="GET" content-type="application/json" on-response="uploadDone" url="/uploadfiles/[[foliaId]]" id="uploadDocker"></iron-ajax>
 
 <paper-card heading="Utilisation de Folia" image="" elevation="2" animated-shadow="false">
   <div class="card-content">
-    <file-upload name="Leaf" on-success="updateLeaf" id="imageScan" method="POST" accept="image/*;capture=camera" target="/leaf">Feuille
+    <div>
+    Prenez une photo de la feuille : <file-upload name="Leaf" on-success="updateLeaf" id="imageScan" method="POST" accept="image/*;capture=camera" target="/leaf">Feuille
     </file-upload>
-    <file-upload name="Mask" on-success="updateColoriage" additional="[[postParams]]" method="POST" accept="image/*;capture=camera" target="/coloriage">Feuille
-    </file-upload>
-    <iron-image style="width:400px; height:400px; background-color: lightgray;" sizing="contain" prevent-load="{{hasLeaf}}" preload src="/file/[[leafId]]"></iron-image>
-    <iron-image style="width:400px; height:400px; background-color: lightgray;" sizing="contain" prevent-load="{{hasColoriage}}" preload src="/file/[[coloriageId]]"></iron-image>
-    <paper-button raised enabled="[[foliaReady]]" on-click="uploadFolia">Upload folia</paper-button>
-    <paper-button raised enabled="[[foliaReady]]" on-click="startFolia">Start folia</paper-button>
-
   </div>
+    <coloriage-element id="coloriage" file-id=[[leafId]] ></coloriage-element>
+  </div>
+  <div class="card-actions">
+    <paper-button raised  on-click="uploadDocker">Start Folia</paper-button>
+  </div>
+
 </paper-card>
+<event-source-manager id="eventSourceManager" folia-id=[[foliaId]]></event-source-manager>
 </template>
   <script>
     Polymer({
       is: 'my-folia',
       ready: function() {
-        this.hasLeaf = false
-        this.hasColoriage = false
-        this.foliaReady = false
-        this.params = {}
+        this.$.coloriage.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
+        this.foliaReady=false
       },
-      startFolia: function() {
+      uploadDone:function(){
+        this.$.eventSourceManager.startFolia()
+      },
+      checkFoliaReady:function(evt){
+        var res=evt.detail.__data__.response
+        if(res.success){
+          this.foliaReady=true
+        }
+      },
+      uploadDocker:function(){
+          this.$.uploadDocker.generateRequest()
+      },
+      uploadColoriage: function(evt) {
+        var bodyParam = {
+          dataURI: evt.detail.image
+        }
+        this.bodyParam = null
+        this.bodyParam = bodyParam
+        this.$.coloriageUpload.generateRequest()
+      },
+      startFolia: function(evt) {
         var es = new EventSource('/execfolia/' + this.foliaId)
         es.onerror = function(e) {
           es.close()
           console.log("EventSource failed.");
         };
-        es.onmessage=function(data){
-          if(data==='EOF')
-            {
-              es.close()
-            }
+        es.onmessage = function(data) {
+          if (data === 'EOF') {
+            es.close()
+          }
           console.log(data)
         }
       },
-      uploadFolia: function() {
-        this.$.ajaxLoader.generateRequest()
-      },
-      updateColoriage: function(evt) {
-        let result = JSON.parse(evt.detail.xhr.response)
-        this.coloriageId = result.resource.coloriage
-        this.hasColoriage = true
-        this.foliaId = result.resource._id
-        this.params.id = result.resource._id
-        this.foliaReady = true
-      },
       updateLeaf: function(evt) {
         let result = JSON.parse(evt.detail.xhr.response)
-        this.leafId = result.leaf
-        this.hasLeaf = true
-        this.postParams = {
-          leafId: this.leafId
-        }
+        this.leafId = result.resource.leaf
+        this.foliaId = result.resource._id
       },
-      property: {
-        leafId: {
-          type: String,
-          notify: true,
-        },
-        coloriageId: {
-          type: String,
-          notify: true,
-        },
-      }
+      property: {}
     });
   </script>
 </dom-module>

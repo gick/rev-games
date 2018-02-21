@@ -1,0 +1,87 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="event-source-manager">
+  <template>
+        <style>
+         :host {
+            display: block;
+            padding: 10px;
+        }
+
+
+        </style>
+        <iron-ajax method="GET" content-type="application/json"  on-response="resultPopulated" id="populateResult" url="/populateResult/[[foliaId]]"></iron-ajax>
+        <iron-ajax method="GET" content-type="application/json"  on-response="showResult" id="populateMask" url="/populateMask/[[foliaId]]"></iron-ajax>
+
+        <paper-card heading="Analyse de la feuille" image="" elevation="2" animated-shadow="false">
+          <div class="card-content">
+            <div>
+            Merci de patienter, analyse de l'image en cours : <span>{{currentLine}}</span>
+            </div>
+          <template is="dom-if" if="{{foliaSuccess}}" restamp>
+
+            <div>
+              <paper-textarea id="foliaResult"> </paper-textarea>
+              <iron-image></iron-image>
+            </div>
+          </template>
+
+          </div>
+          <div class="card-actions">
+            <paper-button raised enabled="[[foliaReady]]" on-click="information">Plus d'informations</paper-button>
+            <paper-button raised enabled="[[foliaReady]]" on-click="information">Interrompre Folia</paper-button>
+          </div>
+
+        </paper-card>
+</template>
+  <script>
+    Polymer({
+      is: 'event-source-manager',
+      ready:function(){
+        this.messageArray=[]
+      },
+      resultPopulated:function(evt){
+        this.$.populateMask.generateRequest()
+      },
+      showResult:function(evt){
+        console.log(evt.detail.__data__.response)
+      },
+      startFolia: function() {
+        this.computing=false
+        if(!this.foliaId){
+          return false
+        }
+        var es = new EventSource('/execfolia/' + this.foliaId)
+        es.onerror = function(e) {
+          es.close()
+          that.computing=false
+          that.$.populateResult.generateRequest();
+        };
+        this.computing=true
+        var that=this
+        es.onmessage = function(msg) {
+          console.log(msg.data)
+          that.currentLine=msg.data
+        }
+
+      },
+      property: {
+        foliaId:{type:String,notify:true}
+
+
+
+      }
+    });
+  </script>
+</dom-module>
