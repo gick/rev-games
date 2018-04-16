@@ -7,10 +7,10 @@
 <dom-module id="my-inventory">
     <template>
         <style type="text/css">
-        :host {
-            display: block;
-            padding: 10px;
-        }
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
         
         paper-card {
             display: block;

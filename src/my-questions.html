@@ -13,82 +13,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./element/helper/generic-resource-viewer.html">
 <dom-module id="my-questions">
     <template>
-        <style>
-         :host {
-            display: block;
-            padding: 10px;
-        }
-
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
-        }
-
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
+        <style include="common-styles">
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
         </style>
-        <div class="card">
+        <div class="game-page">
             <h1>Questions</h1>
             <template is="dom-repeat" items="{{questions}}">
-                <generic-resource-viewer question-over="{{item.questionOver}}" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
-                <template is=dom-if if="[[item.questionOver]]" restamp>
-                    <paper-button raised on-click="nextPage">Next Page</paper-button>
-                </template>
+                <generic-resource-viewer on-is-completed-changed="checkCompletion" question-over="{{item.questionOver}}" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
             </template>
         </div>
     </template>
     <script>
-    Polymer({
+        Polymer({
 
-        is: 'my-questions',
-        ready: function() {},
-        resetQuestions: function() {
+            is: 'my-questions',
+            ready: function () {},
+            resetQuestions: function () {
 
-        },
-        checkLast:function(item,index){
-            return (item.questionOver && (index==this.questions.length -1))
-        },
-
-        nextPage:function(){
-            this.fire('next-page',{source:'questions'})
-        },
-        // Not using score fail at the moment because score belows 0 would be weird
-        _scoresObserver: function(newVal) {
-            if (newVal.activity1Success) {
-                this.question1Score = newVal.activity1Success
-            }
-            if (newVal.activity2Success) {
-                this.question2Score = newVal.activity2Success
-            }
-            if (newVal.activity3Success) {
-                this.question3Score = newVal.activity3Success
-            }
-
-        },
-        properties: {
-            questions: {
-                type: Array,
-                notify: true,
             },
-            name: {
-                type: String,
-                notify: true,
+            checkCompletion:function(item,index){
+                console.log(item.model.__data__.index)
+                console.log(index)
             },
-            scores: {
-                type: Object,
-                notify: true,
-            }
+            nextPage: function () {
+                this.fire('next-page', {
+                    source: 'questions'
+                })
+            },
+            // Not using score fail at the moment because score belows 0 would be weird
+            _scoresObserver: function (newVal) {
+                if (newVal.activity1Success) {
+                    this.question1Score = newVal.activity1Success
+                }
+                if (newVal.activity2Success) {
+                    this.question2Score = newVal.activity2Success
+                }
+                if (newVal.activity3Success) {
+                    this.question3Score = newVal.activity3Success
+                }
+
+            },
+            properties: {
+                questions: {
+                    type: Array,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                },
+                scores: {
+                    type: Object,
+                    notify: true,
+                }
 
 
-        },
+            },
 
-    });
+        });
     </script>
 </dom-module>

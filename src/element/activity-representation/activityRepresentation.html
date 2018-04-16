@@ -78,20 +78,7 @@ Simple compass that rotate according to the angle parameter
                     this.ugId = this.mlgItem.unitGames[0];
                     this.$.mlgCurrentUg.generateRequest();
                 }
-                if (this.mlgItem.isCompetition) {
-                    this.fire('setupCometition', {
-                        gameName: this.mlgItem.label,
-                        gameId: this.mlgItem._id
-                    })
-                }
 
-                if (this.mlgItem.isCollaboration) {
-                    this.fire('setupLobby', {
-                        gameName: this.mlgItem.label,
-                        gameId: this.mlgItem._id,
-                        player: this.mlgItem.playerNbr
-                    })
-                }
 
             },
 

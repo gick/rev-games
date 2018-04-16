@@ -32,7 +32,9 @@
     "iron-icons": "^1.2.1",
     "iron-icon": "^1.0.13",
     "paper-tabs": "^1.8.0",
-    "polymerfire": "firebase/polymerfire#^2.0.1"
+    "polymerfire": "firebase/polymerfire#^2.0.1",
+    "simple-modal": "SimpleElements/simple-modal#^0.3.3",
+    "iron-swipeable-pages": "^1.2.10"
   },
   "resolutions": {
     "polymer": "^1.1.0",

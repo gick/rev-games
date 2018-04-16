@@ -26,10 +26,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-login">
     <template>
         <style>
-        :host {
-            display: block;
-            padding: 10px;
-        }
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
         
         paper-card {
             display: block;

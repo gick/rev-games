@@ -8,37 +8,37 @@
 <dom-module id="my-guidance">
     <template>
         <style>
-         :host {
-            display: block;
-            padding: 10px;
-        }
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
 
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
-        }
+            .card {
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                padding: 16px;
+                margin: 24px;
+                border-radius: 5px;
+                background-color: #fff;
+                color: #757575;
+            }
 
-        .circle {
-            display: inline-block;
-            height: 64px;
-            width: 64px;
-            border-radius: 50%;
-            background: #ddd;
-            line-height: 64px;
-            font-size: 30px;
-            color: #555;
-            text-align: center;
-        }
+            .circle {
+                display: inline-block;
+                height: 64px;
+                width: 64px;
+                border-radius: 50%;
+                background: #ddd;
+                line-height: 64px;
+                font-size: 30px;
+                color: #555;
+                text-align: center;
+            }
 
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
+            h1 {
+                font-size: 22px;
+                margin: 16px 0;
+                color: #212121;
+            }
         </style>
         <paper-button raised on-click="nextActivity">Next</paper-button>
         <my-orientation angle="{{angle}}"></my-orientation>
@@ -52,8 +52,9 @@
             </paper-icon-button>
             <paper-dialog id="poiReached">
                 <h2>Destination atteinte!</h2>
+                <div>Vous pouvez maintenant accéder à la page suivante</div>
                 <div class="buttons">
-                    <paper-button raised on-click="nextActivity">Suivant</paper-button>
+                    <paper-button dialog-confirm autofocus>OK</paper-button>
                 </div>
             </paper-dialog>
             <paper-dialog id="docPage">
@@ -65,150 +66,153 @@
                 </div>
             </paper-dialog>
             <div>
-                <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[poi.latitude]]" long="[[poi.longitude]]" poi={{poi}}></map-display>
+                <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[poi.latitude]]" long="[[poi.longitude]]"
+                    poi={{poi}}></map-display>
             </div>
         </div>
         <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
     </template>
     <script>
-    Polymer({
+        Polymer({
 
-        ready: function() {
-            this.$.gmapi.addEventListener('api-load', this.mapready.bind(this));
-            this.set('mapready', false)
+            ready: function () {
+                this.$.gmapi.addEventListener('api-load', this.mapready.bind(this));
+                this.set('mapready', false)
 
-            this.$.loc.addEventListener('geo-response',
-                this.updateCoord.bind(this));
-        },
-        mapready: function() {
-            this.set('mapready', true)
-        },
-        setPOI: function() {
-            this.$$('#map').showPOI(this.poi)
-        },
+                this.$.loc.addEventListener('geo-response',
+                    this.updateCoord.bind(this));
+            },
+            mapready: function () {
+                this.set('mapready', true)
+            },
+            setPOI: function () {
+                this.$$('#map').showPOI(this.poi)
+            },
 
-        _hasInstruction: function() {
-            return false
-            if (!this.docMkdown) {
-                return true
-            }
-            return false
-        },
-
-        setpoi: function() {
-            //called if the map component has already been loaded
-            if (this.$$('#map') && this.$$map.mapready) {
-                this.$.map.mapready()
-            }
-        },
-        setCard: function() {
-            this.set('ismap', true)
-        },
-        updateCoord: function(e) {
-            if (!this.mapready) {
-                return
-            }
-            if (this.poi) {
-                var coord = {
-                    lat: e.detail.latitude,
-                    lng: e.detail.longitude
+            _hasInstruction: function () {
+                return false
+                if (!this.docMkdown) {
+                    return true
                 }
-                this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(coord), new google.maps.LatLng({lat:this.poi.latitude, lng:this.poi.longitude}))
-                console.log(this.poi.latitude)
-                console.log(this.poi.longitude)
-                if (this.initialHeadingDistance == null) {
-                    this.initialHeadingDistance = this.headingDistance
+                return false
+            },
+
+            setpoi: function () {
+                //called if the map component has already been loaded
+                if (this.$$('#map') && this.$$map.mapready) {
+                    this.$.map.mapready()
                 }
-                this.userReachpoi(this.headingDistance)
-                if (this.$$('#map'))
-                    this.$$('#map').updateUser(coord)
-            }
-        },
-
-        showDistance: function() {
-            this.$.distToast.open()
-        },
-
-        showInstruction: function() {
-            this.$.docPage.open()
-        },
-
-        _computeDistance: function(distance) {
-            return "Distance restante : " + Math.round(distance) + " mètres."
-        },
-
-        userReachpoi: function(newDistance) {
-            if (newDistance == 0) {
-                return
-            }
-            if (this.poi) {
-                if (newDistance <= this.poi.map.areaRadius) {
-                    this.$.userAtpoi.open()
-                    this.$.poiReached.open()
+            },
+            setCard: function () {
+                this.set('ismap', true)
+            },
+            updateCoord: function (e) {
+                if (!this.mapready) {
+                    return
                 }
+                if (this.poi) {
+                    var coord = {
+                        lat: e.detail.latitude,
+                        lng: e.detail.longitude
+                    }
+                    this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(new google
+                        .maps.LatLng(coord), new google.maps.LatLng({
+                            lat: this.poi.latitude,
+                            lng: this.poi.longitude
+                        }))
+                    if (this.initialHeadingDistance == null) {
+                        this.initialHeadingDistance = this.headingDistance
+                    }
+                    this.userReachpoi(this.headingDistance)
+                    if (this.$$('#map'))
+                        this.$$('#map').updateUser(coord)
+                }
+            },
+
+            showDistance: function () {
+                this.$.distToast.open()
+            },
+
+            showInstruction: function () {
+                this.$.docPage.open()
+            },
+
+            _computeDistance: function (distance) {
+                return "Distance restante : " + Math.round(distance) + " mètres."
+            },
+
+            userReachpoi: function (newDistance) {
+                if (newDistance == 0) {
+                    return
+                }
+                if (this.poi) {
+                    if (newDistance <= this.poi.map.areaRadius) {
+                        this.$.userAtpoi.open()
+                        this.$.poiReached.open()
+                    }
+                }
+            },
+
+            nextActivity: function () {
+                this.fire('change-swipe',{allowSwipe:true})
+                this.$.userAtpoi.open()
+                this.$.poiReached.open()
+            },
+
+            poiSet: function (poi) {
+                console.log(this.poi)
+                // body...
+            },
+            _allowPass: function (elem) {
+                console.log(elem)
+            },
+            is: 'my-guidance',
+
+
+            property: {
+                allowPass: {
+                    type: String,
+                    notify: true,
+                    observer: '_allowPass',
+                },
+                poi: {
+                    type: Object,
+                    notify: true,
+                },
+                docMkdown: {
+                    type: String,
+                    notify: true,
+                },
+                ismap: {
+                    type: Boolean,
+                    notify: true,
+                    value: true,
+                },
+                isping: {
+                    type: Boolean,
+                    notify: true,
+                },
+                iscompass: {
+                    type: Boolean,
+                    notify: true,
+                },
+                headingDistance: {
+                    type: Number,
+                    notify: true,
+                    observer: 'userReachpoi'
+                },
+
+                headingDegree: {
+                    type: Number,
+                    notify: true
+                },
+
+                initialHeadingDistance: {
+                    type: Number,
+                    notify: true
+                },
+
             }
-        },
-
-        nextActivity: function() {
-            this.open = false;
-            this.fire('next-page', { source: 'guidance' });
-            this.initialHeadingDistance = null;
-        },
-
-        poiSet: function(poi) {
-            console.log(this.poi)
-            // body...
-        },
-        _allowPass: function(elem) {
-            console.log(elem)
-        },
-        is: 'my-guidance',
-
-
-        property: {
-            allowPass: {
-                type: String,
-                notify: true,
-                observer: '_allowPass',
-            },
-            poi: {
-                type: Object,
-                notify: true,
-            },
-            docMkdown: {
-                type: String,
-                notify: true,
-            },
-            ismap: {
-                type: Boolean,
-                notify: true,
-                value: true,
-            },
-            isping: {
-                type: Boolean,
-                notify: true,
-            },
-            iscompass: {
-                type: Boolean,
-                notify: true,
-            },
-            headingDistance: {
-                type: Number,
-                notify: true,
-                observer: 'userReachpoi'
-            },
-
-            headingDegree: {
-                type: Number,
-                notify: true
-            },
-
-            initialHeadingDistance: {
-                type: Number,
-                notify: true
-            },
-
-        }
-    });
+        });
     </script>
 </dom-module>

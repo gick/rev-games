@@ -12,7 +12,7 @@ This code may only be used under the "Do whatever you want with code license"
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 
 <link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
-<link rel="import" href="../helper/sharedBehavior.html">
+<link rel="import" href="../basic-element/post-action.html">
 <link rel="import" href="../helper/thumbnailView.html">
 <link rel="import" href="../static-media/staticmedia-viewer.html">
 <link rel="import" href="../../styles/common-styles.html">
@@ -42,7 +42,7 @@ This code may only be used under the "Do whatever you want with code license"
             <resource-header is-picker resource-label="{{resourceLabel}}"></resource-header>
         </template>
         <div id="mcqbody" class="resource">
-            <div class="question" name="question">{{question}}</div>
+            <div class="question" name="question">{{question}} [[isCompleted]]</div>
             <div class="resourceBody">
             <iron-collapse opened=[[showClue]]>
                 <staticmedia-viewer resource-label="[[media.label]]" style="display:inline-flex;" mkdown="[[media.mkdown]]"></staticmedia-viewer>
@@ -92,13 +92,9 @@ This code may only be used under the "Do whatever you want with code license"
             'use strict';
             Polymer({
                 is: 'mcq-activity',
-                behaviors: [sharedBehavior],
 
                 ready: function () {
                     // this.hasClue=false
-                    this.mcqRemoved = function () {
-                        this.fire('mcq-removed', null)
-                    }.bind(this)
                     this.correctIndex = Math.floor((Math.random() * 2));
                 },
 
@@ -107,6 +103,8 @@ This code may only be used under the "Do whatever you want with code license"
                 },
 
                 validate: function () {
+                    this.isCompleted=true
+
                     if (this.textSelected && this.textSelected === 'resp1') {
                         this.$.correct.show();
                         this.$.wrong.hide();
@@ -119,7 +117,6 @@ This code may only be used under the "Do whatever you want with code license"
                     }
                     this.$.wrong.show();
                     this.$.correct.hide();
-
                 },
                 _mediaObserver: function (newval) {
                     if (newval) {
@@ -139,6 +136,12 @@ This code may only be used under the "Do whatever you want with code license"
                 ],
 
                 properties: {
+                    isCompleted:{
+                        type:Boolean,
+                        notify:true,
+                        reflectToAttribute:true,
+                        value:false,
+                    },
                     question: {
                         type: String,
                         notify: true,

@@ -1,18 +1,7 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./mlgListItem.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <dom-module id="activity-selection">
     <!--
 Simple compass that rotate according to the angle parameter
@@ -22,106 +11,49 @@ Simple compass that rotate according to the angle parameter
 -->
     <template>
         <style>
-
         </style>
         <app-toolbar>
-        <iron-icon icon="vaadin:gamepad" style="margin-right: 25px;"></iron-icon>
-        <div main-title><h1>Jeux</h1></div>
-       <!-- <paper-dropdown-menu hidden label="Type">
-          <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{searchString}}">
-            <paper-item value="">Tous</paper-item>
-            <paper-item value="culinaire">Culinaire</paper-item>
-            <paper-item value="quizz">Quizz</paper-item>
-            <paper-item value="tresor">Trésor</paper-item>
-          </paper-listbox>
-        </paper-dropdown-menu>
-        <paper-dropdown-menu hidden label="Order">
-          <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
-            <paper-item value="A-Z">A-Z</paper-item>
-            <paper-item value="Note">Note</paper-item>
-            <paper-item value="Proximité">Proximité</paper-item>
-            <paper-item value="Durée">Durée</paper-item>
-          </paper-listbox>
-        </paper-dropdown-menu> !-->
-      </app-toolbar>
-        <paper-listbox>
             <iron-ajax url="/listActivities" handle-as="json" last-response="{{activities}}" id="ajaxLoader"></iron-ajax>
-            <template is="dom-repeat" items="{{activities}}" filter="{{_computeFilter(searchString)}}" sort="{{_computeSort(selection)}}">
-                <mlg-listitem userscore="{{userscore}}" data="{{item}}" name="{{item.activityName}}"> </mlg-listitem>
+            <iron-icon icon="vaadin:gamepad" style="margin-right: 25px;"></iron-icon>
+            <div main-title>
+                <h1>Liste des jeux</h1>
+            </div>
+        </app-toolbar>
+        <paper-listbox>
+            <template is="dom-repeat" items="{{activities}}">
+                <mlg-listitem on-tap="fireSelection" userscore="{{userscore}}" data="{{item}}" name="{{item.activityName}}"> </mlg-listitem>
             </template>
         </paper-listbox>
     </template>
     <script>
-    (function() {
-        'use strict';
+        (function () {
+            'use strict';
 
-        Polymer({
-            is: 'activity-selection',
-            ready: function() {
-                this.$.ajaxLoader.generateRequest();
+            Polymer({
+                is: 'activity-selection',
+                ready: function () {
+                    this.$.ajaxLoader.generateRequest();
 
-            },
-            startSelection: function(e) {
-                this.$.ajaxLoader.generateRequest();
+                },
+                startSelection: function (e) {
+                    this.$.ajaxLoader.generateRequest();
 
-            },
-            updateCoord: function(elem) {
+                },
+                fireSelection: function (elem) {
+                    this.fire('activitySelected', elem.model.__data__.item);
 
-            },
-            computeDist: function(elem) {
-                var x = this.$.dist.computeDistance(elem.latitude, elem.longitude);
-                return x;
-            },
-
-            _computeFilter: function(type) {
-                if (!type) {
-                    return null;
-                } else {
-                    return function(item) {
-                        return (item.gameType.indexOf(type) != -1);
-                    };
-                }
-            },
-
-            _computeSort: function(order) {
-                switch(order) {
-                    case "A-Z":
-                        return function(a,b) {
-                            if (a.label.toLowerCase() == b.label.toLowerCase()) return 0;  
-                            return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-                        }
-                    case "Note":
-                        return function(a,b) {
-                            if (a.gameDifficulty == b.gameDifficulty) return 0;  
-                            return a.gameDifficulty < b.gameDifficulty ? -1 : 1;
-                        };
-                    case "Proximité":
-                        return function(a,b) {
-                            if (a.gameDuration == b.gameDuration) return 0;  
-                            return a.gameDuration > b.gameDuration ? -1 : 1;
-                        };
-                    case "Durée":
-                        return function(a,b) {
-                            if (a.gameProximity == b.gameProximity) return 0;  
-                            return a.gameProximity > b.gameProximity ? -1 : 1;
-                        };
-                    default: 
-                        return function(a,b) {
-                            if (a.idItem == b.idItem) return 0;
-                            return a.idItem < b.idItem ? -1 : 1;
-                        };          
-                }
-            },
-
-            properties: {
-                selectedItem: {
-                    type: Object,
-                    notify: true,
-                    reflectToAttribute: true
                 },
 
-            }
-        });
-    })();
+
+                properties: {
+                    selectedItem: {
+                        type: Object,
+                        notify: true,
+                        reflectToAttribute: true
+                    },
+
+                }
+            });
+        })();
     </script>
 </dom-module>

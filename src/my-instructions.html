@@ -1,72 +1,40 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="./element/viewers/staticmedia-viewer.html">
+<link rel="import" href="./element/helper/generic-resource-viewer.html">
 <link rel="import" href="./element/helper/next-page.html">
+<link rel="import" href="./styles/common-styles.html">
 <dom-module id="my-instructions">
     <template>
         <style>
-         :host {
-            display: block;
-            padding: 10px;
-        }
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
 
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
-        }
-
-        paper-card {
-            display: block;
-        }
-
-
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
         </style>
-        <paper-card heading="Instruction de l'activité" image="" elevation="2" animated-shadow="false">
-            <div class="card-content">
-                <staticmedia-viewer style="min-width:150px" class="topLevelView" mkdown="[[media.mkdown]]"></staticmedia-viewer>
+        <div class="game-page">
+                <generic-resource-viewer page item=[[startPage]]></generic-resource-viewer>
             </div>
-            <div class="card-actions">
-                <next-page page-name=[[name]] activity-over></next-page>
-            </div>
-        </paper-card>
-    </template>
+        </template>
     <script>
-    Polymer({
+        Polymer({
 
 
-        is: 'my-instructions',
-        ready: function() {
+            is: 'my-instructions',
+            ready: function () {
 
-        },
-
-        property: {
-            media: {
-                type: Object,
-                notify: true,
             },
-            name: {
-                type: String,
-                notify: true,
-            },
-        }
 
-    });
+            property: {
+                startPage: {
+                    type: Object,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                },
+            }
+
+        });
     </script>
 </dom-module>

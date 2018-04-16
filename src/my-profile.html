@@ -15,6 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
@@ -26,39 +28,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-profile">
     <template>
         <style>
-        :host {
-            display: block;
-            padding: 10px;
-        }
-        
-        iron-icon {
-            width: 35px;
-            height: 35px;
-        }
-        
-        img {
-            margin-top: 30px;
-            width: 50px;
-        }
-        
-        .flexElement {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        paper-card {
-            display: block;
-            --paper-card-header: {
-                border-bottom: 1px solid #e8e8e8;
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
             }
-        }
-        
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
+
+            iron-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            img {
+                margin-top: 30px;
+                width: 50px;
+            }
+
+
+            h1 {
+                font-size: 22px;
+                margin: 16px 0;
+                color: #212121;
+            }
         </style>
         <firebase-auth id="auth" status-known="{{status}}" user="{{user}}" provider="google">
         </firebase-auth>
@@ -99,35 +89,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-card>
     </template>
     <script>
-    Polymer({
-        ready: function() {},
-        logout: function() {
-            if (this.user)
-                firebase.database().ref('users/' + this.user.uid + '/').update({
-                    status: 'offline'
-                });
-            this.$.auth.signOut()
+        Polymer({
+            ready: function () {},
+            logout: function () {
+                if (this.user)
+                    firebase.database().ref('users/' + this.user.uid + '/').update({
+                        status: 'offline'
+                    });
+                this.$.auth.signOut()
 
 
-        },
-        loadBadge: function() {
-            this.set('route.path', 'badge')
-        },
-        loadInventaire: function() {
-            this.set('route.path', 'inventory')
-        },
-        startGame: function() {
-            this.set('route.path', 'activity')
-        },
+            },
+            loadBadge: function () {
+                this.set('route.path', 'badge')
+            },
+            loadInventaire: function () {
+                this.set('route.path', 'inventory')
+            },
+            startGame: function () {
+                this.set('route.path', 'activity')
+            },
 
-        userObs: function(status) {
-            if (!this.user) {
-                this.set('route.path', 'login');
-            }
+            userObs: function (status) {
+                if (!this.user) {
+                    this.set('route.path', 'login');
+                }
 
-        },
-        observers: ['userObs(user.*)'],
-        is: 'my-profile',
-    });
+            },
+            observers: ['userObs(user.*)'],
+            is: 'my-profile',
+        });
     </script>
 </dom-module>

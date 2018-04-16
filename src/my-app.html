@@ -8,20 +8,22 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth-script.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-database-script.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-storage-script.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-messaging-script.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -33,96 +35,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/geo-location/geo-location.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="./element/dialogs/quickLink.html">
-<link rel="import" href="./element/dialogs/setupCompetition.html">
 <link rel="import" href="./element/helper/user-manager.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-database-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-storage-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging-script.html">
+<link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
+
 <dom-module id="my-app">
     <template>
         <style>
-         :host {
-            display: block;
-            --app-primary-color: #338a3e;
-            --app-secondary-color: #c8e6c9;
-        }
+            :host {
+                display: block;
+                --app-primary-color: #338a3e;
+                --app-secondary-color: #c8e6c9;
+            }
 
-        app-header {
-            background-color: var(--app-primary-color);
-            color: white;
-        }
+            app-header {
+                background-color: var(--app-primary-color);
+                color: white;
+            }
 
-        app-header paper-icon-button {
-            --paper-icon-button-ink-color: white;
-        }
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
 
-        paper-tab {
-            color: white;
-            text-transform: uppercase;
-            margin: 0 10px;
-        }
 
-        paper-tabs {
-            --paper-tabs-selection-bar-color: #fff;
-        }
+            iron-swipeable-pages {
+                @apply(--layout-flex);
+            }
 
-        .drawer-list {
-            margin: 0 20px;
-        }
+            iron-swipeable-pages>* {
+                -webkit-user-select: none;
+                /* Chrome all / Safari all */
+                -moz-user-select: none;
+                /* Firefox all */
+                -ms-user-select: none;
+                /* IE 10+ */
+                user-select: none;
+                /* Likely future */
+                cursor: default;
+            }
 
-        .drawer-list a {
-            display: block;
-            padding: 0 16px;
-            line-height: 40px;
-            text-decoration: none;
-            color: var(--app-secondary-color);
-        }
 
-        .drawer-list a.iron-selected {
-            color: black;
-            font-weight: bold;
-        }
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+                text-decoration: none;
+            }
 
-        .drawer-list a.subroute {
-            padding-left: 32px;
-        }
 
-        .inherit {
-            color: inherit;
-            background-color: inherit;
-            text-decoration: none;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-
-        footer {
-            opacity: 0.7;
-            position: fixed;
-            text-align: center;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 40px;
-        }
-
-        .big {
-            --iron-icon-height: 40px;
-            --iron-icon-width: 40px;
-            margin-right: 50px;
-        }
+            .big {
+                --iron-icon-height: 40px;
+                --iron-icon-width: 40px;
+                margin-right: 50px;
+            }
         </style>
-        <firebase-app api-key="AIzaSyAs5k5zrYYERFXn1uO4guWX0OvpyX7fgA0" auth-domain="rev-game.firebaseapp.com" database-url="https://rev-game.firebaseio.com">
+        <firebase-app api-key="AIzaSyD1rNde0vVt8jePCI-t19T7ore89RxDKY0" auth-domain="rev-game-6e36a.firebaseapp.com" database-url="https://rev-game-6e36a.firebaseio.com">
         </firebase-app>
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
@@ -131,417 +101,387 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
-        <app-header reveals>
-            <app-toolbar>
-                <div main-title>REVERIES</div>
-                <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
-                <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
-                    <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
-                </template>
-            </app-toolbar>
-        </app-header>
-        <quick-link id='quickLink'></quick-link>
-        <setup-competition game-id={{mlgId}} id='setupCompetition'></setup-competition>
-        <!--<app-drawer-layout fullbleed>
-            <app-drawer id="drawer">
-                <app-toolbar>Menu</app-toolbar>
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                    <a name="badge" href="/#badge">Badge</a>
-                    <a name="inventory" id="inventoryViewer" on-click="updateNotification" href="/#inventory"><span id="test">Inventory</span></a>
-                    <a name="activity" href="/#activity">Activity</a>
-                    <a name="lobbyselection" href="/#lobbyselection">Lobby</a>
-                    <a name="lobby" href="/#lobby">Lobby</a>
-                    <template is="dom-if" if="{{startPage}}">
-                        <a name="instructions" href="/#instructions">Activity start page</a>
-                    </template>
-                    <template is="dom-if" if="{{poiMap}}">
-                        <a name="mapview" href="/#mapview">Map view</a>
-                    </template>
-                    <template is="dom-if" if="{{poiMap}}">
-                        <a name="mapview" href="/#guidance">User Guidance</a>
-                    </template>
-                    <template is="dom-if" if="{{poiClue}}">
-                        <a name="cluepoiinstruction" href="/#cluepoiinstruction">Clue guidance</a>
-                    </template>
-                    <template is="dom-if" if="{{poiQR}}">
-                        <a name="qrcodescanner" href="/#qrcodescanner">QR codes</a>
-                    </template>
-                    <template is="dom-if" if="{{questions}}">
-                        <a name="questions" href="/#questions">Questions</a>
-                    </template>
-                </iron-selector>
-            </app-drawer>-->
-        <neon-animated-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
-            <my-chatroom name="chatroom"></my-chatroom>
-            <my-admin allow-pass='{{allowPass}}' name="admin"></my-admin>
-            <my-register name="register"></my-register>
-            <my-profile name="profile"></my-profile>
-            <my-login id='loginForm' name='login'></my-login>
-            <my-badge id="badge" name="badge"></my-badge>
-            <my-scores id="scores" name="scores"></my-scores>
-            <my-folia id="folia" name="folia" leaf-id={{leafId}} coloriage-id={{coloriageId}}></my-folia>
 
-            <my-inventory id="inventory" name="inventory" mlgid="{{mlgId}}" roomkey="{{roomId.key}}" badgeNumber="{{badgeNumber}}"></my-inventory>
-            <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
-            <lobby-selection id="lobbyselection" game-name={{mlgName}} game-id={{mlgId}} name="lobbyselection"></lobby-selection>
-            <my-lobby id="lobby" name="lobby" game-name={{mlgName}} game-id={{mlgId}} data="{{data}}" room-id={{roomId}} room-name="{{roomName}}"></my-lobby>
-            <my-instructions id="instructions" media="{{startpage}}" name="instructions"></my-instructions>
-            <my-uginstructions start-media=[[startMedia]] id="uginstructions" name="uginstructions"></my-uginstructions>
-            <my-cluepoiinstruction id="cluepoiinstruction" mkdown="{{clueMkdown}}" name="cluepoiinstruction"></my-cluepoiinstruction>
-            <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
-            <my-mapview doc-mkdown="{{ugMkdown}}" poi="{{poi}}" id="map" name="mapview"></my-mapview>
-            <my-qrcodescanner allow-pass={{allowPass}} poi="[[POI]]" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poiReachedMessage}}" id="qrcode" name="qrcodescanner"></my-qrcodescanner>
-            <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
-            <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
-        </neon-animated-pages>
+        <app-header-layout>
+            <app-header condenses fixed>
+                <app-toolbar>
+                    <div main-title>REVERIES</div>
+                    <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
+                    <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
+                        <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
+                    </template>
+                </app-toolbar>
+            </app-header>
+            <quick-link id='quickLink'></quick-link>
+
+
+
+            <template is="dom-if" if="[[!gameSelected]]">
+                <iron-swipeable-pages selected="{{page}}" attr-for-selected="name">
+                    <my-login id='loginForm' name='login'></my-login>
+                    <my-register name="register"></my-register>
+                    <my-profile name="profile"></my-profile>
+                    <my-badge id="badge" name="badge"></my-badge>
+                    <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                </iron-swipeable-pages>
+            </template>
+
+            <template is="dom-if" if="[[gameSelected]]">
+                <iron-swipeable-pages no-cycle swipe-disabled=[[swipeDisabled]] selected="{{page}}" attr-for-selected="name">
+                    <template is="dom-if" if=[[pageList.startPage]]>
+                        <my-instructions start-page=[[startPage]] name="instructions"></my-instructions>
+                    </template>
+                    <template is="dom-if" if=[[pageList.ugInstructions]]>
+                        <my-uginstructions id="instructions" is-swippable start-ug="[[startUg]]" name="uginstructions"></my-uginstructions>
+                    </template>
+                    <template is="dom-if" if=[[pageList.guidance]]>
+                        <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}"
+                            isping="{{isPing}}" name="guidance"></my-guidance>
+                    </template>
+                    <template is="dom-if" if="[[pageList.qrCode]]">
+                        <my-qrcodescanner allow-pass={{allowPass}} poi="[[POI]]" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poiReachedMessage}}"
+                            id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                    </template>
+                    <template is="dom-if" if=[[pageList.questions]]>
+                        <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
+                    </template>
+                    <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
+                </iron-swipeable-pages>
+            </template>
         </app-header-layout>
-        </app-drawer-layout>
         <paper-toast id="inventaireToast" text="Vous avez gagné un nouvel item d'inventaire !"></paper-toast>
     </template>
     <script>
-    Polymer({
+        Polymer({
 
-        is: 'my-app',
-        ready: function() {
+            is: 'my-app',
+            ready: function () {
+                this.gameSelected = false
+                this.set('questions', [])
+                this.pageFlow = {}
 
-            this.set('questions', [])
+                this.addEventListener('activitySelected', this.setupActivity.bind(
+                    this))
 
+                this.addEventListener('authChanged', this.authChanged.bind(this))
+                this.addEventListener('userName', this.setupUserName.bind(this))
+                this.addEventListener('iron-select', this.pageChangedHandler.bind(this))
+                this.addEventListener('change-swipe', this.swipeHandler.bind(this))
+            },
 
-            this.$$('#activityPicker').addEventListener('activitySelected', this.setupActivity.bind(this))
+            swipeHandler: function (msg) {
+                this.swipeDisabled = !msg.detail.allowSwipe
+            },
+            pageChangedHandler: function (evt) {
+                switch (this.page) {
+                    case 'instructions':
+                        {
+                            this.swipeDisabled = false
+                            break;
+                        }
+                    case 'uginstructions':
+                        {
+                            this.swipeDisabled = false
+                            break;
+                        }
+                    case 'guidance':
+                        {
+                            this.swipeDisabled = true
+                            break;
 
-            this.$$('#loginForm').addEventListener('authChanged', this.authChanged.bind(this))
-            this.$.loginForm.addEventListener('userName', this.setupUserName.bind(this))
-            this.$.loginForm.addEventListener('userScore', this.setupUserScore.bind(this))
-            this.addEventListener('next-page', this.nextPage.bind(this))
-        },
-        nextPage: function(event) {
-            var currentPage = event.detail.source
-            if (this.inventoryPage == currentPage) {
-                this.$.inventaireToast.show()
-                this.$.userManager.addInventoryItem(this.inventoryItem)
-            }
-            if (currentPage == 'feedback') {
-                if (this.lastUnitGame) {
-                    if (this.badge) {
-                        this.page = 'badge'
-                        this.$.userManager.addBadge(this.badge)
-                        return
-                    }
-                    this.page = 'activity'
-                    return
-                } else {
-                    this.unitGamesIndex = this.unitGamesIndex + 1;
-                    this.resetUnitGame()
-                    this.setupUnitGame(this.unitGamesIndex)
-                    return
+                        }
+                    case 'questions':
+                        {
+                            this.swipeDisabled = true
+                            break;
+
+                        }
                 }
-            }
-            var currentIndex = this.pageList.indexOf(currentPage)
-            this.page = this.pageList[currentIndex + 1]
-        },
-        openLinks: function() {
-            this.$.quickLink.show()
-        },
-        enterLobby: function(elem) {
-            this.roomName = elem.detail.roomName
-            this.roomId = elem.detail.roomId
-            this.page = "lobby"
-        },
-        restartPOIMap: function() {
-            if (this.$$('#map') && this.$$('#map').resetMap) {
-                this.$$('#map').resetMap()
-            }
-        },
-        setupCompetition: function() {
-            this.$.setupCompetition.show()
-        },
-        userScoreChanged: function(item) {
-            var that = this
-            var score = item.detail
-            if (this.currentScoreData && this.currentScoreData.currentScore && typeof this.currentScoreData.currentScore == 'number') {
-                score = score + this.currentScoreData.currentScore
-            }
-            if (item.detail && typeof item.detail == 'number')
+            },
+            openLinks: function () {
+                this.$.quickLink.show()
+            },
+            restartPOIMap: function () {
+                if (this.$$('#map') && this.$$('#map').resetMap) {
+                    this.$$('#map').resetMap()
+                }
+            },
+            resetActivity: function () {
+                this.set('currentMLG', null)
+
+                this.set('badge', null)
+            },
+            resetUnitGame: function () {
+                this.splice('pageList', 0, this.pageList.length)
+                this.startMedia = null
+                this.feedbackMedia = null
+                this.startPage = null
+            },
+            authChanged: function (status) {
+                this.$$('#loginForm').setStatus(status)
+            },
+
+
+            setupActivity: function (elem) {
+                this.gameSelected = true
+                this.unitGamesIndex = 0
+                this.pageList = []
+                this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
                 firebase.database().ref('users/' + this.user.uid + '/').update({
-                    'currentScore': score
-                })
-        },
-        resetActivity: function() {
-            this.set('currentMLG', null)
-
-            this.set('badge', null)
-        },
-
-        resetUnitGame: function() {
-            this.splice('pageList', 0, this.pageList.length)
-            this.startMedia = null
-            this.feedbackMedia = null
-            this.startPage = null
-
-        },
-        authChanged: function(status) {
-            this.$$('#loginForm').setStatus(status)
-        },
-        Lobby: function(lobbyParam) {
-            this.mlgName = lobbyParam.detail.gameName
-            this.mlgId = lobbyParam.detail.gameId
-            this.mlgPlayer = lobbyParam.detail.player
-            this.lobby = true
-        },
-
-
-        setupActivity: function(elem) {
-            this.unitGamesIndex = 0
-            this.pageList = []
-            this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
-            firebase.database().ref('users/' + this.user.uid + '/').update({
-                currentMLG: elem.detail,
-            });
-            this.currentMLG = elem.detail
-            if (this.currentMLG.startpage) {
-                this.set('startpage', this.currentMLG.startpage)
-                this.push('pageList', 'instructions')
-            }
-            if (this.currentMLG.badge) {
-                this.badge = this.currentMLG.badge
-            }
-            this.totalUnitGames = this.currentMLG.unitGames.length
-            this.setupUnitGame(this.unitGamesIndex)
-        },
-        setupUnitGame: function(index) {
-            if (index == this.totalUnitGames - 1) {
-                this.lastUnitGame = true
-            }
-            this.currentUnitGame = this.currentMLG.unitGames[index]
-            if (this.currentUnitGame.startMedia) {
-                this.startMedia = this.currentUnitGame.startMedia
-                this.push('pageList', 'uginstructions')
-            }
-            if (this.currentUnitGame.poiGuidMap) {
-                this.POI = this.currentUnitGame.POI
-                this.push('pageList', 'guidance')
-                if (this.$$('#map') && this.$$('#map').setPOI) {
-                    this.$$('#map').setPOI()
-                }
-
-            }
-            if(this.currentUnitGame.poiQRValidation){
-                this.push('pageList', 'qrcodescanner')
-                this.POI = this.currentUnitGame.POI
-                this.poiIncorrectMessage=this.currentUnitGame.poiIncorrectMessage
-                this.poiReachedMessage=this.currentUnitGame.poiReachedMessage
-
-
-            }
-            if (this.currentUnitGame.inventoryItem) {
-                this.inventoryItem = this.currentUnitGame.inventoryItem
-                if (this.currentUnitGame.inventoryQuestion) {
-                    this.set('inventoryPage', "questions")
-                }
-                if (this.currentUnitGame.inventoryStart) {
-                    this.set('inventoryPage', "uginstructions")
-                }
-                if (this.currentUnitGame.inventoryPOI) {
-                    this.set('inventoryPage', "guidance")
-                }
-
-            }
-
-            if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
-                if (this.questions.length > 0) {
-                    this.splice('questions', 0, this.questions.length)
-                }
-
-                this.mcqActivities = this.currentUnitGame.mcqActivities
-                this.freetextActivities = this.currentUnitGame.freetextActivities
-                for (var i = 0; i < this.freetextActivities.length; i++) {
-                    this.push('questions', this.freetextActivities[i])
-                }
-
-                for (var i = 0; i < this.mcqActivities.length; i++) {
-                    this.push('questions', this.mcqActivities[i])
-                }
-                if (this.questions.length > 0)
-                    this.push('pageList', 'questions')
-            }
-            if (this.currentUnitGame.feedbackMedia) {
-                this.feedbackMedia = this.currentUnitGame.feedbackMedia
-
-            }
-            this.push('pageList', 'feedback')
-
-            this.page = this.pageList[0]
-
-
-
-        },
-
-        setupUserName: function(elem) {
-            this.userName = elem.detail
-        },
-
-        setupUserScore: function(elem) {
-            this.userScore = elem.detail;
-        },
-
-        openDialog: function(elem) {
-            this.$.dialog.open()
-        },
-
-        addNotification: function(value) {
-            this.badgeNumber += value;
-        },
-
-        updateNotification: function() {
-            this.badgeNumber = 0
-            this.showBadge = true
-            this.currentPage = "/#" + this.page
-        },
-        _cacheStateChanged: function(state) {
-            console.log(state)
-        },
-        properties: {
-            cacheValue: {
-                type: String,
-                observer: '_cacheStateChanged'
-            },
-            page: {
-                type: String,
-                reflectToAttribute: true,
-                observer: '_pageChanged'
-            },
-
-            badgeNumber: {
-                type: Number,
-                value: 0
-            },
-
-            userscore: {
-                type: Array,
-                notify: true
-            },
-
-            currentActivity: {
-                type: String,
-                notify: true
-            },
-
-            scoreToBeat: {
-                type: Number,
-                notify: true,
-            },
-
-            currentScore: {
-                type: Number,
-                notify: true,
-                observer: '_scoreUpdated'
-            },
-
-            currentItemId: {
-                type: String,
-                notify: true
-            },
-
-            currentPage: {
-                type: String,
-                notify: true,
-                value: '/#activity'
-            },
-
-            homeHidden: {
-                type: Boolean,
-                notify: true,
-                value: false,
-            },
-
-            score: {
-                type: Number,
-                value: 0
-            }
-        },
-
-        observers: [
-            '_userOnline(currentScoreData.*)',
-            '_inventoryItem(currentScoreData.newInventoryItem)',
-            '_routePageChanged(route.page)'
-
-        ],
-        _inventoryItem: function(a) {
-
-            console.log(a)
-        },
-        _userOnline(user) {
-            console.log(this.currentScoreData)
-            /*  if(this.currentScoreData && !this.mlgId){
-                  if(this.currentScoreData.mlgJSON){
-                      var mlg={detail:this.currentScoreData.mlgJSON}
-                      this.setupActivity(mlg)
-                      this.set('page',this.currentScoreData.page.page)
-
-                  }
-                 // this.set('page','activity')
-                  /*  if (user && user.uid) {
-                        firebase.database().ref('users/' + user.uid + '/').update({
-                            status: 'online'
-                        });
-                        var ref = firebase.database().ref("users/" + user.uid + '/');
-                        ref.onDisconnect().update({
-                            status: 'offline'
-                        });
-                        var refPage = firebase.database().ref("users/" + user.uid + '/page/');
-                        ref.onDisconnect().set({
-                            page: ''
-                        });
-
-
-                    }*/
-
-        },
-        _routePageChanged: function(page) {
-            this.page = this.route.path || 'login';
-            if (this.page === "guidance") {
-                if (typeof this.$.map.setMarkers == 'function') {
-                    this.$.map.setMarkers();
-                }
-            }
-        },
-
-
-
-        _pageChanged: function(page) {
-            if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' && this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page != 'mapview') {
-                firebase.database().ref('users/' + this.user.uid + '/page/').set({
-                    page: page,
+                    currentMLG: elem.detail,
                 });
-
-            }
-
-
-            if (this.page == 'activity') {
-                if (this.user && this.user.uid) {
-                    firebase.database().ref('users/' + this.user.uid).update({
-                        currentMLG: null,
-                        hasChatSession: null,
-                        hasMapSession: null,
-                    });
-                    firebase.database().ref('users/' + this.user.uid + '/').update({
-                        'newInventoryItem': false
-                    })
+                this.currentMLG = elem.detail
+                if (this.currentMLG.startpage) {
+                    this.set('startPage', this.currentMLG.startpage)
+                    this.pageList.startPage = true
+                    this.push('pageList', 'instructions')
                 }
-            }
-            // load page import on demand.
-            this.importHref(
-                this.resolveUrl('my-' + page + '.html'), null, null, true);
-            if (!this.user) {
-                console.log('no user uid')
-            }
-            if (this.user) {
-                console.log('user id')
-            }
-            this.set('route.path', page)
+                if (this.currentMLG.badge) {
+                    this.badge = this.currentMLG.badge
+                    this.pageList.badge = true
+                }
+                this.totalUnitGames = this.currentMLG.unitGames.length
+                this.setupUnitGame(this.unitGamesIndex)
+            },
+            setupUnitGame: function (index) {
+                if (index == this.totalUnitGames - 1) {
+                    this.lastUnitGame = true
+                }
+                this.currentUnitGame = this.currentMLG.unitGames[index]
+                if (this.currentUnitGame.startMedia) {
+                    this.startUg = this.currentUnitGame.startMedia
+                    this.push('pageList', 'uginstructions')
+                    this.pageList.ugInstructions = true
+                }
+                if (this.currentUnitGame.poiGuidMap) {
+                    this.POI = this.currentUnitGame.POI
+                    this.pageList.guidance = true
+                    this.push('pageList', 'guidance')
+                    if (this.$$('#map') && this.$$('#map').setPOI) {
+                        this.$$('#map').setPOI()
+                    }
 
-        },
+                }
+                if (this.currentUnitGame.poiQRValidation) {
+                    this.push('pageList', 'qrcodescanner')
+                    this.pageList.qrCode = true
+                    this.POI = this.currentUnitGame.POI
+                    this.poiIncorrectMessage = this.currentUnitGame.poiIncorrectMessage
+                    this.poiReachedMessage = this.currentUnitGame.poiReachedMessage
 
-    });
+
+                }
+                if (this.currentUnitGame.inventoryItem) {
+                    this.inventoryItem = this.currentUnitGame.inventoryItem
+                    if (this.currentUnitGame.inventoryQuestion) {
+                        this.set('inventoryPage', "questions")
+                    }
+                    if (this.currentUnitGame.inventoryStart) {
+                        this.set('inventoryPage', "uginstructions")
+                    }
+                    if (this.currentUnitGame.inventoryPOI) {
+                        this.set('inventoryPage', "guidance")
+                    }
+
+                }
+
+                if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
+                    this.pageList.questions = true
+                    if (this.questions.length > 0) {
+                        this.splice('questions', 0, this.questions.length)
+                    }
+
+                    this.mcqActivities = this.currentUnitGame.mcqActivities
+                    this.freetextActivities = this.currentUnitGame.freetextActivities
+                    for (var i = 0; i < this.freetextActivities.length; i++) {
+                        this.push('questions', this.freetextActivities[i])
+                    }
+
+                    for (var i = 0; i < this.mcqActivities.length; i++) {
+                        this.push('questions', this.mcqActivities[i])
+                    }
+                    if (this.questions.length > 0)
+                        this.push('pageList', 'questions')
+                }
+                if (this.currentUnitGame.feedbackMedia) {
+                    this.feedbackMedia = this.currentUnitGame.feedbackMedia
+                }
+                this.push('pageList', 'feedback')
+
+                this.page = this.pageList[0]
+
+
+
+            },
+
+            setupUserName: function (elem) {
+                this.userName = elem.detail
+            },
+
+            setupUserScore: function (elem) {
+                this.userScore = elem.detail;
+            },
+
+            openDialog: function (elem) {
+                this.$.dialog.open()
+            },
+
+            addNotification: function (value) {
+                this.badgeNumber += value;
+            },
+
+            updateNotification: function () {
+                this.badgeNumber = 0
+                this.showBadge = true
+                this.currentPage = "/#" + this.page
+            },
+            _cacheStateChanged: function (state) {
+                console.log(state)
+            },
+            properties: {
+                cacheValue: {
+                    type: String,
+                    observer: '_cacheStateChanged'
+                },
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged'
+                },
+
+                badgeNumber: {
+                    type: Number,
+                    value: 0
+                },
+
+                userscore: {
+                    type: Array,
+                    notify: true
+                },
+
+                currentActivity: {
+                    type: String,
+                    notify: true
+                },
+
+                scoreToBeat: {
+                    type: Number,
+                    notify: true,
+                },
+
+                currentScore: {
+                    type: Number,
+                    notify: true,
+                    observer: '_scoreUpdated'
+                },
+
+                currentItemId: {
+                    type: String,
+                    notify: true
+                },
+
+                currentPage: {
+                    type: String,
+                    notify: true,
+                    value: '/#activity'
+                },
+
+                homeHidden: {
+                    type: Boolean,
+                    notify: true,
+                    value: false,
+                },
+
+                score: {
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            observers: [
+                '_userOnline(currentScoreData.*)',
+                '_inventoryItem(currentScoreData.newInventoryItem)',
+                '_routePageChanged(route.page)'
+
+            ],
+            _inventoryItem: function (a) {
+
+                console.log(a)
+            },
+            _userOnline(user) {
+                console.log(this.currentScoreData)
+                /*  if(this.currentScoreData && !this.mlgId){
+                      if(this.currentScoreData.mlgJSON){
+                          var mlg={detail:this.currentScoreData.mlgJSON}
+                          this.setupActivity(mlg)
+                          this.set('page',this.currentScoreData.page.page)
+
+                      }
+                     // this.set('page','activity')
+                      /*  if (user && user.uid) {
+                            firebase.database().ref('users/' + user.uid + '/').update({
+                                status: 'online'
+                            });
+                            var ref = firebase.database().ref("users/" + user.uid + '/');
+                            ref.onDisconnect().update({
+                                status: 'offline'
+                            });
+                            var refPage = firebase.database().ref("users/" + user.uid + '/page/');
+                            ref.onDisconnect().set({
+                                page: ''
+                            });
+
+
+                        }*/
+
+            },
+            _routePageChanged: function (page) {
+                this.page = this.route.path || 'login';
+                if (this.page === "guidance") {
+                    if (typeof this.$.map.setMarkers == 'function') {
+                        this.$.map.setMarkers();
+                    }
+                }
+            },
+
+
+
+            _pageChanged: function (page) {
+                if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' &&
+                    this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page !=
+                    'mapview') {
+                    firebase.database().ref('users/' + this.user.uid + '/page/').set({
+                        page: page,
+                    });
+
+                }
+
+
+                if (this.page == 'activity') {
+                    if (this.user && this.user.uid) {
+                        firebase.database().ref('users/' + this.user.uid).update({
+                            currentMLG: null,
+                            hasChatSession: null,
+                            hasMapSession: null,
+                        });
+                        firebase.database().ref('users/' + this.user.uid + '/').update({
+                            'newInventoryItem': false
+                        })
+                    }
+                }
+                // load page import on demand.
+                this.importHref(
+                    this.resolveUrl('my-' + page + '.html'), null, null, true);
+                if (!this.user) {
+                    console.log('no user uid')
+                }
+                if (this.user) {
+                    console.log('user id')
+                }
+                this.set('route.path', page)
+
+            },
+
+        });
     </script>
 </dom-module>
