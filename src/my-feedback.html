@@ -28,17 +28,19 @@
             <div class="card-content">
                 <staticmedia-viewer style="min-width:150px" class="topLevelView" mkdown="[[feedbackMedia.mkdown]]"></staticmedia-viewer>
             </div>
-            <paper-button hidden={{lastUnit}} on-click="next">Suivant</paper-button>
+            <paper-button hidden={{lastUnit}} on-click="nextUg">Suivant</paper-button>
             <template is="dom-if" if="{{lastUnit}}" restamp>
-                <paper-button on-click="next">Fin du jeu</paper-button>
+                <paper-button on-click="endGame">Fin du jeu</paper-button>
             </template>
         </div>
     </template>
     <script>
     Polymer({
-        next: function() {
-            this.fire('next-page', { source: 'feedback' })
-
+        endGame: function() {
+            this.fire('end-game')
+        },
+        nextUg:function(){
+            this.fire('next-ug')
         },
 
         is: 'my-feedback',

@@ -22,40 +22,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="game-page">
             <h1>Questions</h1>
             <template is="dom-repeat" items="{{questions}}">
-                <generic-resource-viewer on-is-completed-changed="checkCompletion" question-over="{{item.questionOver}}" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
+                <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
             </template>
+            <iron-collapse opened='[[allChecked]]'>
+                <div>Vous pouvez passez à la page suivante!</div>
+            </iron-collapse>
         </div>
     </template>
     <script>
         Polymer({
 
             is: 'my-questions',
-            ready: function () {},
+            ready: function () {
+                this.completed=[]
+                this.allChecked=false
+            },
             resetQuestions: function () {
+                this.splice('questions',0,this.questions.length)
+                this.splice('completed',0,this.completed.length)
+                this.completed=[]
+                this.allChecked=false
+            },
+            checkCompletion:function(item,completed){
+                var currentIndex=item.model.__data__.index
+                if(!completed.value){
+                    return
+                }
 
-            },
-            checkCompletion:function(item,index){
-                console.log(item.model.__data__.index)
-                console.log(index)
-            },
-            nextPage: function () {
-                this.fire('next-page', {
-                    source: 'questions'
-                })
+                if(typeof(currentIndex)=='number' && this.completed.indexOf(currentIndex)==-1){
+                    this.completed.push(currentIndex)
+                }
+                if(this.completed.length===this.questions.length){
+                    this.allChecked=true
+                    this.fire('change-swipe',{allowSwipe:true})
+                }
             },
             // Not using score fail at the moment because score belows 0 would be weird
-            _scoresObserver: function (newVal) {
-                if (newVal.activity1Success) {
-                    this.question1Score = newVal.activity1Success
-                }
-                if (newVal.activity2Success) {
-                    this.question2Score = newVal.activity2Success
-                }
-                if (newVal.activity3Success) {
-                    this.question3Score = newVal.activity3Success
-                }
-
-            },
             properties: {
                 questions: {
                     type: Array,

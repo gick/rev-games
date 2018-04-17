@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-            <template is="dom-if" if="[[!gameSelected]]">
+            <template is="dom-if" if="[[!gameSelected]]" restamp>
                 <iron-swipeable-pages selected="{{page}}" attr-for-selected="name">
                     <my-login id='loginForm' name='login'></my-login>
                     <my-register name="register"></my-register>
@@ -126,23 +126,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-swipeable-pages>
             </template>
 
-            <template is="dom-if" if="[[gameSelected]]">
+            <template is="dom-if" if="[[gameSelected]]" restamp>
                 <iron-swipeable-pages no-cycle swipe-disabled=[[swipeDisabled]] selected="{{page}}" attr-for-selected="name">
-                    <template is="dom-if" if=[[pageList.startPage]]>
+                    <template is="dom-if" if=[[pageList.startPage]] restamp>
                         <my-instructions start-page=[[startPage]] name="instructions"></my-instructions>
                     </template>
-                    <template is="dom-if" if=[[pageList.ugInstructions]]>
+                    <template is="dom-if" if=[[pageList.ugInstructions]] restamp>
                         <my-uginstructions id="instructions" is-swippable start-ug="[[startUg]]" name="uginstructions"></my-uginstructions>
                     </template>
-                    <template is="dom-if" if=[[pageList.guidance]]>
+                    <template is="dom-if" if=[[pageList.guidance]] restamp>
                         <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}"
                             isping="{{isPing}}" name="guidance"></my-guidance>
                     </template>
-                    <template is="dom-if" if="[[pageList.qrCode]]">
+                    <template is="dom-if" if="[[pageList.qrCode]]" restamp>
                         <my-qrcodescanner allow-pass={{allowPass}} poi="[[POI]]" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poiReachedMessage}}"
                             id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     </template>
-                    <template is="dom-if" if=[[pageList.questions]]>
+                    <template is="dom-if" if=[[pageList.questions]] restamp>
                         <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
                     </template>
                     <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
@@ -167,10 +167,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addEventListener('userName', this.setupUserName.bind(this))
                 this.addEventListener('iron-select', this.pageChangedHandler.bind(this))
                 this.addEventListener('change-swipe', this.swipeHandler.bind(this))
+                this.addEventListener('end-game', this.endGame.bind(this))
+                this.addEventListener('next-ug', this.nextUg.bind(this))
             },
 
+            endGame: function () {
+                this.gameSelected = false
+                this.page = 'activity'
+
+            },
+            nextUg: function () {
+                this.unitGamesIndex = this.unitGamesIndex + 1
+                this.resetUnitGame()
+                this.setupUnitGame(this.unitGamesIndex)
+            },
             swipeHandler: function (msg) {
                 this.swipeDisabled = !msg.detail.allowSwipe
+                this.questionSwipe = true
             },
             pageChangedHandler: function (evt) {
                 switch (this.page) {
@@ -192,7 +205,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         }
                     case 'questions':
                         {
-                            this.swipeDisabled = true
+                            if (!this.questionSwipe) {
+                                this.swipeDisabled = true
+                            } else {
+                                this.swipeDisabled = false
+                            }
                             break;
 
                         }
@@ -208,14 +225,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
             resetActivity: function () {
                 this.set('currentMLG', null)
-
                 this.set('badge', null)
+                this.resetUnitGame()
             },
             resetUnitGame: function () {
+                this.questionSwipe=false
                 this.splice('pageList', 0, this.pageList.length)
                 this.startMedia = null
                 this.feedbackMedia = null
                 this.startPage = null
+                this.pageList.ugInstructions = false
+                if (this.$$('#myQuestions') && this.$$('#myQuestions').resetQuestions) {
+                    this.$$('#myQuestions').resetQuestions()
+                }
+                this.pageList.questions = false
+                this.pageList.guidance = false
+                this.pageList.qrCode = false
+
+
             },
             authChanged: function (status) {
                 this.$$('#loginForm').setStatus(status)
@@ -294,10 +321,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.mcqActivities = this.currentUnitGame.mcqActivities
                     this.freetextActivities = this.currentUnitGame.freetextActivities
                     for (var i = 0; i < this.freetextActivities.length; i++) {
+                        this.freetextActivities[i].isCompleted = false
                         this.push('questions', this.freetextActivities[i])
                     }
 
                     for (var i = 0; i < this.mcqActivities.length; i++) {
+                        this.mcqActivities[i].isCompleted = false
                         this.push('questions', this.mcqActivities[i])
                     }
                     if (this.questions.length > 0)

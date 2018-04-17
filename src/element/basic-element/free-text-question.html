@@ -15,7 +15,6 @@ This code may only be used under the "Do whatever you want with code license"
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../styles/common-styles.html">
 
-<link rel="import" href="../helper/sharedBehavior.html">
 <link rel="import" href="../static-media/staticmedia-viewer.html">
 <dom-module id="free-text-question">
     <style include="common-styles">
@@ -33,9 +32,6 @@ This code may only be used under the "Do whatever you want with code license"
         }
     </style>
     <template>
-        <template is="dom-if" if="[[conceptionMode]]" restamp>
-            <resource-header is-picker resource-label="{{resourceLabel}}"></resource-header>
-        </template>
         <div class="resource">
             <div class="question">{{question}}</div>
             <div class="resourceBody">
@@ -68,12 +64,9 @@ This code may only be used under the "Do whatever you want with code license"
             'use strict';
             Polymer({
                 is: 'free-text-question',
-                behaviors: [sharedBehavior],
 
                 ready: function () {
-                    // this.showMediaButton = false;
-                    //  this.$.header.addEventListener('edit', this.editElement.bind(this))
-
+                    this.isCompleted=false
                     var validator = {
                         validatorName: 'free-text-validator',
                         validatorType: 'validator',
@@ -94,6 +87,7 @@ This code may only be used under the "Do whatever you want with code license"
                     }
                 },
                 validate: function () {
+                    this.isCompleted=true
                     if (this.response === this.userResponse) {
                         this.$.correct.show();
                         this.$.wrong.hide();
@@ -106,6 +100,13 @@ This code may only be used under the "Do whatever you want with code license"
                     '_mediaObserver(media._id)',
                 ],
                 properties: {
+                    isCompleted:{
+                        type:Boolean,
+                        notify:true,
+                        reflectToAttribute:true,
+                        value:false,
+                    },
+
                     question: {
                         type: String,
                         notify: true,

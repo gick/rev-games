@@ -42,7 +42,7 @@ This code may only be used under the "Do whatever you want with code license"
             <resource-header is-picker resource-label="{{resourceLabel}}"></resource-header>
         </template>
         <div id="mcqbody" class="resource">
-            <div class="question" name="question">{{question}} [[isCompleted]]</div>
+            <div class="question" name="question">{{question}}</div>
             <div class="resourceBody">
             <iron-collapse opened=[[showClue]]>
                 <staticmedia-viewer resource-label="[[media.label]]" style="display:inline-flex;" mkdown="[[media.mkdown]]"></staticmedia-viewer>
@@ -83,9 +83,6 @@ This code may only be used under the "Do whatever you want with code license"
                 </paper-input>
             </iron-collapse></div>
         </div>
-        <template is="dom-if" if="[[unitActivity]]" restamp>
-            <post-action></post-action>
-        </template>
     </template>
     <script>
         (function () {
@@ -96,6 +93,10 @@ This code may only be used under the "Do whatever you want with code license"
                 ready: function () {
                     // this.hasClue=false
                     this.correctIndex = Math.floor((Math.random() * 2));
+                    this.isCompleted=false
+                    this.$.correct.hide();
+                    this.$.wrong.hide();
+
                 },
 
                 getClue: function () {
@@ -128,7 +129,10 @@ This code may only be used under the "Do whatever you want with code license"
 
                     }
                 },
-
+                questionNotAnswered:function(){
+                    this.$.correct.hide();
+                    this.$.wrong.hide();
+                },
 
 
                 observers: [
@@ -140,7 +144,7 @@ This code may only be used under the "Do whatever you want with code license"
                         type:Boolean,
                         notify:true,
                         reflectToAttribute:true,
-                        value:false,
+                        observer:'questionNotAnswered',
                     },
                     question: {
                         type: String,

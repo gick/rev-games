@@ -17,9 +17,8 @@ This code may only be used under the "Do whatever you want with code license"
 
             }
         </style>
-        <simple-modal  active={{showThumbnail}}>
+        <simple-modal on-tap="hideModal" active={{showThumbnail}}>
              <iron-image style="width:500px;height:500px" src=[[thumbnailPath]] sizing="contain"></iron-image>
-
         </simple-modal>
         <iron-image src=[[thumbnailPath]] on-click="showImageModal" class="thumbnail" sizing="contain"></iron-image>
 
@@ -29,6 +28,9 @@ This code may only be used under the "Do whatever you want with code license"
 
         is: 'thumbnail-view',        
         ready: function() {
+        },
+        hideModal:function(){
+            this.showThumbnail=false
         },
         showImageModal: function() {
             this.showThumbnail=true

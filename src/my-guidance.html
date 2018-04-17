@@ -42,7 +42,6 @@
         </style>
         <paper-button raised on-click="nextActivity">Next</paper-button>
         <my-orientation angle="{{angle}}"></my-orientation>
-        <google-maps-api api-key="AIzaSyBw9aJOCPfc4Hel0sTET3DgwJhuDeCDqdc" version="3.exp" id="gmapi"></google-maps-api>
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <div class="card">
             <iron-collapse opened="{{poiReached}}">
@@ -76,7 +75,7 @@
         Polymer({
 
             ready: function () {
-                this.$.gmapi.addEventListener('api-load', this.mapready.bind(this));
+                this.$.map.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.set('mapready', false)
 
                 this.$.loc.addEventListener('geo-response',
