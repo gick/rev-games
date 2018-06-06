@@ -42,6 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./element/dialogs/quickLink.html">
 <link rel="import" href="./element/helper/user-manager.html">
 <link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
+<link rel="import" href="my-folia.html">
 
 <dom-module id="my-app">
     <template>
@@ -118,6 +119,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <template is="dom-if" if="[[!gameSelected]]" restamp>
                 <iron-swipeable-pages selected="{{page}}" attr-for-selected="name">
+                    <my-folia start-page=[[startPage]] user-id={{user.uid}} name="instructions"></my-folia>
+
                     <my-login id='loginForm' name='login'></my-login>
                     <my-register name="register"></my-register>
                     <my-profile name="profile"></my-profile>
@@ -131,6 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if=[[pageList.startPage]] restamp>
                         <my-instructions start-page=[[startPage]] name="instructions"></my-instructions>
                     </template>
+
                     <template is="dom-if" if=[[pageList.ugInstructions]] restamp>
                         <my-uginstructions id="instructions" is-swippable start-ug="[[startUg]]" name="uginstructions"></my-uginstructions>
                     </template>
@@ -438,7 +442,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 console.log(a)
             },
             _userOnline(user) {
-                console.log(this.currentScoreData)
                 /*  if(this.currentScoreData && !this.mlgId){
                       if(this.currentScoreData.mlgJSON){
                           var mlg={detail:this.currentScoreData.mlgJSON}

@@ -11,119 +11,165 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/file-upload/file-upload.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/bitter-alert/bitter-alert.html">
 <link rel="import" href="./element/helper/next-page.html">
 <link rel="import" href="./element/coloriage/coloriageElement.html">
-<link rel="import" href="./element/foliaElements/eventSourceManager.html">
-<link rel="import" href="./element/foliaElements/foliaResultDisplay.html">
+<link rel="import" href="./element/chatroom/imageResizer.html">
+<link rel="import" href="./element/foliaElements/progressView.html">
 
 <dom-module id="my-folia">
   <template>
-        <style>
-         :host {
-            display: block;
-            padding: 10px;
-        }
-.hiddenClass{
-  display:none;
-}
-.fadeOut {
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s linear 1000ms, opacity 1000ms;
-}
-.fadeIn {
-    visibility: visible;
-    opacity: 1;
-    transition: visibility 0s linear 0s, opacity 1000ms;
-}
+    <style>
+      :host {
+        @apply(--layout-fullbleed);
+        @apply(--layout-vertical);
+      }
 
-        .card {
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            margin: 24px;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #757575;
-        }
-
-        paper-card {
-            display: block;
-        }
+      .file-upload {
+        background-color: darkseagreen;
+      }
 
 
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
-        </style>
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        margin: 24px;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #757575;
+      }
+
+      paper-card {
+        display: block;
+      }
 
 
-<iron-ajax method="POST" content-type="application/json" on-response="checkFoliaReady" body=[[bodyParam]] url="/coloriage/[[foliaId]]" id="coloriageUpload"></iron-ajax>
-<iron-ajax method="GET" content-type="application/json" on-response="uploadDone" url="/uploadfiles/[[foliaId]]" id="uploadDocker"></iron-ajax>
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+    </style>
 
-<paper-card heading="Utilisation de Folia" image="" elevation="2" animated-shadow="false">
-  <div class="card-content">
-    <div>
-      Prenez une photo de la feuille :
-      <file-upload name="Leaf" on-success="updateLeaf" id="imageScan" method="POST" accept="image/*;capture=camera" target="/leaf">Feuille
-      </file-upload>
-    </div>
-    <div id="coloriage" class$={{colorClass}}>
-      <coloriage-element id="" file-id=[[leafId]]></coloriage-element>
-    </div>
-    <div id="computation" class$={{eventClass}}>
-      <event-source-manager id="eventSourceManager" folia-id=[[foliaId]]></event-source-manager>
-    </div>
-    <div id="result" class$={{resultClass}}>
-      <folia-result-display id="resultDisplay" folia-id=[[foliaId]]></folia-result-display>
 
-    </div>
+    <iron-ajax method="POST" content-type="application/json" on-response="enableFolia" body=[[bodyParam]] url="/coloriage/[[foliaId]]"
+      id="coloriageUpload"></iron-ajax>
+    <iron-ajax method="GET" content-type="application/json" url="/execFolia/[[foliaId]]" id="startFolia"></iron-ajax>
+    <iron-ajax method="GET" content-type="application/json" last-response={{populatedInstance}} on-response="showResult" url="/foliaInstance/[[foliaId]]"
+      id="populatedInstance"></iron-ajax>
+    <bitter-alert id="tutorial1" image-url="/images/tuto1.jpg" text="Prendre une photo de la feuille vue de face" title="Utiliser la reconnaissance"
+      confirm-button-text="Compris"></bitter-alert>
+    <bitter-alert id="tutorial2" image-url="/images/tuto2.png" text="Tracer une ligne parcourant la feuille de haut en bas sur la photo"
+      title="Utiliser la reconnaissance" confirm-button-text="Compris"></bitter-alert>
+    <bitter-alert id="tutorial3" image-url="/images/tuto3.png" text="Quand vous êtes satisfait du résultat, appuyer sur Confirmer, puis sur Reconnaissance"
+      title="Utiliser la reconnaissance" confirm-button-text="Compris"></bitter-alert>
+    <bitter-alert id="foliaSuccess" image-url="/images/success.jpg" text="" title="Bravo vous avez réussi" confirm-button-text="Super!"></bitter-alert>
+    <bitter-alert id="foliaFail" image-url="/images/fail.jpg" text="Vous n'avez pas identifié le bon arbre" title="C'est raté" confirm-button-text="Zut alors!"></bitter-alert>
 
-    <div class="card-actions">
-      <paper-button raised on-click="uploadDocker">Start Folia</paper-button>
-    </div>
+    <bitter-alert id="foliaBug" image-url="/images/bugFolia.png" text="Désolé, un bug a mangé votre image, merci de réessayer"
+      title="Alerte au bug" confirm-button-text="OK"></bitter-alert>
 
-</paper-card>
 
-</template>
- <script>
+    <paper-card heading="Reconnaissance automatique de feuilles" image="" elevation="2" animated-shadow="false">
+      <div class="card-content">
+        Pour cette activité, vous allez devoir identifier une feuille de chêne commun parmis les feuilles proposées.
+        <br> Vous pouvez accéder au tutoriel de l'activité en pressant le bouton tutoriel (recommandé)
+        <paper-button raised style="background-color: green;" on-click="startTutorial">Tutoriel</paper-button>
+        <div class="photoContainer">
+          <image-resizer class="uploader" id='uploader' on-success="leafUpdated" additional=[[userParam]] name="Prendre photo" url="/leaf"></image-resizer>
+        </div>
+        <template is="dom-if" if="[[foliaRun]]">
+          <progress-view current-message={{currentMessage}} current-step={{currentStep}}></progress-view>
+        </template>
+
+        <coloriage-element id="coloriage" file-id=[[leafId]]></coloriage-element>
+        <div class="card-actions">
+          <paper-button disabled=[[!foliaReady]] raised on-click="startFolia">Reconnaissance</paper-button>
+        </div>
+        <div>Debug element : liste espèce reconnue
+          <template is="dom-repeat" items=[[populatedInstance.resultCSV]]>
+            <div>[[item]]</div>
+          </template>
+          </div>
+    </paper-card>
+
+  </template>
+  <script>
     Polymer({
       is: 'my-folia',
-      ready: function() {
+      ready: function () {
         this.$.coloriage.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
+        this.currentStep = 0
         this.foliaReady = false
-        this.eventClass='hiddenClass'
-        this.resultClass='hiddenClass'
-        this.$.coloriage.addEventListener("transitionend", this.animationEnd.bind(this),false);
-        this.$.eventSourceManager.addEventListener('finishComputation',this.finishComputation.bind(this))
       },
-      animationEnd:function(arg){
-        if(event.propertyName=='visibility'){
-          this.colorClass='hiddenClass'
-          this.eventClass='fadeIn'
+      enableFolia: function () {
+        this.foliaReady = true
+      },
+      startTutorial: function () {
+        var tutorial2 = this.$.tutorial2
+        var tutorial3 = this.$.tutorial3
+        this.$.tutorial1.onConfirm = function () {
+          tutorial2.open()
+        }.bind(this)
+        this.$.tutorial2.onConfirm = function () {
+          tutorial3.open()
+        }.bind(this)
+        this.$.tutorial3.onConfirm = function () {}
+        this.$.tutorial1.open()
+      },
+
+      setupListener: function (uid) {
+        var that = this
+        this.currentStep = 0
+        firebase.database().ref('users/' + uid + '/folia/').remove()
+        var messageRef = firebase.database().ref('users/' + uid + '/folia/messages/')
+        var endRef = firebase.database().ref('users/' + uid + '/folia/end/')
+        var errorRef = firebase.database().ref('users/' + uid + '/folia/errors/')
+
+        messageRef.on('child_added', function (child) {
+          that.foliaRun = true
+          that.currentStep = that.currentStep + 1
+          that.currentMessage = child.val().data
+        })
+        endRef.on('child_added', function () {
+          that.foliaRun = false
+          that.$.populatedInstance.generateRequest()
+        })
+        errorRef.on('child_added', that.showError.bind(that))
+      },
+      showError: function () {
+        this.foliaRun = false
+        this.$.foliaBug.open()
+      },
+      showResult: function () {
+        let success = false
+        if (this.populatedInstance && this.populatedInstance.resultCSV) {
+          let results = this.populatedInstance.resultCSV
+          for (var i = 0; i < results.length; results++) {
+            if (results[i].indexOf(this.correctResponse) > -1) {
+              success = true
+            }
+          }
+        }
+        if (success) {
+          this.$.foliaSuccess.open()
+        } else {
+          this.$.foliaFail.open()
         }
       },
-      finishComputation:function(){
-        this.eventClass='hiddenClass'
-        this.resultClass='fadeIn'
-        this.$.resultDisplay.populate()
+      startFolia: function () {
+        firebase.database().ref('users/' + this.userId + '/folia/').remove()
+
+        this.$.startFolia.generateRequest()
       },
-      uploadDone: function() {
-        this.$.eventSourceManager.startFolia()
-        this.colorClass = 'fadeOut'
-        this.eventClass = 'fadeIn'
+      startDebugFolia: function () {
+        firebase.database().ref('users/' + this.userId + '/folia/').remove()
+
+        this.$.startDebugFolia.generateRequest()
       },
-      checkFoliaReady: function(evt) {
-        var res = evt.detail.__data__.response
-        if (res.success) {
-          this.foliaReady = true
-        }
-      },
-      uploadDocker: function() {
-        this.$.uploadDocker.generateRequest()
-      },
-      uploadColoriage: function(evt) {
+
+      uploadColoriage: function (evt) {
         var bodyParam = {
           dataURI: evt.detail.image
         }
@@ -131,12 +177,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.bodyParam = bodyParam
         this.$.coloriageUpload.generateRequest()
       },
-      updateLeaf: function(evt) {
+      leafUpdated: function (evt) {
         let result = JSON.parse(evt.detail.xhr.response)
-        this.leafId = result.resource.leaf
+        this.leafId = result.resource.leafId
         this.foliaId = result.resource._id
       },
-      property: {}
+      properties: {
+        foliaId: {
+          type: String,
+          reflectToAttribute: true,
+        },
+        userId: {
+          type: String,
+          notify: true,
+          observer: '_userChanged'
+        },
+        correctResponse: {
+          type: String,
+          notify: true,
+        }
+
+      },
+      _userChanged: function (newVal, oldVal) {
+        if (newVal) {
+          this.userParam = {
+            userId: newVal
+          }
+          this.setupListener(newVal)
+        }
+
+      }
     });
   </script>
 </dom-module>

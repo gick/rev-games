@@ -9,77 +9,95 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../../bower_components/drawing-overlay/drawing-overlay.html">
+<link rel="import" href="../../../bower_components/sign-here/sign-here.html">
 
 <dom-module id="coloriage-element">
   <template>
-        <style>
-         :host {
-            display: block;
-            padding: 10px;
-        }
+    <style>
+      :host {
+        display: block;
+        padding: 10px;
+      }
 
 
-        .wrapper{
-          position:relative;
-        }
-        .coloriage{
-          position:absolute;
-          z-index: 10;
-          top:0;
-          left:0;
-        }
+      .wrapper {
+        position: relative;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
 
-        h1 {
-            font-size: 22px;
-            margin: 16px 0;
-            color: #212121;
-        }
-        </style>
-        <template is="dom-if" if="[[fileId]]" restamp>
+      }
 
-        <div>
-            <h3>Instruction</h3>
-            Tracez une ligne allant d'un bord à l'autre de la feuille en essayant de capturer toute les couleurs présentes
-        </div>
+      sign-here {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .coloriage {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        left: 0;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+    </style>
+    <template is="dom-if" if="[[fileId]]" restamp>
+
+      <div>
+        <h3>Instruction</h3>
+        Tracez une ligne allant d'un bord à l'autre de la feuille en essayant de capturer toute les couleurs présentes
+      </div>
+    </template>
+    <div class="wrapper">
+      <iron-image loaded="{{imageLoaded}}" id="photo" style="max-width:600px; max-height:600px;     box-shadow: 4px 12px 26px 9px #585848;
+;      background-color: lightgray;" src="/file/[[fileId]]"></iron-image>
+      <template is="dom-if" if="[[drawerOK]]" restamp>
+        <sign-here pen-color="rgb(0,125,0)" min-width=15 max-width=15 class="coloriage" id="coloriage" width=[[imageWidth]] height=[[imageHeight]]
+          image="{{coloriage}}" active="{{active}}" empty="{{empty}}" background-color="rgba(255,255,255,0)"> </sign-here>
       </template>
 
-<div class="wrapper">
-    <iron-image  loaded="{{imageLoaded}}" id="photo" style="max-width:600px; max-height:600px; background-color: lightgray;"  src="/file/[[fileId]]"></iron-image>
-    <drawing-overlay id="coloriage" min-width=15 max-width=15 class="coloriage" width="[[imageWidth]]" height="[[imageHeight]]" image="{{coloriage}}" active="{{active}}" empty="{{empty}}"  background-color="rgba(255,255,255,0)"></drawing-overlay>
-
-
-</div>
-<template is="dom-if" if="[[fileId]]" restamp>
-<div>
-    <paper-button raised on-click="resetColor">Annuler coloriage</paper-button>
-    <paper-button raised on-click="sendFolia">Accepter</paper-button>
-</div>
-</template>
-</template>
+    </div>
+    <template is="dom-if" if="[[fileId]]" restamp>
+      <div class="wrapper">
+        <paper-button raised style="background-color:#ffcccc" on-click="resetColor">Annuler coloriage</paper-button>
+        <paper-button raised style="background-color: green" on-click="sendFolia">Confirmer</paper-button>
+      </div>
+    </template>
+  </template>
+  
   <script>
     Polymer({
       is: 'coloriage-element',
-      ready: function() {
-        this.$.photo.addEventListener('loaded-changed',this.resizeColor.bind(this))
+      ready: function () {
+        this.$.photo.addEventListener('loaded-changed', this.setupDrawer.bind(this))
       },
-      resizeColor:function(){
-        if(this.imageLoaded)
-        {
-          let imageWidth  = Number(this.$.photo.clientWidth);
-          let imageHeight  = Number(this.$.photo.clientHeight);
+      setupDrawer: function () {
+        if (this.imageLoaded) {
+          let imageWidth = Number(this.$.photo.clientWidth);
+          let imageHeight = Number(this.$.photo.clientHeight);
 
-          this.imageWidth=imageWidth
-          this.imageHeight=imageHeight
-
+          this.imageWidth = imageWidth
+          this.imageHeight = imageHeight
+          this.drawerOK = true
+          this.fire('image-loaded', null)
         }
       },
-      resetColor: function() {
-        this.$.coloriage.clear()
+      resetColor: function () {
+        this.$$('#coloriage').clear()
       },
-      sendFolia: function() {
-        this.$.coloriage.encodeImage()
-        this.fire('imageEncoded',{image:this.coloriage,width:this.imageWidth,height:this.imageHeight})
+      sendFolia: function () {
+        this.$$('#coloriage').encodeImage()
+        this.fire('imageEncoded', {
+          image: this.coloriage,
+          width: this.imageWidth,
+          height: this.imageHeight
+        })
       },
       property: {
         coloriage: {

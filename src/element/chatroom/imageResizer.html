@@ -1,19 +1,12 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/file-upload/file-upload.html">
 
-<body>
     <dom-module id="image-resizer">
         <template>
-                <file-upload name="imageScan" manual-upload files={{files}} id="imageScan" method="POST" accept="image/*;capture=camera" target="{{url}}">{{name}}
+                <style>
+                    </style>
+            
+                <file-upload name="imageScan" raised additional=[[additional]] hide-file-list manual-upload files={{files}} id="imageScan" method="POST" accept="image/*;capture=camera" target="{{url}}">{{name}}
                 </file-upload>
         </template>
         <script>
@@ -74,10 +67,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 } else {
                     if (height > max_height) {
-                        //width *= max_height / height;
-                        width = Math.round(width *= max_height / height);
-                        height = max_height;
-                    }
+                    //width *= max_height / height;
+                    width = Math.round(width *= max_height / height);
+                    height = max_height;
+                }
                 }
 
                 // resize the canvas and draw the image data into it
@@ -121,7 +114,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 name:{
                     type:String,
                     notify:true,
-                }
+                },
+                additional: {
+                    type: Object,
+                     value: {},
+                },
 
             },
             observers: [

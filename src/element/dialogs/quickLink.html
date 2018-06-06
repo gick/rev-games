@@ -44,8 +44,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/users/{{user.uid}}" data='{{userData}}'>
-        </firebase-document>
         <paper-dialog id='quickLink' entry-animation="scale-up-animation" exit-animation="fade-out-animation">
             <h2>Liens rapides</h2>
             <div class='container'>
@@ -102,9 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             ready: function() {},
             show: function() {
                 this.$.quickLink.open()
-            },
-            newData: function(e) {
-                console.log(e)
             },
             goInventory: function() {
 
