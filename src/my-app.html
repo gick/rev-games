@@ -118,7 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
             <template is="dom-if" if="[[!gameSelected]]" restamp>
-                <iron-swipeable-pages selected="{{page}}" attr-for-selected="name">
+                <iron-swipeable-pages selected="{{page}}" swipe-disabled="true" attr-for-selected="name">
                     <my-folia start-page=[[startPage]] user-id={{user.uid}} name="instructions"></my-folia>
 
                     <my-login id='loginForm' name='login'></my-login>
@@ -468,7 +468,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             },
             _routePageChanged: function (page) {
-                this.page = this.route.path || 'login';
+                this.page = this.route.path || 'activity';
                 if (this.page === "guidance") {
                     if (typeof this.$.map.setMarkers == 'function') {
                         this.$.map.setMarkers();
