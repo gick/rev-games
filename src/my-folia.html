@@ -65,7 +65,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <bitter-alert id="tutorial3" image-url="/images/tuto3.png" text="Quand vous êtes satisfait du résultat, appuyer sur Confirmer, puis sur Reconnaissance"
       title="Utiliser la reconnaissance" confirm-button-text="Compris"></bitter-alert>
     <bitter-alert id="foliaSuccess" image-url="/images/success.jpg" text="" title="Bravo vous avez réussi" confirm-button-text="Super!"></bitter-alert>
-    <bitter-alert id="foliaFail" image-url="/images/fail.jpg" text="Vous n'avez pas identifié le bon arbre" title="C'est raté" confirm-button-text="Zut alors!"></bitter-alert>
+    <bitter-alert id="foliaFail" image-url="/images/fail.jpg" text="Vous n'avez pas identifié le bon arbre" title="C'est raté"
+      confirm-button-text="Zut alors!"></bitter-alert>
 
     <bitter-alert id="foliaBug" image-url="/images/bugFolia.png" text="Désolé, un bug a mangé votre image, merci de réessayer"
       title="Alerte au bug" confirm-button-text="OK"></bitter-alert>
@@ -83,15 +84,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <progress-view current-message={{currentMessage}} current-step={{currentStep}}></progress-view>
         </template>
 
-        <coloriage-element id="coloriage" file-id=[[leafId]]></coloriage-element>
-        <div class="card-actions">
-          <paper-button disabled=[[!foliaReady]] raised on-click="startFolia">Reconnaissance</paper-button>
-        </div>
+        <template is="dom-if" if="[[!foliaRun]]">
+          <coloriage-element id="coloriage" file-id=[[leafId]]></coloriage-element>
+          <div class="card-actions">
+            <paper-button disabled=[[!foliaReady]] raised on-click="startFolia">Reconnaissance</paper-button>
+          </div>
+        </template>
         <div>Debug element : liste espèce reconnue
           <template is="dom-repeat" items=[[populatedInstance.resultCSV]]>
             <div>[[item]]</div>
           </template>
-          </div>
+        </div>
     </paper-card>
 
   </template>
@@ -99,9 +102,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'my-folia',
       ready: function () {
-        this.$.coloriage.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
+        this.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
         this.currentStep = 0
         this.foliaReady = false
+        this.foliaRun=false
       },
       enableFolia: function () {
         this.foliaReady = true
@@ -160,7 +164,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       startFolia: function () {
         firebase.database().ref('users/' + this.userId + '/folia/').remove()
-
+        this.foliaRun=true
         this.$.startFolia.generateRequest()
       },
       startDebugFolia: function () {
