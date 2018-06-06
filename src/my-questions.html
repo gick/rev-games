@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="./element/helper/next-question.html">
 <link rel="import" href="./element/helper/generic-resource-viewer.html">
 <dom-module id="my-questions">
@@ -18,14 +19,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-fullbleed);
                 @apply(--layout-vertical);
             }
+            .resourceViewer.my-questions{
+                display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 10px;
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+
+            }
         </style>
         <div class="game-page">
             <h1>Questions</h1>
             <template is="dom-repeat" items="{{questions}}">
                 <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
             </template>
-            <iron-collapse opened='[[allChecked]]'>
-                <div>Vous pouvez passez à la page suivante!</div>
+            <iron-collapse  opened='[[allChecked]]'>
+            <div style="display:flex;justify-content: center;">
+                <iron-image src="../images/swipeAllowed.png" width=125 height=125></iron-image>
+            </div>
             </iron-collapse>
         </div>
     </template>

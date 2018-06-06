@@ -149,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if=[[pageList.questions]] restamp>
                         <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
                     </template>
-                    <my-folia user-id=[[user.uid]]></my-folia>
+                    <my-folia name="folia" user-id=[[user.uid]]></my-folia>
                     <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
                 </iron-swipeable-pages>
             </template>
@@ -174,8 +174,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addEventListener('change-swipe', this.swipeHandler.bind(this))
                 this.addEventListener('end-game', this.endGame.bind(this))
                 this.addEventListener('next-ug', this.nextUg.bind(this))
+                this.addEventListener('folia-swipe',this.handleFoliaSwipe.bind(this))
             },
-
+            handleFoliaSwipe:function(){
+                this.swipeDisabled=true
+                this.foliaSwipe=true
+            },
             endGame: function () {
                 this.gameSelected = false
                 this.page = 'activity'
@@ -218,6 +222,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             break;
 
                         }
+                    case 'folia':{
+                        if (!this.foliaSwipe) {
+                                this.swipeDisabled = true
+                            } else {
+                                this.swipeDisabled = false
+                            }
+                            break;
+
+                    }
                 }
             },
             openLinks: function () {
@@ -235,6 +248,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
             resetUnitGame: function () {
                 this.questionSwipe=false
+                this.foliaSwipe=false
                 this.splice('pageList', 0, this.pageList.length)
                 this.startMedia = null
                 this.feedbackMedia = null

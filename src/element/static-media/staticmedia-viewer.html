@@ -50,7 +50,7 @@ Viewer for Markdown resource using marked-element
             <resource-header is-picker resource-label="{{resourceLabel}}"></resource-header>
         </template>
         <form class="resource">
-            <marked-element markdown="{{mkdown}}">
+            <marked-element style='font-family: sans-serif' markdown="{{mkdown}}">
                 <div class="markdown-html"></div>
             </marked-element>
             <template is="dom-if" if="[[showDefaultMkdown]]" restamp>

@@ -30,7 +30,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: darkseagreen;
       }
 
+      .photoContainer{
+        display: flex;
+    margin-top: 30px;
+    justify-content: center;
+    margin-bottom: 30px;
 
+      }
       .card {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         padding: 16px;
@@ -76,7 +82,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="card-content">
         Pour cette activité, vous allez devoir identifier une feuille de chêne commun parmis les feuilles proposées.
         <br> Vous pouvez accéder au tutoriel de l'activité en pressant le bouton tutoriel (recommandé)
-        <paper-button raised style="background-color: green;" on-click="startTutorial">Tutoriel</paper-button>
+       
+        <paper-button raised style="background-color: green;
+        color: white;
+        border-radius: 46px;;" on-click="startTutorial">Tutoriel</paper-button>
         <div class="photoContainer">
           <image-resizer class="uploader" id='uploader' on-success="leafUpdated" additional=[[userParam]] name="Prendre photo" url="/leaf"></image-resizer>
         </div>
@@ -95,6 +104,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div>[[item]]</div>
           </template>
         </div>
+        <iron-collapse  opened='[[foliaDone]]'>
+            <div style="display:flex;justify-content: center;">
+                <iron-image src="../images/swipeAllowed.png" width=125 height=125></iron-image>
+            </div>
+            </iron-collapse>
     </paper-card>
 
   </template>
@@ -106,6 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.currentStep = 0
         this.foliaReady = false
         this.foliaRun=false
+        this.foliaDone=false
       },
       enableFolia: function () {
         this.foliaReady = true
@@ -145,9 +160,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       showError: function () {
         this.foliaRun = false
         this.$.foliaBug.open()
+        this.fire('folia-swipe',null)
+        this.leafId = null
+        this.foliaId = null
+        this.$.coloriage
+
       },
       showResult: function () {
         let success = false
+        this.leafId = null
+        this.foliaId = null
+
+        this.foliaDone=true
+        this.fire('folia-swipe',null)
         if (this.populatedInstance && this.populatedInstance.resultCSV) {
           let results = this.populatedInstance.resultCSV
           for (var i = 0; i < results.length; results++) {
@@ -163,6 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       startFolia: function () {
+        this.$$('#coloriage').resetColor()
         firebase.database().ref('users/' + this.userId + '/folia/').remove()
         this.foliaRun=true
         this.$.startFolia.generateRequest()
