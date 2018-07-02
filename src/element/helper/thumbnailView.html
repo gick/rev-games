@@ -10,15 +10,15 @@ This code may only be used under the "Do whatever you want with code license"
     <template>
         <style>
             .thumbnail{
-                width: 50px;
-                height: 50px;
+                width: 80px;
+                height: 80px;
                 cursor: pointer;
                 box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
 
             }
         </style>
         <simple-modal on-tap="hideModal" active={{showThumbnail}}>
-             <iron-image style="width:500px;height:500px" src=[[thumbnailPath]] sizing="contain"></iron-image>
+             <iron-image style="width:200px;height:200px" src=[[thumbnailPath]] sizing="contain"></iron-image>
         </simple-modal>
         <iron-image src=[[thumbnailPath]] on-click="showImageModal" class="thumbnail" sizing="contain"></iron-image>
 

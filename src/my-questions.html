@@ -7,10 +7,9 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="./element/helper/next-question.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
+<link rel="import" href="./styles/common-styles.html">
 <link rel="import" href="./element/helper/generic-resource-viewer.html">
 <dom-module id="my-questions">
     <template>
@@ -19,54 +18,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-fullbleed);
                 @apply(--layout-vertical);
             }
-            .resourceViewer.my-questions{
+
+            .resourceViewer.my-questions {
                 display: flex;
-    flex-direction: column;
-    width: 70%;
-    margin: 0 auto;
-    margin-top: 10px;
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+                flex-direction: column;
+                width: 70%;
+                margin: 0 auto;
+                margin-top: 10px;
+                box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
 
             }
         </style>
-        <div class="game-page">
-            <h1>Questions</h1>
-            <template is="dom-repeat" items="{{questions}}">
-                <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}" item={{item}} class="resourceViewer"></generic-resource-viewer>
-            </template>
-            <iron-collapse  opened='[[allChecked]]'>
-            <div style="display:flex;justify-content: center;">
-                <iron-image src="../images/swipeAllowed.png" width=125 height=125></iron-image>
+        <paper-card heading="Questions situées" image="" elevation="1" animated-shadow="false">
+            <div class="card-content">
+                <template is="dom-repeat" items="{{questions}}">
+                    <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}"
+                        item={{item}} class="resourceViewer"></generic-resource-viewer>
+                </template>
             </div>
-            </iron-collapse>
-        </div>
+            <swipe-allowed swipe-allowed=[[allChecked]]></swipe-allowed>
+        </paper-card>
+
     </template>
     <script>
         Polymer({
 
             is: 'my-questions',
             ready: function () {
-                this.completed=[]
-                this.allChecked=false
+                this.completed = []
+                this.allChecked = false
             },
             resetQuestions: function () {
-                this.splice('questions',0,this.questions.length)
-                this.splice('completed',0,this.completed.length)
-                this.completed=[]
-                this.allChecked=false
+                this.splice('questions', 0, this.questions.length)
+                this.splice('completed', 0, this.completed.length)
+                this.completed = []
+                this.allChecked = false
             },
-            checkCompletion:function(item,completed){
-                var currentIndex=item.model.__data__.index
-                if(!completed.value){
+            checkCompletion: function (item, completed) {
+                var currentIndex = item.model.__data__.index
+                if (!completed.value) {
                     return
                 }
 
-                if(typeof(currentIndex)=='number' && this.completed.indexOf(currentIndex)==-1){
+                if (typeof (currentIndex) == 'number' && this.completed.indexOf(currentIndex) == -1) {
                     this.completed.push(currentIndex)
                 }
-                if(this.completed.length===this.questions.length){
-                    this.allChecked=true
-                    this.fire('change-swipe',{allowSwipe:true})
+                if (this.completed.length === this.questions.length) {
+                    this.allChecked = true
+                    this.fire('change-swipe', {
+                        allowSwipe: true
+                    })
                 }
             },
             // Not using score fail at the moment because score belows 0 would be weird

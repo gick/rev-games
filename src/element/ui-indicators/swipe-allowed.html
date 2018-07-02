@@ -1,0 +1,46 @@
+<!--
+@licensee
+Copyright (c) 2018 Pierre-Yves Gicquel. 
+This code may only be used under the "Do whatever you want with code license"
+This element is used to indicate that a page (instruction, map, question...) is completed 
+and that the user can swipe it to right.
+Some pages are swippable by default like instructions but it's not the general case
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+
+<dom-module id="swipe-allowed">
+    <style>
+        .swipeOK {
+            width: 200px;
+            height: 200px;
+        }
+        .centering{
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+    <template>
+        <iron-collapse opened=[[swipeAllowed]]>
+            <div class="centering">
+                <iron-image class="swipeOK" sizing="contains" src="../../../images/swipeOK.png"></iron-image>
+            </div>
+        </iron-collapse>
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'swipe-allowed',
+                ready: function () {},
+                properties: {
+                    swipeAllowed: {
+                        type: Boolean,
+                        value: false,
+                    },
+                }
+            })
+        })();
+    </script>
+</dom-module>

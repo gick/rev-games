@@ -2,7 +2,7 @@
 <link rel="import" href="./element/helper/generic-resource-viewer.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="./element/helper/next-page.html">
+<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
 <link rel="import" href="./styles/common-styles.html">
 <dom-module id="my-uginstructions">
     <template>
@@ -16,6 +16,7 @@
             <div class="card-content">
                 <generic-resource-viewer page item=[[startUg]]></generic-resource-viewer>
             </div>
+                <swipe-allowed swipe-allowed></swipe-allowed>
         </paper-card>
     </template>
     <script>
@@ -36,12 +37,6 @@
                     type: String,
                     notify: true,
                 },
-                allowSwipe: {
-                    type: Boolean,
-                    notify: true,
-                    reflectToAttribute: true,
-                    value: true,
-                }
 
             }
 

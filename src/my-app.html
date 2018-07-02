@@ -104,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
 
         <app-header-layout>
-            <app-header condenses fixed>
+            <app-header condenses reveals effect="waterfall">
                 <app-toolbar>
                     <div main-title>REVERIES</div>
                     <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
@@ -149,7 +149,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if=[[pageList.questions]] restamp>
                         <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
                     </template>
-                    <my-folia name="folia" user-id=[[user.uid]]></my-folia>
+                    <template is="dom-if" if=[[pageList.folia]] restamp>
+                        <my-folia name="folia" user-id=[[user.uid]]></my-folia>
+                    </template>
                     <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
                 </iron-swipeable-pages>
             </template>
@@ -177,7 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addEventListener('folia-swipe',this.handleFoliaSwipe.bind(this))
             },
             handleFoliaSwipe:function(){
-                this.swipeDisabled=true
+                this.swipeDisabled=false
                 this.foliaSwipe=true
             },
             endGame: function () {
