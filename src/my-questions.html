@@ -31,12 +31,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <paper-card heading="Questions situées" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
-                <template is="dom-repeat" items="{{questions}}">
+                <template is="dom-repeat" items="{{pageActivity}}">
                     <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}"
                         item={{item}} class="resourceViewer"></generic-resource-viewer>
                 </template>
             </div>
-            <swipe-allowed swipe-allowed=[[allChecked]]></swipe-allowed>
+            <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
         </paper-card>
 
     </template>
@@ -49,7 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.allChecked = false
             },
             resetQuestions: function () {
-                this.splice('questions', 0, this.questions.length)
+                this.splice('pageActivity', 0, this.pageActivity.length)
                 this.splice('completed', 0, this.completed.length)
                 this.completed = []
                 this.allChecked = false
@@ -63,16 +63,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (typeof (currentIndex) == 'number' && this.completed.indexOf(currentIndex) == -1) {
                     this.completed.push(currentIndex)
                 }
-                if (this.completed.length === this.questions.length) {
+                if (this.completed.length === this.pageActivity.length) {
                     this.allChecked = true
-                    this.fire('change-swipe', {
-                        allowSwipe: true
-                    })
+                    this.swipeAllowed=true
                 }
             },
             // Not using score fail at the moment because score belows 0 would be weird
             properties: {
-                questions: {
+                pageActivity: {
                     type: Array,
                     notify: true,
                 },
@@ -83,6 +81,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 scores: {
                     type: Object,
                     notify: true,
+                },
+                swipeAllowed:{
+                    type:Boolean,
+                    notify:true
                 }
 
 

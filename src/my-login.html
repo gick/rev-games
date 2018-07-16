@@ -41,7 +41,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: #212121;
         }
         </style>
-        <app-location use-hash-as-path route="{{route}}"></app-location>
         <firebase-auth id="auth" status-known={{status}} user="{{user}}" provider="google">
         </firebase-auth>
         <paper-card heading="Login" image="" elevation="2" animated-shadow="true">
@@ -77,13 +76,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         userConnect(status) {
             if (status && this.user)
-                this.set('route.path', 'profile');
+                this.set('route.path', 'activity');
 
 
         },
 
         is: 'my-login',
-        observers: ['userConnect(status,user.*)', 'routeChanged(route.*)'],
+        observers: ['userConnect(status,user.*)'],
         property: {
 
         }

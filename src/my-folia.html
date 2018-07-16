@@ -13,10 +13,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/bitter-alert/bitter-alert.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth-script.html">
+
 <link rel="import" href="./element/helper/next-page.html">
 <link rel="import" href="./element/coloriage/coloriageElement.html">
 <link rel="import" href="./element/chatroom/imageResizer.html">
 <link rel="import" href="./element/foliaElements/progressView.html">
+<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
 
 <dom-module id="my-folia">
   <template>
@@ -30,13 +35,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: darkseagreen;
       }
 
-      .photoContainer{
+      .photoContainer {
         display: flex;
-    margin-top: 30px;
-    justify-content: center;
-    margin-bottom: 30px;
+        margin-top: 30px;
+        justify-content: center;
+        margin-bottom: 30px;
 
       }
+
       .card {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         padding: 16px;
@@ -76,13 +82,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <bitter-alert id="foliaBug" image-url="/images/bugFolia.png" text="Désolé, un bug a mangé votre image, merci de réessayer"
       title="Alerte au bug" confirm-button-text="OK"></bitter-alert>
+    <firebase-auth  id="auth" on-user-changed="setupListener"  provider="google">
+    </firebase-auth>
 
 
-    <paper-card heading="Reconnaissance automatique de feuilles" image="" elevation="2" animated-shadow="false">
+    <paper-card heading="Identification botanique" image="" elevation="2" animated-shadow="false">
       <div class="card-content">
-        Pour cette activité, vous allez devoir identifier une feuille de chêne commun parmis les feuilles proposées.
+        [[pageActivity.question]]
         <br> Vous pouvez accéder au tutoriel de l'activité en pressant le bouton tutoriel (recommandé)
-       
+
         <paper-button raised style="background-color: green;
         color: white;
         border-radius: 46px;;" on-click="startTutorial">Tutoriel</paper-button>
@@ -104,11 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div>[[item]]</div>
           </template>
         </div>
-        <iron-collapse  opened='[[foliaDone]]'>
-            <div style="display:flex;justify-content: center;">
-                <iron-image src="../images/swipeAllowed.png" width=125 height=125></iron-image>
-            </div>
-            </iron-collapse>
+        <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
     </paper-card>
 
   </template>
@@ -119,8 +123,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
         this.currentStep = 0
         this.foliaReady = false
-        this.foliaRun=false
-        this.foliaDone=false
+        this.foliaRun = false
+        this.foliaDone = false
       },
       enableFolia: function () {
         this.foliaReady = true
@@ -138,29 +142,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.tutorial1.open()
       },
 
-      setupListener: function (uid) {
-        var that = this
-        this.currentStep = 0
-        firebase.database().ref('users/' + uid + '/folia/').remove()
-        var messageRef = firebase.database().ref('users/' + uid + '/folia/messages/')
-        var endRef = firebase.database().ref('users/' + uid + '/folia/end/')
-        var errorRef = firebase.database().ref('users/' + uid + '/folia/errors/')
+      setupListener: function (evt) {
+        if (evt.detail && evt.detail.value && evt.detail.value.uid) {
+          let uid=evt.detail.value.uid
+          this.userParam={userId:uid}
 
-        messageRef.on('child_added', function (child) {
-          that.foliaRun = true
-          that.currentStep = that.currentStep + 1
-          that.currentMessage = child.val().data
-        })
-        endRef.on('child_added', function () {
-          that.foliaRun = false
-          that.$.populatedInstance.generateRequest()
-        })
-        errorRef.on('child_added', that.showError.bind(that))
+          var that = this
+          this.currentStep = 0
+          firebase.database().ref('users/' + uid + '/folia/').remove()
+          var messageRef = firebase.database().ref('users/' + uid + '/folia/messages/')
+          var endRef = firebase.database().ref('users/' + uid + '/folia/end/')
+          var errorRef = firebase.database().ref('users/' + uid + '/folia/errors/')
+
+          messageRef.on('child_added', function (child) {
+            that.foliaRun = true
+            that.currentStep = that.currentStep + 1
+            that.currentMessage = child.val().data
+          })
+          endRef.on('child_added', function () {
+            that.foliaRun = false
+            that.$.populatedInstance.generateRequest()
+          })
+          errorRef.on('child_added', that.showError.bind(that))
+        }
       },
       showError: function () {
         this.foliaRun = false
         this.$.foliaBug.open()
-        this.fire('folia-swipe',null)
+        this.fire('folia-swipe', null)
         this.leafId = null
         this.foliaId = null
         this.$.coloriage
@@ -171,8 +180,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.leafId = null
         this.foliaId = null
 
-        this.foliaDone=true
-        this.fire('folia-swipe',null)
+        this.foliaDone = true
+        this.fire('folia-swipe', null)
         if (this.populatedInstance && this.populatedInstance.resultCSV) {
           let results = this.populatedInstance.resultCSV
           for (var i = 0; i < results.length; results++) {
@@ -190,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       startFolia: function () {
         this.$$('#coloriage').resetColor()
         firebase.database().ref('users/' + this.userId + '/folia/').remove()
-        this.foliaRun=true
+        this.foliaRun = true
         this.$.startFolia.generateRequest()
       },
       startDebugFolia: function () {
@@ -217,27 +226,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           reflectToAttribute: true,
         },
-        userId: {
-          type: String,
+        pageActivity: {
+          type: Object,
           notify: true,
-          observer: '_userChanged'
         },
-        correctResponse: {
-          type: String,
-          value:"CorylusAvellana",
+        swipeAllowed: {
+          type: Boolean,
           notify: true,
         }
 
       },
-      _userChanged: function (newVal, oldVal) {
-        if (newVal) {
-          this.userParam = {
-            userId: newVal
-          }
-          this.setupListener(newVal)
-        }
-
-      }
     });
   </script>
 </dom-module>

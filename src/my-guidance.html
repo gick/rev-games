@@ -5,6 +5,8 @@
 <link rel="import" href="./element/orientation/my-orientation.html">
 <link rel="import" href="./element/orientation/my-compass.html">
 <link rel="import" href="./element/orientation/my-ping.html">
+<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
+
 <dom-module id="my-guidance">
     <template>
         <style>
@@ -48,11 +50,11 @@
                 <paper-icon-button style="position: relative;float:right;margin-right: 50px" icon="vaadin:question-circle" on-click="showInstruction">
                 </paper-icon-button>
                 <div>
-                    <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[poi.latitude]]" long="[[poi.longitude]]"
+                    <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]" long="[[pageActivity.longitude]]"
                         poi={{poi}}></map-display>
                 </div>
             </div>
-            <swipe-allowed swipe-allowed=[[poiReached]]></swipe-allowed>
+            <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
         </paper-card>
 
             <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
@@ -87,7 +89,7 @@
                 this.set('mapready', true)
             },
             setPOI: function () {
-                this.$$('#map').showPOI(this.poi)
+                this.$$('#map').showPOI(this.pageActivity)
             },
 
             _hasInstruction: function () {
@@ -111,15 +113,15 @@
                 if (!this.mapready) {
                     return
                 }
-                if (this.poi) {
+                if (this.pageActivity) {
                     var coord = {
                         lat: e.detail.latitude,
                         lng: e.detail.longitude
                     }
                     this.headingDistance = google.maps.geometry.spherical.computeDistanceBetween(new google
                         .maps.LatLng(coord), new google.maps.LatLng({
-                            lat: this.poi.latitude,
-                            lng: this.poi.longitude
+                            lat: this.pageActivity.latitude,
+                            lng: this.pageActivity.longitude
                         }))
                     if (this.initialHeadingDistance == null) {
                         this.initialHeadingDistance = this.headingDistance
@@ -146,7 +148,7 @@
                 if (newDistance == 0) {
                     return
                 }
-                if (this.poi) {
+                if (this.pageActivity) {
                     if (newDistance <= this.poi.map.areaRadius) {
                         this.poiReached=true
                         this.$.userAtpoi.open()
@@ -158,30 +160,20 @@
             nextActivity: function () {
                 this.poiReached=true
     
-                this.fire('change-swipe', {
-                    allowSwipe: true
-                })
+                this.swipeAllowed=true
                 this.$.userAtpoi.open()
                 this.$.poiReached.open()
             },
 
-            poiSet: function (poi) {
-                console.log(this.poi)
-                // body...
-            },
-            _allowPass: function (elem) {
-                console.log(elem)
-            },
             is: 'my-guidance',
 
 
             property: {
-                allowPass: {
-                    type: String,
+                swipeAllowed: {
+                    type: Boolean,
                     notify: true,
-                    observer: '_allowPass',
                 },
-                poi: {
+                pageActivity: {
                     type: Object,
                     notify: true,
                 },

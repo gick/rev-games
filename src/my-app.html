@@ -41,6 +41,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="./element/dialogs/quickLink.html">
 <link rel="import" href="./element/helper/user-manager.html">
+<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
+
 <link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
 <link rel="import" href="my-folia.html">
 
@@ -95,13 +97,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <firebase-app api-key="AIzaSyD1rNde0vVt8jePCI-t19T7ore89RxDKY0" auth-domain="rev-game-6e36a.firebaseapp.com" database-url="https://rev-game-6e36a.firebaseio.com">
         </firebase-app>
-        <firebase-auth id="auth" user="{{user}}" provider="google">
+        <firebase-auth id="auth" on-signed-in-changed="handleSignedIn" signed-in={{signedIn}} user="{{user}}" provider="google">
         </firebase-auth>
         <firebase-document path="/users/{{user.uid}}" data={{currentScoreData}}></firebase-document>
-        <user-manager id="userManager"></user-manager>
         <app-location use-hash-as-path route="{{route}}"></app-location>
-        <activity-representation mlg-item="{{currentMLG}}" questions="{{questions}}" id="currentMLG"></activity-representation>
-        <app-route route="{{route}}" pattern="#/page" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
+        <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
+        <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
         <app-header-layout>
             <app-header condenses reveals effect="waterfall">
@@ -115,42 +116,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-header>
             <quick-link id='quickLink'></quick-link>
 
- 
+
 
             <template is="dom-if" if="[[!gameSelected]]" restamp>
-                <iron-swipeable-pages selected="{{page}}" swipe-disabled="true" attr-for-selected="name">
-                    <my-folia start-page=[[startPage]] user-id={{user.uid}} name="instructions"></my-folia>
+                <iron-swipeable-pages selected="{{page}}" attr-for-selected="name">
+                    <template is="dom-if" if=[[!signedIn]] restamp>
+                        <my-login id='loginForm' name='login'></my-login>
+                        <my-register name="register"></my-register>
+                    </template>
+                    <template is="dom-if" if=[[signedIn]] restamp>
+                            <my-badge id="badge" name="badge"></my-badge>
 
-                    <my-login id='loginForm' name='login'></my-login>
-                    <my-register name="register"></my-register>
-                    <my-profile name="profile"></my-profile>
-                    <my-badge id="badge" name="badge"></my-badge>
-                    <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                        <my-profile name="profile"></my-profile>
+                        <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
+                    </template>
                 </iron-swipeable-pages>
             </template>
 
             <template is="dom-if" if="[[gameSelected]]" restamp>
-                <iron-swipeable-pages no-cycle swipe-disabled=[[swipeDisabled]] selected="{{page}}" attr-for-selected="name">
+                <iron-swipeable-pages id="gamePages" no-cycle swipe-disabled="[[swipeAllowed]]" selected="{{page}}" attr-for-selected="name">
                     <template is="dom-if" if=[[pageList.startPage]] restamp>
                         <my-instructions start-page=[[startPage]] name="instructions"></my-instructions>
                     </template>
-
-                    <template is="dom-if" if=[[pageList.ugInstructions]] restamp>
-                        <my-uginstructions id="instructions" is-swippable start-ug="[[startUg]]" name="uginstructions"></my-uginstructions>
+                    <template is="dom-if" if=[[pageList.uginstruction]] restamp>
+                        <my-uginstructions id="instructions" swipe-allowed='{{pageList.uginstruction.swipeAllowed}}' page-activity="[[pageList.uginstruction.pageActivity]]"
+                            name="uginstructions"></my-uginstructions>
                     </template>
                     <template is="dom-if" if=[[pageList.guidance]] restamp>
-                        <my-guidance allow-pass='{{allowPass}}' doc-mkdown="{{ugMkdown}}" poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}"
-                            isping="{{isPing}}" name="guidance"></my-guidance>
+                        <my-guidance doc-mkdown="{{ugMkdown}}" swipe-allowed='{{pageList.guidance.swipeAllowed}}' page-activity="[[pageList.uginstruction.pageActivity]]"
+                            poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
                     </template>
-                    <template is="dom-if" if="[[pageList.qrCode]]" restamp>
-                        <my-qrcodescanner allow-pass={{allowPass}} poi="[[POI]]" poiincorrect-message="{{poiIncorrectMessage}}" poireached-message="{{poiReachedMessage}}"
-                            id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                    <template is="dom-if" if="[[pageList.qrcodescanner]]" restamp>
+                        <my-qrcodescanner page-activity=[[pageList.qrcodescanner.pageActivity]] swipe-allowed=[[qrSwipe]] id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     </template>
                     <template is="dom-if" if=[[pageList.questions]] restamp>
-                        <my-questions id="myQuestions" questions=[[questions]] name="questions"></my-questions>
+                        <my-questions id="myQuestions" page-activity=[[pageList.questions.pageActivity]] swipe-allowed='{{pageList.questions.swipeAllowed}}'
+                            name="questions"></my-questions>
                     </template>
                     <template is="dom-if" if=[[pageList.folia]] restamp>
-                        <my-folia name="folia" user-id=[[user.uid]]></my-folia>
+                        <my-folia name="folia" page-activity="[[pageList.folia.pageActivity]]" swipe-allowed=[[pageList.folia.swipeAllowed]]></my-folia>
                     </template>
                     <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
                 </iron-swipeable-pages>
@@ -164,75 +168,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'my-app',
             ready: function () {
                 this.gameSelected = false
-                this.set('questions', [])
-                this.pageFlow = {}
-
                 this.addEventListener('activitySelected', this.setupActivity.bind(
                     this))
 
                 this.addEventListener('authChanged', this.authChanged.bind(this))
-                this.addEventListener('userName', this.setupUserName.bind(this))
                 this.addEventListener('iron-select', this.pageChangedHandler.bind(this))
-                this.addEventListener('change-swipe', this.swipeHandler.bind(this))
+                this.addEventListener('swipe-change', this.swipeHandler.bind(this))
                 this.addEventListener('end-game', this.endGame.bind(this))
                 this.addEventListener('next-ug', this.nextUg.bind(this))
-                this.addEventListener('folia-swipe',this.handleFoliaSwipe.bind(this))
             },
-            handleFoliaSwipe:function(){
-                this.swipeDisabled=false
-                this.foliaSwipe=true
+            handleSignedIn:function(event){
+                if(event.detail.value){
+                    // user is logged in, go to activity
+                    this.page="activity"
+                }
+                else
+                {
+                    this.page="login"
+                }
             },
             endGame: function () {
                 this.gameSelected = false
                 this.page = 'activity'
 
             },
+
             nextUg: function () {
                 this.unitGamesIndex = this.unitGamesIndex + 1
                 this.resetUnitGame()
                 this.setupUnitGame(this.unitGamesIndex)
             },
             swipeHandler: function (msg) {
-                this.swipeDisabled = !msg.detail.allowSwipe
-                this.questionSwipe = true
+                this.swipeAllowed = !msg.detail.allowSwipe
             },
             pageChangedHandler: function (evt) {
-                switch (this.page) {
-                    case 'instructions':
-                        {
-                            this.swipeDisabled = false
-                            break;
-                        }
-                    case 'uginstructions':
-                        {
-                            this.swipeDisabled = false
-                            break;
-                        }
-                    case 'guidance':
-                        {
-                            this.swipeDisabled = true
-                            break;
-
-                        }
-                    case 'questions':
-                        {
-                            if (!this.questionSwipe) {
-                                this.swipeDisabled = true
-                            } else {
-                                this.swipeDisabled = false
-                            }
-                            break;
-
-                        }
-                    case 'folia':{
-                        if (!this.foliaSwipe) {
-                                this.swipeDisabled = true
-                            } else {
-                                this.swipeDisabled = false
-                            }
-                            break;
-
-                    }
+                if (this.pageList) {
+                    this.set('swipeAllowed', !evt.detail.item.swipeAllowed)
                 }
             },
             openLinks: function () {
@@ -249,12 +220,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.resetUnitGame()
             },
             resetUnitGame: function () {
-                this.questionSwipe=false
-                this.foliaSwipe=false
-                this.splice('pageList', 0, this.pageList.length)
-                this.startMedia = null
-                this.feedbackMedia = null
-                this.startPage = null
                 this.pageList.ugInstructions = false
                 if (this.$$('#myQuestions') && this.$$('#myQuestions').resetQuestions) {
                     this.$$('#myQuestions').resetQuestions()
@@ -273,7 +238,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             setupActivity: function (elem) {
                 this.gameSelected = true
                 this.unitGamesIndex = 0
-                this.pageList = []
+                this.pageList = {}
                 this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
                 firebase.database().ref('users/' + this.user.uid + '/').update({
                     currentMLG: elem.detail,
@@ -282,7 +247,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (this.currentMLG.startpage) {
                     this.set('startPage', this.currentMLG.startpage)
                     this.pageList.startPage = true
-                    this.push('pageList', 'instructions')
+                    // this.push('pageList', 'instructions')
                 }
                 if (this.currentMLG.badge) {
                     this.badge = this.currentMLG.badge
@@ -298,25 +263,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.currentUnitGame = this.currentMLG.unitGames[index]
                 if (this.currentUnitGame.startMedia) {
                     this.startUg = this.currentUnitGame.startMedia
-                    this.push('pageList', 'uginstructions')
-                    this.pageList.ugInstructions = true
+                    this.set('pageList.uginstruction', {
+                        pageActivity: this.startUg,
+                        visible: true,
+                        swipeAllowed: true
+                    })
+
                 }
                 if (this.currentUnitGame.poiGuidMap) {
                     this.POI = this.currentUnitGame.POI
-                    this.pageList.guidance = true
-                    this.push('pageList', 'guidance')
+                    this.set('pageList.guidance', {
+                        pageActivity: this.POI,
+                        visible: true,
+                        swipeAllowed: false
+                    })
                     if (this.$$('#map') && this.$$('#map').setPOI) {
                         this.$$('#map').setPOI()
                     }
 
                 }
                 if (this.currentUnitGame.poiQRValidation) {
-                    this.push('pageList', 'qrcodescanner')
-                    this.pageList.qrCode = true
-                    this.POI = this.currentUnitGame.POI
-                    this.poiIncorrectMessage = this.currentUnitGame.poiIncorrectMessage
-                    this.poiReachedMessage = this.currentUnitGame.poiReachedMessage
-
+                    this.set('pageList.qrcodescanner', {
+                        pageActivity: {
+                            poi: this.POI,
+                            incorrectMessage: this.currentUnitGame.poiIncorrectMessage,
+                            correctMessage: this.currentUnitGame.poiReachedMessage
+                        },
+                        swipeAllowed: false
+                    })
 
                 }
                 if (this.currentUnitGame.inventoryItem) {
@@ -332,45 +306,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
 
                 }
-
+                if (this.currentUnitGame.identificationActivity) {
+                    this.set('pageList.folia', {
+                        pageActivity: this.currentUnitGame.identificationActivity,
+                        swipeAllowed: true
+                    })
+                }
                 if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
-                    this.pageList.questions = true
-                    if (this.questions.length > 0) {
-                        this.splice('questions', 0, this.questions.length)
+                    this.set('pageList.questions', {
+                        pageActivity: [],
+                        swipeAllowed: false
+                    })
+                    let mcqActivities = this.currentUnitGame.mcqActivities
+                    let freetextActivities = this.currentUnitGame.freetextActivities
+                    for (var i = 0; i < freetextActivities.length; i++) {
+                        this.push('pageList.questions.pageActivity', freetextActivities[i])
                     }
 
-                    this.mcqActivities = this.currentUnitGame.mcqActivities
-                    this.freetextActivities = this.currentUnitGame.freetextActivities
-                    for (var i = 0; i < this.freetextActivities.length; i++) {
-                        this.freetextActivities[i].isCompleted = false
-                        this.push('questions', this.freetextActivities[i])
+                    for (var i = 0; i < mcqActivities.length; i++) {
+                        this.push('pageList.questions.pageActivity', mcqActivities[i])
                     }
-
-                    for (var i = 0; i < this.mcqActivities.length; i++) {
-                        this.mcqActivities[i].isCompleted = false
-                        this.push('questions', this.mcqActivities[i])
-                    }
-                    if (this.questions.length > 0)
-                        this.push('pageList', 'questions')
                 }
                 if (this.currentUnitGame.feedbackMedia) {
                     this.feedbackMedia = this.currentUnitGame.feedbackMedia
                 }
-                this.push('pageList', 'feedback')
 
-                this.page = this.pageList[0]
+                this.page = 'uginstructions'
 
 
 
             },
 
-            setupUserName: function (elem) {
-                this.userName = elem.detail
-            },
-
-            setupUserScore: function (elem) {
-                this.userScore = elem.detail;
-            },
 
             openDialog: function (elem) {
                 this.$.dialog.open()
@@ -380,123 +346,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.badgeNumber += value;
             },
 
-            updateNotification: function () {
-                this.badgeNumber = 0
-                this.showBadge = true
-                this.currentPage = "/#" + this.page
-            },
-            _cacheStateChanged: function (state) {
-                console.log(state)
-            },
             properties: {
-                cacheValue: {
-                    type: String,
-                    observer: '_cacheStateChanged'
-                },
                 page: {
                     type: String,
-                    reflectToAttribute: true,
-                    observer: '_pageChanged'
+                    reflectToAttribute:true,
+                    observer:'_pageChanged'
                 },
-
-                badgeNumber: {
-                    type: Number,
-                    value: 0
-                },
-
-                userscore: {
-                    type: Array,
-                    notify: true
-                },
-
-                currentActivity: {
-                    type: String,
-                    notify: true
-                },
-
-                scoreToBeat: {
-                    type: Number,
-                    notify: true,
-                },
-
-                currentScore: {
-                    type: Number,
-                    notify: true,
-                    observer: '_scoreUpdated'
-                },
-
-                currentItemId: {
-                    type: String,
-                    notify: true
-                },
-
-                currentPage: {
-                    type: String,
-                    notify: true,
-                    value: '/#activity'
-                },
-
-                homeHidden: {
-                    type: Boolean,
-                    notify: true,
-                    value: false,
-                },
-
-                score: {
-                    type: Number,
-                    value: 0
-                }
             },
 
             observers: [
-                '_userOnline(currentScoreData.*)',
-                '_inventoryItem(currentScoreData.newInventoryItem)',
-                '_routePageChanged(route.page)'
-
+                '_routePageChanged(route.path)'
             ],
-            _inventoryItem: function (a) {
-
-                console.log(a)
-            },
-            _userOnline(user) {
-                /*  if(this.currentScoreData && !this.mlgId){
-                      if(this.currentScoreData.mlgJSON){
-                          var mlg={detail:this.currentScoreData.mlgJSON}
-                          this.setupActivity(mlg)
-                          this.set('page',this.currentScoreData.page.page)
-
-                      }
-                     // this.set('page','activity')
-                      /*  if (user && user.uid) {
-                            firebase.database().ref('users/' + user.uid + '/').update({
-                                status: 'online'
-                            });
-                            var ref = firebase.database().ref("users/" + user.uid + '/');
-                            ref.onDisconnect().update({
-                                status: 'offline'
-                            });
-                            var refPage = firebase.database().ref("users/" + user.uid + '/page/');
-                            ref.onDisconnect().set({
-                                page: ''
-                            });
-
-
-                        }*/
-
-            },
             _routePageChanged: function (page) {
-                this.page = this.route.path || 'activity';
-                if (this.page === "guidance") {
-                    if (typeof this.$.map.setMarkers == 'function') {
-                        this.$.map.setMarkers();
-                    }
-                }
+               if(this.route){
+                   this.route.path=page
+               }
+               // this.route = page || 'activity';
+                //this.page=this.route.path
             },
 
 
 
             _pageChanged: function (page) {
-                if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' &&
+            /*    if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' &&
                     this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page !=
                     'mapview') {
                     firebase.database().ref('users/' + this.user.uid + '/page/').set({
@@ -517,8 +389,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             'newInventoryItem': false
                         })
                     }
-                }
+                }*/
                 // load page import on demand.
+                this.set('route.path',page)
                 this.importHref(
                     this.resolveUrl('my-' + page + '.html'), null, null, true);
                 if (!this.user) {
@@ -527,8 +400,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (this.user) {
                     console.log('user id')
                 }
-                this.set('route.path', page)
-
             },
 
         });

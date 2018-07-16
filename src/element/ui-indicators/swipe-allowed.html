@@ -24,7 +24,7 @@ Some pages are swippable by default like instructions but it's not the general c
     <template>
         <iron-collapse opened=[[swipeAllowed]]>
             <div class="centering">
-                <iron-image class="swipeOK" sizing="contains" src="../../../images/swipeOK.png"></iron-image>
+                <iron-image class="swipeOK" on-click="fireSwipe" sizing="contains" src="../../../images/swipeOK.png"></iron-image>
             </div>
         </iron-collapse>
     </template>
@@ -34,10 +34,25 @@ Some pages are swippable by default like instructions but it's not the general c
             Polymer({
                 is: 'swipe-allowed',
                 ready: function () {},
+                fireSwipe:function(){
+                    this.fire('swipe-change',{allowSwipe:true})
+
+                },
+                swipeAllowedObserver:function(newVal){
+                    if(newVal===true){
+                        this.fire('swipe-change',{allowSwipe:true})
+                    }
+                    if(newVal===false){
+                        this.fire('swipe-change',{allowSwipe:false})  
+                    }
+                },
+
                 properties: {
                     swipeAllowed: {
                         type: Boolean,
-                        value: false,
+                        notify:true,
+                        reflectToAttribute:true,
+                        observer:'swipeAllowedObserver'
                     },
                 }
             })
