@@ -38,7 +38,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
-<link rel="import" href="./element/activity-representation/activityRepresentation.html">
 <link rel="import" href="./element/dialogs/quickLink.html">
 <link rel="import" href="./element/helper/user-manager.html">
 <link rel="import" href="./element/ui-indicators/swipe-allowed.html">
@@ -101,7 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </firebase-auth>
         <firebase-document path="/users/{{user.uid}}" data={{currentScoreData}}></firebase-document>
         <app-location use-hash-as-path route="{{route}}"></app-location>
-        <activity-representation mlg-item="{{currentMLG}}" id="currentMLG"></activity-representation>
         <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
         <app-header-layout>
@@ -174,9 +172,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addEventListener('authChanged', this.authChanged.bind(this))
                 this.addEventListener('iron-select', this.pageChangedHandler.bind(this))
                 this.addEventListener('swipe-change', this.swipeHandler.bind(this))
+                this.addEventListener('on-swipe-allowed-change',this.genericSwipeHandler.bind(this))
                 this.addEventListener('end-game', this.endGame.bind(this))
                 this.addEventListener('next-ug', this.nextUg.bind(this))
             },
+            genericSwipeHandler:function(evt){
+                console.log(evt)
+            }
+            ,
             handleSignedIn:function(event){
                 if(event.detail.value){
                     // user is logged in, go to activity
