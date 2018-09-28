@@ -240,6 +240,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             setupActivity: function (elem) {
                 this.gameSelected = true
+                this.lastUnitGame=false
                 this.unitGamesIndex = 0
                 this.pageList = {}
                 this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
@@ -334,12 +335,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.feedbackMedia = this.currentUnitGame.feedbackMedia
                 }
 
-                this.page = 'uginstructions'
 
-
+                this.setStartPage()
 
             },
+            setStartPage:function(){
+                if(this.pageList.startPage){
+                    this.page='instructions'
+                    return
+                }
+                if(this.pageList.uginstructions){
+                    this.page = 'uginstructions'
+                    return
+                }
+                if(this.pageList.guidance){
+                    this.page='guidance'
+                    return
+                }
+                if(this.pageList.questions){
+                    this.page='questions'
+                    return
+                }
+                if(this.pageList.folia){
+                    this.page='folia'
+                    return
+                }
+                this.page='feedback'
 
+            },
 
             openDialog: function (elem) {
                 this.$.dialog.open()

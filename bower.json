@@ -44,7 +44,8 @@
     "common-styles": "REVERIES-project/common-styles",
     "staticmedia-viewer": "REVERIES-project/staticmedia-viewer",
     "activity-feedback": "REVERIES-project/activity-feedback",
-    "free-text-question": "REVERIES-project/free-text-question"
+    "free-text-question": "REVERIES-project/free-text-question",
+    "mcq-activity": "REVERIES-project/mcq-activity"
 
   },
   "resolutions": {
