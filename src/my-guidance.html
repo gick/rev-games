@@ -28,7 +28,7 @@
                         poi={{poi}}></map-display>
                 </div>
             </div>
-            <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
+            <swipe-allowed swipe-allowed=[[isSwipeable]]></swipe-allowed>
         </paper-card>
 
             <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
@@ -51,6 +51,9 @@
     </template>
     <script>
         Polymer({
+            behaviors: [
+          Window.SwipeableBehavior
+            ],
 
             ready: function () {
                 this.$.map.addEventListener('google-map-ready', this.mapready.bind(this));
@@ -134,7 +137,7 @@
             nextActivity: function () {
                 this.poiReached=true
     
-                this.swipeAllowed=true
+                this.isSwipeable=true
                 this.$.userAtpoi.open()
                 this.$.poiReached.open()
             },
@@ -143,10 +146,6 @@
 
 
             property: {
-                swipeAllowed: {
-                    type: Boolean,
-                    notify: true,
-                },
                 pageActivity: {
                     type: Object,
                     notify: true,

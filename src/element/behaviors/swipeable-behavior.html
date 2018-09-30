@@ -1,0 +1,28 @@
+
+<!--
+`swipeable-behavior`
+
+
+@demo demo/index.html
+-->
+
+<script>
+  Window.SwipeableBehavior = {
+
+    properties: {
+      isSwipeable: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        observer: '_toggleSwippeable'
+      }
+    },
+
+
+    _toggleSwippeable: function(value) {
+      this.fire('swipeable-toggled',{swipeable:this.__data__.isSwipeable});
+    },
+
+
+  };
+</script>

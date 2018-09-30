@@ -34,7 +34,6 @@
     "paper-tabs": "^1.8.0",
     "polymerfire": "firebase/polymerfire#^2.0.1",
     "simple-modal": "SimpleElements/simple-modal#^0.3.3",
-    "iron-swipeable-pages": "^1.2.10",
     "sweet-alert": "bitter-alert#^1.0.1",
     "bitter-alert": "^2.0.0",
     "material-progress": "^0.1.3",
@@ -45,7 +44,9 @@
     "staticmedia-viewer": "REVERIES-project/staticmedia-viewer",
     "activity-feedback": "REVERIES-project/activity-feedback",
     "free-text-question": "REVERIES-project/free-text-question",
-    "mcq-activity": "REVERIES-project/mcq-activity"
+    "mcq-activity": "REVERIES-project/mcq-activity",
+    "iron-swipeable-pages": "REVERIES-project/iron-swipeable-pages#1.3.0"
+
 
   },
   "resolutions": {

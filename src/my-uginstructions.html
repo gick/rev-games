@@ -16,18 +16,17 @@
             <div class="card-content">
                 <generic-resource-viewer page item=[[pageActivity]]></generic-resource-viewer>
             </div>
-            <swipe-allowed id="swipper"  swipe-allowed={{swipeAllowed}}></swipe-allowed>
+            <swipe-allowed swipe-allowed={{isSwipeable}}></swipe-allowed>
         </paper-card>
     </template>
     <script>
         Polymer({
 
+            behaviors: [
+             Window.SwipeableBehavior
+            ],
 
             is: 'my-uginstructions',
-            ready: function () {
-
-
-            },
             property: {
                 pageActivity: {
                     type: Object,
@@ -37,10 +36,6 @@
                     type: String,
                     notify: true,
                 },
-                swipeAllowed: {
-                    type: Boolean,
-                    notify: true,
-                }
 
             }
 

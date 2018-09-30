@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         item={{item}} on-response-status-changed="checkCompletionUpdated" class="resourceViewer"></generic-resource-viewer>
                 </template>
             </div>
-            <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
+            <swipe-allowed swipe-allowed=[[isSwipeable]]></swipe-allowed>
         </paper-card>
 
     </template>
@@ -84,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 if (this.completed.length === this.pageActivity.length) {
                     this.allChecked = true
-                    this.swipeAllowed=true
+                    this.isSwipeable=true
                 }
             },
             // Not using score fail at the moment because score belows 0 would be weird
@@ -100,12 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 scores: {
                     type: Object,
                     notify: true,
-                },
-                swipeAllowed:{
-                    type:Boolean,
-                    notify:true
                 }
-
 
             },
 

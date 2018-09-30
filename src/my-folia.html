@@ -98,13 +98,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div>[[item]]</div>
           </template>
         </div>
-        <swipe-allowed swipe-allowed=[[swipeAllowed]]></swipe-allowed>
+        <swipe-allowed swipe-allowed=[[isSwipeable]]></swipe-allowed>
     </paper-card>
 
   </template>
   <script>
     Polymer({
       is: 'my-folia',
+      behaviors: [
+          Window.SwipeableBehavior
+            ],
+
       ready: function () {
         this.addEventListener('imageEncoded', this.uploadColoriage.bind(this))
         this.currentStep = 0
@@ -167,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.foliaId = null
 
         this.foliaDone = true
-        this.fire('folia-swipe', null)
+        this.isSwipeable=true
         if (this.populatedInstance && this.populatedInstance.resultCSV) {
           let results = this.populatedInstance.resultCSV
           for (var i = 0; i < results.length; results++) {
@@ -214,10 +218,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         pageActivity: {
           type: Object,
-          notify: true,
-        },
-        swipeAllowed: {
-          type: Boolean,
           notify: true,
         }
 
