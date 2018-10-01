@@ -39,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="./element/dialogs/quickLink.html">
-<link rel="import" href="./element/ui-indicators/swipe-allowed.html">
+<link rel="import" href="./element/helper/swipe-allowed.html">
 <link rel="import" href="./element/behaviors/swipeable-behavior.html">
 
 <link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
@@ -383,29 +383,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
             _pageChanged: function (page) {
-            /*    if (this.user && this.page != 'login' && this.page != 'inventory' && this.page != 'badge' &&
-                    this.page != 'activity' && this.page != 'chatroom' && this.page != 'scores' && this.page !=
-                    'mapview') {
-                    firebase.database().ref('users/' + this.user.uid + '/page/').set({
-                        page: page,
-                    });
-
-                }
-
-
-                if (this.page == 'activity') {
-                    if (this.user && this.user.uid) {
-                        firebase.database().ref('users/' + this.user.uid).update({
-                            currentMLG: null,
-                            hasChatSession: null,
-                            hasMapSession: null,
-                        });
-                        firebase.database().ref('users/' + this.user.uid + '/').update({
-                            'newInventoryItem': false
-                        })
-                    }
-                }*/
-                // load page import on demand.
                 this.set('route.path',page)
                 this.importHref(
                     this.resolveUrl('my-' + page + '.html'), null, null, true);
