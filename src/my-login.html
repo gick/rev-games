@@ -30,7 +30,7 @@ MOGGLE editor Log in
             color: #212121;
         }
         </style>
-        <firebase-auth id="auth" status-known={{status}} user="{{user}}" provider="google">
+        <firebase-auth id="auth"  user="{{user}}" provider="google">
         </firebase-auth>
         <paper-card heading="Login" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
@@ -46,12 +46,9 @@ MOGGLE editor Log in
     </template>
     <script>
     Polymer({
-        ready: function() {
-
-        },
+        
         login: function() {
             this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then(function(user) {
-                // this.$.signinToast.show()
                 var ref = firebase.database().ref("users/" + user.uid + '/');
                 ref.onDisconnect().update({
                     status: 'offline'
@@ -63,15 +60,8 @@ MOGGLE editor Log in
 
             })
         },
-        userConnect(status) {
-            if (status && this.user)
-                this.set('route.path', 'activity');
-
-
-        },
 
         is: 'my-login',
-        observers: ['userConnect(status,user.*)'],
         property: {
 
         }
