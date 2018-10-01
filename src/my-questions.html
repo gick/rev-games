@@ -19,21 +19,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-vertical);
             }
 
-            .resourceViewer.my-questions {
-                display: flex;
-                flex-direction: column;
-                width: 70%;
-                margin: 0 auto;
-                margin-top: 10px;
-                box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-
-            }
         </style>
         <paper-card heading="Questions situées" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
                 <template is="dom-repeat" items="{{pageActivity}}">
-                    <generic-resource-viewer is-completed=[[item.isCompleted]] on-is-completed-changed="checkCompletion" resource-type="{{item.type}}"
-                        item={{item}} on-response-status-changed="checkCompletionUpdated" class="resourceViewer"></generic-resource-viewer>
+                    <generic-resource-viewer resource-type="{{item.type}}" item={{item}} on-response-status-changed="checkCompletion"
+                        class="resourceViewer"></generic-resource-viewer>
                 </template>
             </div>
             <swipe-allowed swipe-allowed=[[isSwipeable]]></swipe-allowed>
@@ -42,6 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <script>
         Polymer({
+            behaviors: [
+                Window.SwipeableBehavior
+            ],
 
             is: 'my-questions',
             ready: function () {
@@ -54,39 +48,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.completed = []
                 this.allChecked = false
             },
-            checkCompletionUpdated: function (item, completed) {
-                var currentIndex = item.model.__data__.index
-                if (!completed.value) {
-                    return
-                }
-                if(completed.length===0){
-                    return
-                }
-
-                if (typeof (currentIndex) == 'number' && this.completed.indexOf(currentIndex) == -1) {
-                    this.completed.push(currentIndex)
-                }
-                if (this.completed.length === this.pageActivity.length) {
-                    this.allChecked = true
-                    this.swipeAllowed=true
-                }
-            },
-
-            
             checkCompletion: function (item, completed) {
                 var currentIndex = item.model.__data__.index
                 if (!completed.value) {
                     return
                 }
+                if (completed.length === 0) {
+                    return
+                }
 
                 if (typeof (currentIndex) == 'number' && this.completed.indexOf(currentIndex) == -1) {
                     this.completed.push(currentIndex)
                 }
                 if (this.completed.length === this.pageActivity.length) {
                     this.allChecked = true
-                    this.isSwipeable=true
+                    this.isSwipeable = true
                 }
             },
+
+
             // Not using score fail at the moment because score belows 0 would be weird
             properties: {
                 pageActivity: {
