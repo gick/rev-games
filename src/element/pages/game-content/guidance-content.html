@@ -1,30 +1,24 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/geo-location/geo-location.html">
-<link rel="import" href="../bower_components/google-map/google-map.html">
-<link rel="import" href="./element/orientation/map-display.html">
-<link rel="import" href="../bower_components/common-styles/common-styles.html">
+<link rel="import" href="../../../../bower_components/geo-location/geo-location.html">
+<link rel="import" href="../../../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../../element/orientation/map-display.html">
+<link rel="import" href="../../../../bower_components/common-styles/common-styles.html">
 
-<dom-module id="my-guidance">
+
+<dom-module id="guidance-content">
     <template>
         <style include="common-styles">
-            :host {
-                @apply(--layout-fullbleed);
-                @apply(--layout-vertical);
-            }
         </style>
-        <paper-button raised on-click="nextActivity">Next</paper-button>
-        <geo-location high-accuracy watch-pos id="loc"></geo-location>
-        <paper-card heading="Atteindre la localisation" image="" elevation="1" animated-shadow="false">
+                <paper-button raised on-click="nextActivity">Next</paper-button>
+                <geo-location high-accuracy watch-pos id="loc"></geo-location>
+        
             <div class="card-content">
-                <paper-icon-button style="position: relative;float:right;margin-right: 50px" icon="vaadin:question-circle" on-click="showInstruction">
-                </paper-icon-button>
+                Guidance Page
                 <div>
                     <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]" long="[[pageActivity.longitude]]"
                         poi={{poi}}></map-display>
                 </div>
-            </div>
-        </paper-card>
 
+            </div>
             <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
             <paper-dialog id="poiReached">
                 <h2>Destination atteinte!</h2>
@@ -33,22 +27,11 @@
                     <paper-button dialog-confirm autofocus>OK</paper-button>
                 </div>
             </paper-dialog>
-            <paper-dialog id="docPage">
-                <marked-element markdown="{{docMkdown}}">
-                    <div class="markdown-html"></div>
-                </marked-element>
-                <div class="buttons">
-                    <paper-button dialog-confirm autofocus>OK</paper-button>
-                </div>
-            </paper-dialog>
 
     </template>
     <script>
         Polymer({
-            behaviors: [
-             Window.SwipeableBehavior
-            ],
-
+            is: 'guidance-content',
             ready: function () {
                 this.$.map.addEventListener('google-map-ready', this.mapready.bind(this));
                 this.set('mapready', false)
@@ -131,12 +114,10 @@
             nextActivity: function () {
                 this.poiReached=true
     
-                this.isSwipeable=true
+                this.fire('set-swipeable',true)
                 this.$.userAtpoi.open()
                 this.$.poiReached.open()
             },
-
-            is: 'my-guidance',
 
 
             property: {
@@ -153,7 +134,6 @@
                     notify: true,
                     observer: 'userReachpoi'
                 },
-
                 headingDegree: {
                     type: Number,
                     notify: true

@@ -1,3 +1,7 @@
+<!-- 
+    Special case of page, it cannot be swiped to the left (because it's the last page and carroussel is off)
+    It is used to start a new unit game
+    !-->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/common-styles/common-styles.html">
 <dom-module id="my-feedback">
@@ -21,6 +25,10 @@
     </template>
     <script>
     Polymer({
+        behaviors: [
+             Window.SwipeableBehavior
+            ],
+
         endGame: function() {
             this.fire('end-game')
         },

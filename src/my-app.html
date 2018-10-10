@@ -1,35 +1,20 @@
 <!--
 @license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+All this belongs to Pierre-Yves Gicquel, please send money directly in case of use (including reading these lines). Preferably
+cash but I'm OK with most food and drink. 
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-database-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-storage-script.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging-script.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/geo-location/geo-location.html">
@@ -41,6 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./element/dialogs/quickLink.html">
 <link rel="import" href="./element/helper/swipe-allowed.html">
 <link rel="import" href="./element/behaviors/swipeable-behavior.html">
+<link rel="import" href="./my-feedback.html">
+<link rel="import" href="./element/pages/generic-page.html">
 
 <link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
 <link rel="import" href="my-folia.html">
@@ -58,47 +45,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 background-color: var(--app-primary-color);
                 color: white;
             }
-
             app-header paper-icon-button {
                 --paper-icon-button-ink-color: white;
             }
-
-
-            iron-swipeable-pages {
-                @apply(--layout-flex);
-            }
-
-            iron-swipeable-pages>* {
-                -webkit-user-select: none;
-                /* Chrome all / Safari all */
-                -moz-user-select: none;
-                /* Firefox all */
-                -ms-user-select: none;
-                /* IE 10+ */
-                user-select: none;
-                /* Likely future */
-                cursor: default;
-            }
-
-
-            .inherit {
-                color: inherit;
-                background-color: inherit;
-                text-decoration: none;
-            }
-
-
-            .big {
-                --iron-icon-height: 40px;
-                --iron-icon-width: 40px;
-                margin-right: 50px;
-            }
         </style>
-        <firebase-app api-key="AIzaSyD1rNde0vVt8jePCI-t19T7ore89RxDKY0" auth-domain="rev-game-6e36a.firebaseapp.com" database-url="https://rev-game-6e36a.firebaseio.com">
+
+        <!--
+        Manage the connection to the firebase instance used. Creates a Firebase global object accessible 
+        under this. Different firebase instant can be used
+        //TODO Put the instance reference in a config file         
+        -->
+        <firebase-app api-key="AIzaSyD1rNde0vVt8jePCI-t19T7ore89RxDKY0" auth-domain="rev-game-6e36a.firebaseapp.com"
+            database-url="https://rev-game-6e36a.firebaseio.com">
         </firebase-app>
-        <firebase-auth id="auth" on-signed-in-changed="handleSignedIn" signed-in={{signedIn}} user="{{user}}" provider="google">
+        <firebase-auth id="auth" on-signed-in-changed="_handleSignedIn" signed-in={{signedIn}} user="{{user}}" provider="google">
         </firebase-auth>
-        <firebase-document path="/users/{{user.uid}}" data={{currentScoreData}}></firebase-document>
+
         <app-location use-hash-as-path route="{{route}}"></app-location>
         <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
@@ -106,10 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-header condenses reveals effect="waterfall">
                 <app-toolbar>
                     <div main-title>REVERIES</div>
-                    <iron-icon id='menu' icon="menu" on-click="openLinks"></iron-icon>
-                    <template is='dom-if' if='{{currentScoreData.newInventoryItem}}'>
-                        <paper-badge on-click='openLinks' for='menu' label="+"></paper-badge>
-                    </template>
+                    <iron-icon id='menu' icon="menu" on-click="_openLinks"></iron-icon>
                 </app-toolbar>
             </app-header>
             <quick-link id='quickLink'></quick-link>
@@ -123,277 +82,289 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <my-register name="register"></my-register>
                     </template>
                     <template is="dom-if" if=[[signedIn]] restamp>
-                            <my-badge id="badge" name="badge"></my-badge>
-
-                        <my-profile name="profile"></my-profile>
                         <my-activity id="activityPicker" userscore="{{userscore}}" name="activity"></my-activity>
                     </template>
                 </iron-swipeable-pages>
             </template>
-
+            <!--
             <template is="dom-if" if="[[gameSelected]]" restamp>
                 <iron-swipeable-pages id="gamePages" no-cycle selected="{{page}}" attr-for-selected="name">
                     <template is="dom-if" if=[[pageList.startPage]] restamp>
                         <my-instructions is-swipeable start-page=[[startPage]] name="instructions"></my-instructions>
                     </template>
-                    <template is="dom-if" if=[[pageList.uginstruction]] restamp>
-                        <my-uginstructions id="instructions" is-swipeable='true' page-activity="[[pageList.uginstruction.pageActivity]]"
+                    <template is="dom-if" if="{{isSetUp('uginstructions',pageList)}}" restamp>
+                        <my-uginstructions id="instructions" is-swipeable='true' page-activity="[[pageList.uginstructions.pageActivity]]"
                             name="uginstructions"></my-uginstructions>
                     </template>
-                    <template is="dom-if" if=[[pageList.guidance]] restamp>
+                    <template is="dom-if" if="{{isSetUp('guidance',pageList)}}" restamp>
                         <my-guidance doc-mkdown="{{ugMkdown}}" page-activity="[[pageList.uginstruction.pageActivity]]"
                             poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
                     </template>
-                    <template is="dom-if" if="[[pageList.qrcodescanner]]" restamp>
-                        <my-qrcodescanner page-activity=[[pageList.qrcodescanner.pageActivity]] swipe-allowed=[[qrSwipe]] id="qrcode" name="qrcodescanner"></my-qrcodescanner>
+                    <template is="dom-if" if="{{isSetUp('qrcodescanner',pageList)}}" restamp>
+                        <my-qrcodescanner page-activity=[[pageList.qrcodescanner.pageActivity]] swipe-allowed=[[qrSwipe]]
+                            id="qrcode" name="qrcodescanner"></my-qrcodescanner>
                     </template>
-                    <template is="dom-if" if=[[pageList.questions]] restamp>
+                    <template is="dom-if" if="{{isSetUp('questions',pageList)}}" restamp>
                         <my-questions id="myQuestions" page-activity=[[pageList.questions.pageActivity]] swipe-allowed='{{pageList.questions.swipeAllowed}}'
                             name="questions"></my-questions>
                     </template>
-                    <template is="dom-if" if=[[pageList.folia]] restamp>
+                    <template is="dom-if" if="{{isSetUp('folia',pageList)}}" restamp>
                         <my-folia name="folia" page-activity="[[pageList.folia.pageActivity]]" swipe-allowed=[[pageList.folia.swipeAllowed]]></my-folia>
                     </template>
-                    <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
+                    <my-feedback id="feedback" is-swipeable feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]]
+                        name="feedback"></my-feedback>
                 </iron-swipeable-pages>
             </template>
+-->
+
+            <template is="dom-if" if="[[gameSelected]]" restamp>
+                <iron-swipeable-pages id="gamePages" selected={{currentIndex}} no-cycle>
+                    <template is="dom-repeat" items=[[pages]]>
+                        <generic-page name=[[item.name]] page-activity=[[item.activity]]></generic-page>
+                    </template>
+                    <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]]
+                    name="feedback"></my-feedback>
+                </iron-swipeable-pages>
+            </template>
+
         </app-header-layout>
         <paper-toast id="inventaireToast" text="Vous avez gagné un nouvel item d'inventaire !"></paper-toast>
     </template>
     <script>
         Polymer({
 
-            is: 'my-app',
-            ready: function () {
-                this.gameSelected = false
-                this.addEventListener('activitySelected', this.setupActivity.bind(
-                    this))
+                    is: 'my-app',
+                    ready: function () {
+                        this.gameSelected = false
+                        this.addEventListener('activitySelected', this.setupActivity.bind(
+                            this))
 
-               // this.addEventListener('authChanged', this.authChanged.bind(this))
-                this.addEventListener('end-game', this.endGame.bind(this))
-                this.addEventListener('next-ug', this.nextUg.bind(this))
-            },
-            
-            handleSignedIn:function(event){
-                if(event.detail.value){
-                    // user is logged in, go to activity
-                    this.page="activity"
-                }
-                else
-                {
-                    // user signed out, no game can be selected
-                    this.gameSelected=false
-                    // go to login page
-                    this.page="login"
-                }
-            },
-            endGame: function () {
-                this.gameSelected = false
-                this.page = 'activity'
-
-            },
-
-            nextUg: function () {
-                this.unitGamesIndex = this.unitGamesIndex + 1
-                this.resetUnitGame()
-                this.setupUnitGame(this.unitGamesIndex)
-            },
-            openLinks: function () {
-                this.$.quickLink.show()
-            },
-            restartPOIMap: function () {
-                if (this.$$('#map') && this.$$('#map').resetMap) {
-                    this.$$('#map').resetMap()
-                }
-            },
-            resetActivity: function () {
-                this.set('currentMLG', null)
-                this.set('badge', null)
-                this.resetUnitGame()
-            },
-            resetUnitGame: function () {
-                this.pageList.ugInstructions = false
-                if (this.$$('#myQuestions') && this.$$('#myQuestions').resetQuestions) {
-                    this.$$('#myQuestions').resetQuestions()
-                }
-                this.pageList.questions = false
-                this.pageList.guidance = false
-                this.pageList.qrCode = false
+                        this.addEventListener('end-game', this.endGame.bind(this))
+                        this.addEventListener('next-ug', this.nextUg.bind(this))
+                    },
 
 
-            },
-            authChanged: function (status) {
-                this.$$('#loginForm').setStatus(status)
-            },
 
+                    /*
+                     * Setup of a complete MLG (ie a sequence of unit games) 
+                     */
+                    setupActivity: function (elem) {
+                        this.gameSelected = true
+                        this.lastUnitGame = false // lastUnitGame is used in feedback-media to propose "end game" or "next activity"
+                        this.unitGamesIndex = 0
+                        this.pageList = []
+                        this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
+                        firebase.database().ref('users/' + this.user.uid + '/').update({
+                            currentMLG: elem.detail,
+                        });
+                        this.currentMLG = elem.detail
+                        if (this.currentMLG.startpage) {
+                            this.set('startPage', this.currentMLG.startpage)
+                            this.pageList.startPage = true
+                        }
+                        this.totalUnitGames = this.currentMLG.unitGames.length
+                        this.setupUnitGame(this.unitGamesIndex)
+                    },
+                    setupUnitGame: function (index) {
+                        if (index == this.totalUnitGames - 1) {
+                            this.lastUnitGame = true
+                        }
+                        this.currentUnitGame = this.currentMLG.unitGames[index]
+                        if (this.currentUnitGame.startMedia) {
+                            var activity = this.currentUnitGame.startMedia
+                            this.push('pages', {
+                                name: 'instructions',
+                                activity: activity
+                            })
+                        }
+                        if(this.currentUnitGame.poiGuidMap){
+                            var activity = this.currentUnitGame.POI
+                            this.push('pages', {
+                                name: 'guidance',
+                                activity: activity
+                            })
 
-            setupActivity: function (elem) {
-                this.gameSelected = true
-                this.lastUnitGame=false
-                this.unitGamesIndex = 0
-                this.pageList = {}
-                this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
-                firebase.database().ref('users/' + this.user.uid + '/').update({
-                    currentMLG: elem.detail,
-                });
-                this.currentMLG = elem.detail
-                if (this.currentMLG.startpage) {
-                    this.set('startPage', this.currentMLG.startpage)
-                    this.pageList.startPage = true
-                    // this.push('pageList', 'instructions')
-                }
-                if (this.currentMLG.badge) {
-                    this.badge = this.currentMLG.badge
-                    this.pageList.badge = true
-                }
-                this.totalUnitGames = this.currentMLG.unitGames.length
-                this.setupUnitGame(this.unitGamesIndex)
-            },
-            setupUnitGame: function (index) {
-                if (index == this.totalUnitGames - 1) {
-                    this.lastUnitGame = true
-                }
-                this.currentUnitGame = this.currentMLG.unitGames[index]
-                if (this.currentUnitGame.startMedia) {
-                    this.startUg = this.currentUnitGame.startMedia
-                    this.set('pageList.uginstruction', {
-                        pageActivity: this.startUg,
-                        visible: true,
-                        swipeAllowed: true
-                    })
+                        }
+                        if(this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities){
+                            var activity=[]
+                            for(var mcq of this.currentUnitGame.mcqActivities){
+                                activity.push(mcq)
+                            }
+                            for(var freeText of this.currentUnitGame.freetextActivities){
+                                activity.push(freeText)
+                            }
 
-                }
-                if (this.currentUnitGame.poiGuidMap) {
-                    this.POI = this.currentUnitGame.POI
-                    this.set('pageList.guidance', {
-                        pageActivity: this.POI,
-                        visible: true,
-                        swipeAllowed: false
-                    })
-                    if (this.$$('#map') && this.$$('#map').setPOI) {
-                        this.$$('#map').setPOI()
-                    }
+                            this.push('pages', {
+                                name: 'questions',
+                                activity: activity
+                            })
 
-                }
-                if (this.currentUnitGame.poiQRValidation) {
-                    this.set('pageList.qrcodescanner', {
-                        pageActivity: {
-                            poi: this.POI,
-                            incorrectMessage: this.currentUnitGame.poiIncorrectMessage,
-                            correctMessage: this.currentUnitGame.poiReachedMessage
+                        }
+
+                        this.currentIndex=0
                         },
-                        swipeAllowed: false
-                    })
 
-                }
-                if (this.currentUnitGame.inventoryItem) {
-                    this.inventoryItem = this.currentUnitGame.inventoryItem
-                    if (this.currentUnitGame.inventoryQuestion) {
-                        this.set('inventoryPage', "questions")
-                    }
-                    if (this.currentUnitGame.inventoryStart) {
-                        this.set('inventoryPage', "uginstructions")
-                    }
-                    if (this.currentUnitGame.inventoryPOI) {
-                        this.set('inventoryPage', "guidance")
-                    }
+                        /*
+                                    setupUnitGame: function (index) {
+                                        this.pageList = {}
 
-                }
-                if (this.currentUnitGame.identificationActivity) {
-                    this.set('pageList.folia', {
-                        pageActivity: this.currentUnitGame.identificationActivity,
-                        swipeAllowed: true
-                    })
-                }
-                if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
-                    this.set('pageList.questions', {
-                        pageActivity: [],
-                        swipeAllowed: false
-                    })
-                    let mcqActivities = this.currentUnitGame.mcqActivities
-                    let freetextActivities = this.currentUnitGame.freetextActivities
-                    for (var i = 0; i < freetextActivities.length; i++) {
-                        this.push('pageList.questions.pageActivity', freetextActivities[i])
-                    }
+                                        if (index == this.totalUnitGames - 1) {
+                                            this.lastUnitGame = true
+                                        }
+                                        this.currentUnitGame = this.currentMLG.unitGames[index]
+                                        if (this.currentUnitGame.startMedia) { 
+                                            this.startUg = this.currentUnitGame.startMedia
+                                            this.set('pageList.uginstructions', {
+                                                pageActivity: this.startUg,
+                                            })
 
-                    for (var i = 0; i < mcqActivities.length; i++) {
-                        this.push('pageList.questions.pageActivity', mcqActivities[i])
-                    }
-                }
-                if (this.currentUnitGame.feedbackMedia) {
-                    this.feedbackMedia = this.currentUnitGame.feedbackMedia
-                }
+                                        }
+                                        if (this.currentUnitGame.poiGuidMap) {
+                                            this.POI = this.currentUnitGame.POI
+                                            this.set('pageList.guidance', {
+                                                pageActivity: this.POI
+                                            })
+                                            this.notifyPath('pageList.guidance')
+
+                                        }
+                                     /*   if (this.currentUnitGame.poiQRValidation) {
+                                            this.set('pageList.qrcodescanner', {
+                                                pageActivity: {
+                                                    poi: this.POI,
+                                                    incorrectMessage: this.currentUnitGame.poiIncorrectMessage,
+                                                    correctMessage: this.currentUnitGame.poiReachedMessage
+                                                }
+                                            })
+
+                                        }
+                                        if (this.currentUnitGame.identificationActivity) {
+                                            this.set('pageList.folia', {
+                                                pageActivity: this.currentUnitGame.identificationActivity,
+                                            })
+                                        }
+                                        if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
+                                            this.set('pageList.questions', {
+                                                pageActivity: [],
+                                            })
+                                            let mcqActivities = this.currentUnitGame.mcqActivities
+                                            let freetextActivities = this.currentUnitGame.freetextActivities
+                                            for (var i = 0; i < freetextActivities.length; i++) {
+                                                this.push('pageList.questions.pageActivity', freetextActivities[i])
+                                            }
+
+                                            for (var i = 0; i < mcqActivities.length; i++) {
+                                                this.push('pageList.questions.pageActivity', mcqActivities[i])
+                                            }
+                                        }
+                                        if (this.currentUnitGame.feedbackMedia) {
+                                            this.feedbackMedia = this.currentUnitGame.feedbackMedia
+                                        }
+
+                                        this.setStartPage()
+
+                                    },*/
+                        setStartPage: function () {
+                                if (this.pageList.startPage) {
+                                    this.page = 'instructions'
+                                    return
+                                }
+                                if (this.pageList.uginstructions) {
+                                    this.page = 'uginstructions'
+                                    return
+                                }
+                                if (this.pageList.guidance) {
+                                    this.page = 'guidance'
+                                    return
+                                }
+                                if (this.pageList.questions) {
+                                    this.page = 'questions'
+                                    return
+                                }
+                                if (this.pageList.folia) {
+                                    this.page = 'folia'
+                                    return
+                                }
+                                this.page = 'feedback'
+
+                            },
+                            resetActivity: function () {
+                                this.set('currentMLG', null)
+                                this.set('badge', null)
+                                this.resetUnitGame()
+                            },
+
+                            // 
+                            resetUnitGame: function () {
+                                // Put all the page to false in order for the dom-if to reset them
+                                this.splice('pages', 0,this.pages.length)
+                            },
+
+                            nextUg: function () {
+                                this.unitGamesIndex = this.unitGamesIndex + 1
+                                this.resetUnitGame()
+                                this.setupUnitGame(this.unitGamesIndex)
+                            },
+                            isSetUp: function (page, pageList) {
+                                if (this.pageList && this.pageList[page]) {
+                                    return true
+                                }
+                                return false
+                            },
+                            endGame: function () {
+                                this.gameSelected = false
+                                this.page = 'activity'
+                            },
+                            properties: {
+                                pages:{
+                                    type:Array,
+                                    value:[]
+                                },
+                                page: {
+                                    type: String,
+                                    reflectToAttribute: true,
+                                    observer: '_pageChanged'
+                                },
+                            },
+
+                            observers: [
+                                '_routePageChanged(route.path)'
+                            ],
+                            _openLinks: function () {
+                                this.$.quickLink.show()
+                            },
+
+                            _handleSignedIn: function (event) {
+                                if (event.detail.value) {
+                                    // user is logged in, go to activity
+                                    this.page = "activity"
+                                } else {
+                                    // user signed out, no game can be selected
+                                    this.gameSelected = false
+                                    // go to login page
+                                    this.page = "login"
+                                }
+                            },
+
+                            _routePageChanged: function (page) {
+                                if (this.route) {
+                                    this.route.path = page
+                                }
+                            },
 
 
-                this.setStartPage()
 
-            },
-            setStartPage:function(){
-                if(this.pageList.startPage){
-                    this.page='instructions'
-                    return
-                }
-                if(this.pageList.uginstruction){
-                    this.page = 'uginstructions'
-                    return
-                }
-                if(this.pageList.guidance){
-                    this.page='guidance'
-                    return
-                }
-                if(this.pageList.questions){
-                    this.page='questions'
-                    return
-                }
-                if(this.pageList.folia){
-                    this.page='folia'
-                    return
-                }
-                this.page='feedback'
+                            _pageChanged: function (page) {
+                                this.set('route.path', page)
+                                this.importHref(
+                                    this.resolveUrl('my-' + page + '.html'), null, null, true);
+                                if (!this.user) {
+                                    console.log('no user uid')
+                                }
+                                if (this.user) {
+                                    console.log('user id')
+                                }
+                            },
 
-            },
-
-            openDialog: function (elem) {
-                this.$.dialog.open()
-            },
-
-            addNotification: function (value) {
-                this.badgeNumber += value;
-            },
-
-            properties: {
-                page: {
-                    type: String,
-                    reflectToAttribute:true,
-                    observer:'_pageChanged'
-                },
-            },
-
-            observers: [
-                '_routePageChanged(route.path)'
-            ],
-            _routePageChanged: function (page) {
-               if(this.route){
-                   this.route.path=page
-               }
-               // this.route = page || 'activity';
-                //this.page=this.route.path
-            },
-
-
-
-            _pageChanged: function (page) {
-                this.set('route.path',page)
-                this.importHref(
-                    this.resolveUrl('my-' + page + '.html'), null, null, true);
-                if (!this.user) {
-                    console.log('no user uid')
-                }
-                if (this.user) {
-                    console.log('user id')
-                }
-            },
-
-        });
+                    });
     </script>
 </dom-module>

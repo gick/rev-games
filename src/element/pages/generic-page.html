@@ -1,0 +1,49 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./element/helper/generic-resource-viewer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../helper/swipe-allowed.html">
+<link rel="import" href="../bower_components/common-styles/common-styles.html">
+<link rel="import" href="./page-content.html">
+<dom-module id="generic-page">
+    <template>
+        <style include="common-styles">
+            :host {
+                @apply(--layout-fullbleed);
+                @apply(--layout-vertical);
+            }
+        </style>
+        <paper-card heading="[[pageHeading]]" image="" elevation="1" animated-shadow="false">
+            <page-content  name="[[name]]" page-activity=[[pageActivity]]>
+
+            </page-content>
+            <swipe-allowed swipe-allowed='[[isSwipeable]]'></swipe-allowed>
+        </paper-card>
+    </template>
+    <script>
+        Polymer({
+
+            behaviors: [
+             Window.SwipeableBehavior
+            ],
+
+            is: 'generic-page',
+            property: {
+                pageActivity: {
+                    type: Object,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                },
+                pageHeading:{
+                    type:String,
+                    notify:true,
+                }
+                
+
+            }
+
+        });
+    </script>
+</dom-module>

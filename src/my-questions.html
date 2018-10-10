@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
         <paper-card heading="Questions situées" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
-                <template is="dom-repeat" items="{{pageActivity}}">
+                <template is="dom-repeat" items="{{pageActivity}}" restamp>
                     <generic-resource-viewer resource-type="{{item.type}}" item={{item}} on-response-status-changed="checkCompletion"
                         class="resourceViewer"></generic-resource-viewer>
                 </template>
@@ -39,12 +39,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             is: 'my-questions',
             ready: function () {
-                this.completed = []
-                this.allChecked = false
-            },
-            resetQuestions: function () {
-                this.splice('pageActivity', 0, this.pageActivity.length)
-                this.splice('completed', 0, this.completed.length)
                 this.completed = []
                 this.allChecked = false
             },

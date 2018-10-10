@@ -1,0 +1,56 @@
+<link rel="import" href="../../helper/generic-resource-viewer.html">
+
+<dom-module id="questions-content">
+    <template>
+        <style include="common-styles">
+        </style>
+            <div class="card-content">
+                <template is="dom-repeat" items="{{pageActivity}}">
+                    <generic-resource-viewer resource-type="{{item.type}}" item={{item}} on-response-status-changed="checkCompletion"
+                        class="resourceViewer"></generic-resource-viewer>
+                </template>
+            </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'questions-content',
+            ready: function () {
+                this.completed = []
+                this.allChecked = false
+            },
+            checkCompletion: function (item, completed) {
+                var currentIndex = item.model.__data__.index
+                if (!completed.value) {
+                    return
+                }
+                if (completed.length === 0) {
+                    return
+                }
+
+                if (typeof (currentIndex) == 'number' && this.completed.indexOf(currentIndex) == -1) {
+                    this.completed.push(currentIndex)
+                }
+                if (this.completed.length === this.pageActivity.length) {
+                    this.allChecked = true
+                    this.fire('set-swipeable',true)
+                    this.completed = []
+                this.allChecked = false
+
+                }
+            },
+
+
+            property: {
+                pageActivity: {
+                    type: Object,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                }
+            }
+
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,27 @@
+<link rel="import" href="../../helper/generic-resource-viewer.html">
+
+<dom-module id="instructions-content">
+    <template>
+        <style include="common-styles">
+        </style>
+            <div class="card-content">
+                <generic-resource-viewer page item=[[pageActivity]]></generic-resource-viewer>
+            </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'instructions-content',
+            property: {
+                pageActivity: {
+                    type: Object,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                }
+            }
+
+        });
+    </script>
+</dom-module>

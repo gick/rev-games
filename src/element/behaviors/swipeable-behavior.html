@@ -10,15 +10,42 @@
   Window.SwipeableBehavior = {
 
     properties: {
+      name:{
+        type:String,
+        notify:true,
+        observer:'_pageNameObserver'
+      },
       isSwipeable: {
         type: Boolean,
-        value: false,
         notify: true,
-        observer: '_toggleSwippeable'
+        reflectToAttribute:true,
+      },
+      pageActivity:{
+        type:Object,
+        notify:true,
+        observer:'_pageNameObserver'
       }
     },
+    ready:function(){
+      this.addEventListener('set-swipeable',this.setSwipeable.bind(this))
+    },
+    setSwipeable:function(){
+      this.isSwipeable=true
+    }
+    ,
+    _pageNameObserver:function(name){
+      if(this.name=="instructions"){
+        this.isSwipeable=true
+      }
+      if(this.name=="guidance"){
+        this.isSwipeable=false
+      }
+      if(this.name=="questions"){
+        this.isSwipeable=false
+      }
 
 
+    },
     _toggleSwippeable: function(value) {
       this.fire('swipeable-toggled',{swipeable:this.__data__.isSwipeable});
     },
