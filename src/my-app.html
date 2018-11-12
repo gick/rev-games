@@ -162,14 +162,14 @@ cash but I'm OK with most food and drink.
                             this.set('startPage', this.currentMLG.startpage)
                             this.pageList.startPage = true
                         }
-                        this.totalUnitGames = this.currentMLG.unitGames.length
+                        this.totalUnitGames = this.currentMLG.unitgameActivities.length
                         this.setupUnitGame(this.unitGamesIndex)
                     },
                     setupUnitGame: function (index) {
                         if (index == this.totalUnitGames - 1) {
                             this.lastUnitGame = true
                         }
-                        this.currentUnitGame = this.currentMLG.unitGames[index]
+                        this.currentUnitGame = this.currentMLG.unitgameActivities[index]
                         if (this.currentUnitGame.startMedia) {
                             var activity = this.currentUnitGame.startMedia
                             this.push('pages', {
@@ -177,7 +177,7 @@ cash but I'm OK with most food and drink.
                                 activity: activity
                             })
                         }
-                        if(this.currentUnitGame.poiGuidMap){
+                        if(this.currentUnitGame.poiMapGuidance){
                             var activity = this.currentUnitGame.POI
                             this.push('pages', {
                                 name: 'guidance',

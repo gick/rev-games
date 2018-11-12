@@ -13,7 +13,7 @@
       name:{
         type:String,
         notify:true,
-        observer:'_pageNameObserver'
+        observer:'_pageObserver'
       },
       isSwipeable: {
         type: Boolean,
@@ -23,7 +23,7 @@
       pageActivity:{
         type:Object,
         notify:true,
-        observer:'_pageNameObserver'
+        observer:'_pageObserver'
       }
     },
     ready:function(){
@@ -33,7 +33,7 @@
       this.isSwipeable=true
     }
     ,
-    _pageNameObserver:function(name){
+    _pageObserver:function(name){
       if(this.name=="instructions"){
         this.isSwipeable=true
       }
