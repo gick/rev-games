@@ -2,12 +2,16 @@
 <link rel="import" href="./game-content/guidance-content.html">
 <link rel="import" href="./game-content/instructions-content.html">
 <link rel="import" href="./game-content/questions-content.html">
+<link rel="import" href="./game-content/folia-content.html">
 
 <dom-module id="page-content">
     <template>
         {{name}}
             <template is="dom-if" if="{{isEqual('guidance',name)}}" restamp>
                 <guidance-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
+            </template>
+            <template is="dom-if" if="{{isEqual('folia',name)}}" restamp>
+                <folia-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
             </template>
 
 

@@ -9,7 +9,7 @@
         <style include="common-styles">
         </style>
                 <paper-button raised on-click="nextActivity">Next</paper-button>
-                <geo-location high-accuracy watch-pos id="loc"></geo-location>
+                <geo-location latitude="{{userLat}}" longitude="{{userLng}}" high-accuracy watch-pos id="loc"></geo-location>
         
             <div class="card-content">
                 Guidance Page
@@ -41,6 +41,7 @@
             },
             mapready: function () {
                 this.set('mapready', true)
+                this.setPOI()
             },
             setPOI: function () {
                 this.$$('#map').showPOI(this.pageActivity)
@@ -103,7 +104,7 @@
                     return
                 }
                 if (this.pageActivity) {
-                    if (newDistance <= this.poi.map.areaRadius) {
+                    if (newDistance <= this.pageActivity.map.areaRadius) {
                         this.poiReached=true
                         this.$.userAtpoi.open()
                         this.$.poiReached.open()

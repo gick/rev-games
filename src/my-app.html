@@ -45,6 +45,7 @@ cash but I'm OK with most food and drink.
                 background-color: var(--app-primary-color);
                 color: white;
             }
+
             app-header paper-icon-button {
                 --paper-icon-button-ink-color: white;
             }
@@ -86,44 +87,13 @@ cash but I'm OK with most food and drink.
                     </template>
                 </iron-swipeable-pages>
             </template>
-            <!--
-            <template is="dom-if" if="[[gameSelected]]" restamp>
-                <iron-swipeable-pages id="gamePages" no-cycle selected="{{page}}" attr-for-selected="name">
-                    <template is="dom-if" if=[[pageList.startPage]] restamp>
-                        <my-instructions is-swipeable start-page=[[startPage]] name="instructions"></my-instructions>
-                    </template>
-                    <template is="dom-if" if="{{isSetUp('uginstructions',pageList)}}" restamp>
-                        <my-uginstructions id="instructions" is-swipeable='true' page-activity="[[pageList.uginstructions.pageActivity]]"
-                            name="uginstructions"></my-uginstructions>
-                    </template>
-                    <template is="dom-if" if="{{isSetUp('guidance',pageList)}}" restamp>
-                        <my-guidance doc-mkdown="{{ugMkdown}}" page-activity="[[pageList.uginstruction.pageActivity]]"
-                            poi="[[POI]]" id="map" ismap="{{isMap}}" iscompass="{{isCompass}}" isping="{{isPing}}" name="guidance"></my-guidance>
-                    </template>
-                    <template is="dom-if" if="{{isSetUp('qrcodescanner',pageList)}}" restamp>
-                        <my-qrcodescanner page-activity=[[pageList.qrcodescanner.pageActivity]] swipe-allowed=[[qrSwipe]]
-                            id="qrcode" name="qrcodescanner"></my-qrcodescanner>
-                    </template>
-                    <template is="dom-if" if="{{isSetUp('questions',pageList)}}" restamp>
-                        <my-questions id="myQuestions" page-activity=[[pageList.questions.pageActivity]] swipe-allowed='{{pageList.questions.swipeAllowed}}'
-                            name="questions"></my-questions>
-                    </template>
-                    <template is="dom-if" if="{{isSetUp('folia',pageList)}}" restamp>
-                        <my-folia name="folia" page-activity="[[pageList.folia.pageActivity]]" swipe-allowed=[[pageList.folia.swipeAllowed]]></my-folia>
-                    </template>
-                    <my-feedback id="feedback" is-swipeable feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]]
-                        name="feedback"></my-feedback>
-                </iron-swipeable-pages>
-            </template>
--->
 
             <template is="dom-if" if="[[gameSelected]]" restamp>
                 <iron-swipeable-pages id="gamePages" selected={{currentIndex}} no-cycle>
                     <template is="dom-repeat" items=[[pages]]>
                         <generic-page name=[[item.name]] page-activity=[[item.activity]]></generic-page>
                     </template>
-                    <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]]
-                    name="feedback"></my-feedback>
+                    <my-feedback id="feedback" feedback-media="{{feedbackMedia}}" last-unit=[[lastUnitGame]] name="feedback"></my-feedback>
                 </iron-swipeable-pages>
             </template>
 
@@ -133,238 +103,154 @@ cash but I'm OK with most food and drink.
     <script>
         Polymer({
 
-                    is: 'my-app',
-                    ready: function () {
-                        this.gameSelected = false
-                        this.addEventListener('activitySelected', this.setupActivity.bind(
-                            this))
+            is: 'my-app',
+            ready: function () {
+                this.gameSelected = false
+                this.addEventListener('activitySelected', this.setupActivity.bind(
+                    this))
 
-                        this.addEventListener('end-game', this.endGame.bind(this))
-                        this.addEventListener('next-ug', this.nextUg.bind(this))
-                    },
-
-
-
-                    /*
-                     * Setup of a complete MLG (ie a sequence of unit games) 
-                     */
-                    setupActivity: function (elem) {
-                        this.gameSelected = true
-                        this.lastUnitGame = false // lastUnitGame is used in feedback-media to propose "end game" or "next activity"
-                        this.unitGamesIndex = 0
-                        this.pageList = []
-                        this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
-                        firebase.database().ref('users/' + this.user.uid + '/').update({
-                            currentMLG: elem.detail,
-                        });
-                        this.currentMLG = elem.detail
-                        if (this.currentMLG.startpage) {
-                            this.set('startPage', this.currentMLG.startpage)
-                            this.pageList.startPage = true
-                        }
-                        this.totalUnitGames = this.currentMLG.unitgameActivities.length
-                        this.setupUnitGame(this.unitGamesIndex)
-                    },
-                    setupUnitGame: function (index) {
-                        if (index == this.totalUnitGames - 1) {
-                            this.lastUnitGame = true
-                        }
-                        this.currentUnitGame = this.currentMLG.unitgameActivities[index]
-                        if (this.currentUnitGame.startMedia) {
-                            var activity = this.currentUnitGame.startMedia
-                            this.push('pages', {
-                                name: 'instructions',
-                                activity: activity
-                            })
-                        }
-                        if(this.currentUnitGame.poiMapGuidance){
-                            var activity = this.currentUnitGame.POI
-                            this.push('pages', {
-                                name: 'guidance',
-                                activity: activity
-                            })
-
-                        }
-                        if(this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities){
-                            var activity=[]
-                            for(var mcq of this.currentUnitGame.mcqActivities){
-                                activity.push(mcq)
-                            }
-                            for(var freeText of this.currentUnitGame.freetextActivities){
-                                activity.push(freeText)
-                            }
-
-                            this.push('pages', {
-                                name: 'questions',
-                                activity: activity
-                            })
-
-                        }
-
-                        this.currentIndex=0
-                        },
-
-                        /*
-                                    setupUnitGame: function (index) {
-                                        this.pageList = {}
-
-                                        if (index == this.totalUnitGames - 1) {
-                                            this.lastUnitGame = true
-                                        }
-                                        this.currentUnitGame = this.currentMLG.unitGames[index]
-                                        if (this.currentUnitGame.startMedia) { 
-                                            this.startUg = this.currentUnitGame.startMedia
-                                            this.set('pageList.uginstructions', {
-                                                pageActivity: this.startUg,
-                                            })
-
-                                        }
-                                        if (this.currentUnitGame.poiGuidMap) {
-                                            this.POI = this.currentUnitGame.POI
-                                            this.set('pageList.guidance', {
-                                                pageActivity: this.POI
-                                            })
-                                            this.notifyPath('pageList.guidance')
-
-                                        }
-                                     /*   if (this.currentUnitGame.poiQRValidation) {
-                                            this.set('pageList.qrcodescanner', {
-                                                pageActivity: {
-                                                    poi: this.POI,
-                                                    incorrectMessage: this.currentUnitGame.poiIncorrectMessage,
-                                                    correctMessage: this.currentUnitGame.poiReachedMessage
-                                                }
-                                            })
-
-                                        }
-                                        if (this.currentUnitGame.identificationActivity) {
-                                            this.set('pageList.folia', {
-                                                pageActivity: this.currentUnitGame.identificationActivity,
-                                            })
-                                        }
-                                        if (this.currentUnitGame.mcqActivities || this.currentUnitGame.freetextActivities) {
-                                            this.set('pageList.questions', {
-                                                pageActivity: [],
-                                            })
-                                            let mcqActivities = this.currentUnitGame.mcqActivities
-                                            let freetextActivities = this.currentUnitGame.freetextActivities
-                                            for (var i = 0; i < freetextActivities.length; i++) {
-                                                this.push('pageList.questions.pageActivity', freetextActivities[i])
-                                            }
-
-                                            for (var i = 0; i < mcqActivities.length; i++) {
-                                                this.push('pageList.questions.pageActivity', mcqActivities[i])
-                                            }
-                                        }
-                                        if (this.currentUnitGame.feedbackMedia) {
-                                            this.feedbackMedia = this.currentUnitGame.feedbackMedia
-                                        }
-
-                                        this.setStartPage()
-
-                                    },*/
-                        setStartPage: function () {
-                                if (this.pageList.startPage) {
-                                    this.page = 'instructions'
-                                    return
-                                }
-                                if (this.pageList.uginstructions) {
-                                    this.page = 'uginstructions'
-                                    return
-                                }
-                                if (this.pageList.guidance) {
-                                    this.page = 'guidance'
-                                    return
-                                }
-                                if (this.pageList.questions) {
-                                    this.page = 'questions'
-                                    return
-                                }
-                                if (this.pageList.folia) {
-                                    this.page = 'folia'
-                                    return
-                                }
-                                this.page = 'feedback'
-
-                            },
-                            resetActivity: function () {
-                                this.set('currentMLG', null)
-                                this.set('badge', null)
-                                this.resetUnitGame()
-                            },
-
-                            // 
-                            resetUnitGame: function () {
-                                // Put all the page to false in order for the dom-if to reset them
-                                this.splice('pages', 0,this.pages.length)
-                            },
-
-                            nextUg: function () {
-                                this.unitGamesIndex = this.unitGamesIndex + 1
-                                this.resetUnitGame()
-                                this.setupUnitGame(this.unitGamesIndex)
-                            },
-                            isSetUp: function (page, pageList) {
-                                if (this.pageList && this.pageList[page]) {
-                                    return true
-                                }
-                                return false
-                            },
-                            endGame: function () {
-                                this.gameSelected = false
-                                this.page = 'activity'
-                            },
-                            properties: {
-                                pages:{
-                                    type:Array,
-                                    value:[]
-                                },
-                                page: {
-                                    type: String,
-                                    reflectToAttribute: true,
-                                    observer: '_pageChanged'
-                                },
-                            },
-
-                            observers: [
-                                '_routePageChanged(route.path)'
-                            ],
-                            _openLinks: function () {
-                                this.$.quickLink.show()
-                            },
-
-                            _handleSignedIn: function (event) {
-                                if (event.detail.value) {
-                                    // user is logged in, go to activity
-                                    this.page = "activity"
-                                } else {
-                                    // user signed out, no game can be selected
-                                    this.gameSelected = false
-                                    // go to login page
-                                    this.page = "login"
-                                }
-                            },
-
-                            _routePageChanged: function (page) {
-                                if (this.route) {
-                                    this.route.path = page
-                                }
-                            },
+                this.addEventListener('end-game', this.endGame.bind(this))
+                this.addEventListener('next-ug', this.nextUg.bind(this))
+            },
 
 
 
-                            _pageChanged: function (page) {
-                                this.set('route.path', page)
-                                this.importHref(
-                                    this.resolveUrl('my-' + page + '.html'), null, null, true);
-                                if (!this.user) {
-                                    console.log('no user uid')
-                                }
-                                if (this.user) {
-                                    console.log('user id')
-                                }
-                            },
+            /*
+             * Setup of a complete MLG (ie a sequence of unit games) 
+             */
+            setupActivity: function (elem) {
+                this.gameSelected = true
+                this.lastUnitGame = false // lastUnitGame is used in feedback-media to propose "end game" or "next activity"
+                this.unitGamesIndex = 0
+                this.pageList = []
+                this.resetActivity() //reseting all values in case user switch activity in the middle of an activity
+                firebase.database().ref('users/' + this.user.uid + '/').update({
+                    currentMLG: elem.detail,
+                });
+                this.currentMLG = elem.detail
+                if (this.currentMLG.startpage) {
+                    this.set('startPage', this.currentMLG.startpage)
+                    this.pageList.startPage = true
+                }
+                this.totalUnitGames = this.currentMLG.unitgameActivities.length
+                this.setupUnitGame(this.unitGamesIndex)
+            },
+            setupUnitGame: function (index) {
+                if (index == this.totalUnitGames - 1) {
+                    this.lastUnitGame = true
+                }
+                this.currentUnitGame = this.currentMLG.unitgameActivities[index]
+                if (this.currentUnitGame.startMedia) {
+                    var activity = this.currentUnitGame.startMedia
+                    this.push('pages', {
+                        name: 'instructions',
+                        activity: activity
+                    })
+                }
+                if (this.currentUnitGame.poiMapGuidance) {
+                    var activity = this.currentUnitGame.POI
+                    this.push('pages', {
+                        name: 'guidance',
+                        activity: activity
+                    })
 
-                    });
+                }
+                if (this.currentUnitGame.mcqActivities.length>0 || this.currentUnitGame.freetextActivities.length>0) {
+                    var activity = []
+                    for (var mcq of this.currentUnitGame.mcqActivities) {
+                        activity.push(mcq)
+                    }
+                    for (var freeText of this.currentUnitGame.freetextActivities) {
+                        activity.push(freeText)
+                    }
+
+                    this.push('pages', {
+                        name: 'questions',
+                        activity: activity
+                    })
+
+                }
+                if(this.currentUnitGame.foliaActivities){
+                    var activity=this.currentUnitGame.foliaActivities[0]
+                    this.push('pages',{
+                        name:'folia',
+                        activity:activity
+                    })
+                }
+                this.currentIndex = 0
+            },
+            resetActivity: function () {
+                this.set('currentMLG', null)
+                this.set('badge', null)
+                this.resetUnitGame()
+            },
+
+            // 
+            resetUnitGame: function () {
+                // Put all the page to false in order for the dom-if to reset them
+                this.splice('pages', 0, this.pages.length)
+            },
+
+            nextUg: function () {
+                this.unitGamesIndex = this.unitGamesIndex + 1
+                this.resetUnitGame()
+                this.setupUnitGame(this.unitGamesIndex)
+            },
+            endGame: function () {
+                this.gameSelected = false
+                this.page = 'activity'
+            },
+            properties: {
+                pages: {
+                    type: Array,
+                    value: []
+                },
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged'
+                },
+            },
+
+            observers: [
+                '_routePageChanged(route.path)'
+            ],
+            _openLinks: function () {
+                this.$.quickLink.show()
+            },
+
+            _handleSignedIn: function (event) {
+                if (event.detail.value) {
+                    // user is logged in, go to activity
+                    this.page = "activity"
+                } else {
+                    // user signed out, no game can be selected
+                    this.gameSelected = false
+                    // go to login page
+                    this.page = "login"
+                }
+            },
+
+            _routePageChanged: function (page) {
+                if (this.route) {
+                    this.route.path = page
+                }
+            },
+
+
+
+            _pageChanged: function (page) {
+                this.set('route.path', page)
+                this.importHref(
+                    this.resolveUrl('my-' + page + '.html'), null, null, true);
+                if (!this.user) {
+                    console.log('no user uid')
+                }
+                if (this.user) {
+                    console.log('user id')
+                }
+            },
+
+        });
     </script>
 </dom-module>

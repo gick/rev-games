@@ -20,9 +20,7 @@
             <template is="dom-repeat" items={{markers}} as="marker">
                 <google-map-marker drag-events title="Destination" icon="https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png" on-google-map-marker-click="{{markerClicked}}" latitude="[[marker.latitude]]" longitude="[[marker.longitude]]"></google-map-marker>
             </template>
-            <template is="dom-repeat" items={{data}}>
-                <google-map-marker drag-events title="{{item.name}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{item.latitude}}" longitude="{{item.longitude}}"></google-map-marker>
-            </template>
+            <google-map-marker drag-events title="Position" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{userLat}}" longitude="{{userLng}}"></google-map-marker>
             <google-map-marker drag-events title="{{userData.username}}" icon="https://maps.gstatic.com/mapfiles/ms2/micons/blue.png" latitude="{{latitude}}" longitude="{{longitude}}"></google-map-marker>
         </google-map>
     </template>
@@ -215,6 +213,14 @@
                     type: Boolean,
                     value: false,
                     notify: true,
+                },
+                userLat:{
+                    type:Number,
+                    notify:true,
+                },
+                userLng:{
+                    type:Number,
+                    notify:true,
                 },
                 userCoord: {
                     type: Object,
