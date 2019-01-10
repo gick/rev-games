@@ -176,6 +176,11 @@ cash but I'm OK with most food and drink.
                         activity:activity
                     })
                 }
+                if(this.lastUnitGame){
+                    if(this.currentMLG.endPage){
+                        this.push('pages',{name:'instructions',activity:this.currentMLG.endPage})
+                    }
+                }
                 this.currentIndex = 0
             },
             resetActivity: function () {
