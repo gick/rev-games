@@ -129,8 +129,7 @@ cash but I'm OK with most food and drink.
                 });
                 this.currentMLG = elem.detail
                 if (this.currentMLG.startpage) {
-                    this.set('startPage', this.currentMLG.startpage)
-                    this.pageList.startPage = true
+                    this.push('pages',{ name:'instructions',activity:this.currentMLG.startpage})
                 }
                 this.totalUnitGames = this.currentMLG.unitgameActivities.length
                 this.setupUnitGame(this.unitGamesIndex)
