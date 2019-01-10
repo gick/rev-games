@@ -8,25 +8,25 @@
     <template>
         <style include="common-styles">
         </style>
-                <paper-button raised on-click="nextActivity">Next</paper-button>
-                <geo-location latitude="{{userLat}}" longitude="{{userLng}}" high-accuracy watch-pos id="loc"></geo-location>
-        
-            <div class="card-content">
-                Guidance Page
-                <div>
-                    <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]" long="[[pageActivity.longitude]]"
-                        poi={{poi}}></map-display>
-                </div>
+        <paper-button raised on-click="nextActivity">Next</paper-button>
+        <geo-location latitude="{{userLat}}" longitude="{{userLng}}" high-accuracy watch-pos id="loc"></geo-location>
 
+        <div class="card-content">
+            Guidance Page
+            <div>
+                <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]"
+                    long="[[pageActivity.longitude]]" poi={{poi}}></map-display>
             </div>
-            <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
-            <paper-dialog id="poiReached">
-                <h2>Destination atteinte!</h2>
-                <div>Vous pouvez maintenant accéder à la page suivante</div>
-                <div class="buttons">
-                    <paper-button dialog-confirm autofocus>OK</paper-button>
-                </div>
-            </paper-dialog>
+
+        </div>
+        <paper-toast id="userAtpoi" text="Point d'intérêt atteint !"></paper-toast>
+        <paper-dialog id="poiReached">
+            <h2>Destination atteinte!</h2>
+            <div>Vous pouvez maintenant accéder à la page suivante</div>
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>OK</paper-button>
+            </div>
+        </paper-dialog>
 
     </template>
     <script>
@@ -105,7 +105,7 @@
                 }
                 if (this.pageActivity) {
                     if (newDistance <= this.pageActivity.map.areaRadius) {
-                        this.poiReached=true
+                        this.poiReached = true
                         this.$.userAtpoi.open()
                         this.$.poiReached.open()
                     }
@@ -113,9 +113,9 @@
             },
 
             nextActivity: function () {
-                this.poiReached=true
-    
-                this.fire('set-swipeable',true)
+                this.poiReached = true
+
+                this.fire('set-swipeable', true)
                 this.$.userAtpoi.open()
                 this.$.poiReached.open()
             },

@@ -6,7 +6,6 @@
 
 <dom-module id="page-content">
     <template>
-        {{name}}
             <template is="dom-if" if="{{isEqual('guidance',name)}}" restamp>
                 <guidance-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
             </template>
