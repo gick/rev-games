@@ -101,6 +101,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             show: function() {
                 this.$.quickLink.open()
             },
+            logout:function(){
+                this.$.auth.signOut()
+            },
             goInventory: function() {
 
                 this.set('route.path', 'inventory')

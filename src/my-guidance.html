@@ -12,7 +12,8 @@
                 @apply(--layout-vertical);
             }
         </style>
-        <paper-button raised on-click="nextActivity">Next</paper-button>
+        <paper-button raised on-click="nextActivity">Next[[pageActivity.showMap]]</paper-button>
+        [[pageActivity.showMap]]
         <geo-location high-accuracy watch-pos id="loc"></geo-location>
         <paper-card heading="Atteindre la localisation" image="" elevation="1" animated-shadow="false">
             <div class="card-content">

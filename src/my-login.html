@@ -30,7 +30,8 @@ MOGGLE editor Log in
             color: #212121;
         }
         </style>
-        <firebase-auth id="auth"  user="{{user}}" provider="google">
+        <app-location use-hash-as-path route="{{route}}"></app-location>
+        <firebase-auth id="auth" user="{{user}}" provider="google">
         </firebase-auth>
         <paper-card heading="Login" image="" elevation="2" animated-shadow="true">
             <div class="card-content">
@@ -42,26 +43,29 @@ MOGGLE editor Log in
                 <paper-button>Mot de passe oublié</paper-button>
             </div>
         </paper-card>
-        <div>Souhaiter vous vous <a name="badge" on-click="showRegister" href="/#register">enregistrer</a></div>
+        <div>Pas encore de compte? Swippez à gauche pour vous enregistrer</a></div>
     </template>
     <script>
-    Polymer({
-        
-        login: function() {
-            this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then(function(user) {
-                var ref = firebase.database().ref("users/" + user.uid + '/');
-                ref.onDisconnect().update({
-                    status: 'offline'
-                });
+        Polymer({
+            showRegister: function () {
+                this.set('route.path', 'register')
 
-                firebase.database().ref('users/' + user.uid + '/').update({
-                    status: 'online'
-                });
+            },
+            login: function () {
+                this.$.auth.signInWithEmailAndPassword(this.mail, this.pass).then(function (user) {
+                    var ref = firebase.database().ref("users/" + user.uid + '/');
+                    ref.onDisconnect().update({
+                        status: 'offline'
+                    });
 
-            })
-        },
+                    firebase.database().ref('users/' + user.uid + '/').update({
+                        status: 'online'
+                    });
 
-        is: 'my-login'
-    });
+                })
+            },
+
+            is: 'my-login'
+        });
     </script>
 </dom-module>

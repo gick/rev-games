@@ -1,0 +1,29 @@
+<link rel="import" href="../../helper/generic-resource-viewer.html">
+
+<dom-module id="inventory-content">
+    <template>
+        <style include="common-styles">
+        </style>
+            <div class="card-content">
+                <h1>Nouvel item d'inventaire</h1>
+                <div>[[pageActivity.itemText]]</div>
+                <generic-resource-viewer page item=[[pageActivity.media]]></generic-resource-viewer>
+            </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'inventory-content',
+            property: {
+                pageActivity: {
+                    type: Object,
+                    notify: true,
+                },
+                name: {
+                    type: String,
+                    notify: true,
+                }
+            }
+
+        });
+    </script>
+</dom-module>

@@ -1,25 +1,33 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./game-content/guidance-content.html">
 <link rel="import" href="./game-content/instructions-content.html">
 <link rel="import" href="./game-content/questions-content.html">
 <link rel="import" href="./game-content/folia-content.html">
+<link rel="import" href="./game-content/inventory-content.html">
+<link rel="import" href="./game-content/qrscanner-content.html">
 
 <dom-module id="page-content">
     <template>
-            <template is="dom-if" if="{{isEqual('guidance',name)}}" restamp>
-                <guidance-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
-            </template>
-            <template is="dom-if" if="{{isEqual('folia',name)}}" restamp>
-                <folia-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
-            </template>
+        <template is="dom-if" if="{{isEqual('guidance',name)}}" restamp>
+            <guidance-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></guidance-content>
+        </template>
+        <template is="dom-if" if="{{isEqual('folia',name)}}" restamp>
+            <folia-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]">
+            </folia-content>
+        </template>
+        <template is="dom-if" if="{{isEqual('inventory',name)}}" restamp>
+            <inventory-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></inventory-content>
+        </template>
+        <template is="dom-if" if="{{isEqual('qrscanner',name)}}" restamp>
+            <qrscanner-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></qrscanner-content>
+        </template>
 
-
-            <template is="dom-if" if="{{isEqual('instructions',name)}}" restamp>
-                <instructions-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></instructions-content>
-            </template>
-            <template is="dom-if" if="{{isEqual('questions',name)}}" restamp>
-                <questions-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></instructions-content>
-            </template>
+        <template is="dom-if" if="{{isEqual('instructions',name)}}" restamp>
+            <instructions-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></instructions-content>
+        </template>
+        <template is="dom-if" if="{{isEqual('questions',name)}}" restamp>
+            <questions-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]">
+                </questions-content>
+        </template>
 
     </template>
     <script>
@@ -27,8 +35,8 @@
 
 
             is: 'page-content',
-            isEqual:function(val1,val2){
-                return val1==val2
+            isEqual: function (val1, val2) {
+                return val1 == val2
             },
             property: {
                 pageActivity: {
@@ -39,11 +47,11 @@
                     type: String,
                     notify: true,
                 },
-                isSwipeable:{
-                    type:Boolean,
-                    reflectToAttribute:true,
-                    value:false,
-                }                
+                isSwipeable: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false,
+                }
 
             }
 
