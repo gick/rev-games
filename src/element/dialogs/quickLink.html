@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
                 <div class='subcontainer'>
                     <paper-icon-button dialog-confirm on-click='goHome' icon="icons:home" item-icon></paper-icon-button>
-                    <span>Quitter le jeu</span>
+                    <span>Login</span>
                 </div>
                 <template is='dom-if' if='{{userData.hasChatSession}}'>
                     <div class='subcontainer'>
@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             goHome: function() {
-                this.set('route.path', 'activity')
+                this.set('route.path', 'login')
                 this.$.quickLink.close()
 
             },
