@@ -1,0 +1,55 @@
+<!-- 
+    Special case of page, it cannot be swiped to the left (because it's the last page and carroussel is off)
+    It is used to start a new unit game
+    !-->
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/common-styles/common-styles.html">
+    <dom-module id="my-feedback">
+        <template>
+            <style include="common-styles">
+                :host {
+                    @apply(--layout-fullbleed);
+                    @apply(--layout-vertical);
+                }
+            </style>
+            <div class="card">
+                <h1>Bien joué !</h1>
+                <div class="card-content">
+                    <staticmedia-viewer style="min-width:150px" class="topLevelView" mkdown="[[pageActivity.mkdown]]"></staticmedia-viewer>
+                </div>
+                <paper-button hidden={{pageActivity.lastUnit}} on-click="nextUg">Suivant</paper-button>
+                <template is="dom-if" if="{{pageActivity.lastUnit}}" restamp>
+                    <paper-button on-click="endGame">Fin du jeu</paper-button>
+                </template>
+            </div>
+        </template>
+        <script>
+        Polymer({
+            behaviors: [
+                 Window.SwipeableBehavior
+                ],
+    
+            endGame: function() {
+                this.fire('end-game')
+            },
+            nextUg:function(){
+                this.fire('next-ug')
+            },
+    
+            is: 'my-feedback',
+            property: {
+                feedbackMedia: {
+                    type: Object,
+                    notify: true,
+                },
+                lastUnit: {
+                    type: Boolean,
+                    notify: true,
+                    value: false,
+                }
+            }
+    
+    
+        });
+        </script>
+    </dom-module>

@@ -13,10 +13,9 @@
         <geo-location latitude="{{userLat}}" longitude="{{userLng}}" high-accuracy watch-pos id="loc"></geo-location>
         <my-ping hidden="[[!pageActivity.hideMap]]" on-click="showDistance" initalheadingdistance=[[initialHeadingDistance]] headingdistance=[[headingDistance]]></my-ping>
         <div class="card-content">
-            Guidance Page [[pageActivity.hideMap]]
             <div hidden="[[pageActivity.hideMap]]">
-                <map-display doc-mkdown='{{docMkdown}}' id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]"
-                    long="[[pageActivity.longitude]]" poi={{poi}}></map-display>
+                <map-display  id="map" user-lat={{userLat}} user-lng={{userLng}} lat="[[pageActivity.latitude]]"
+                    long="[[pageActivity.longitude]]"></map-display>
             </div>
 
         </div>

@@ -20,6 +20,9 @@
         <template is="dom-if" if="{{isEqual('qrscanner',name)}}" restamp>
             <qrscanner-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></qrscanner-content>
         </template>
+        <template is="dom-if" if="{{isEqual('qrscanner',name)}}" restamp>
+            <feedback-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></feedback-content>
+        </template>
 
         <template is="dom-if" if="{{isEqual('instructions',name)}}" restamp>
             <instructions-content is-swipeable={{isSwipeable}} page-activity="[[pageActivity]]"></instructions-content>
